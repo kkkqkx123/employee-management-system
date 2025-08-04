@@ -27,7 +27,8 @@ demo/src/
 │   │       │   └── NotificationController.java
 │   │       ├── service/                 # Business logic services
 │   │       ├── repository/              # Data access layer
-│   │       ├── model/                   # Entity and DTO classes
+│   │       ├── model/                   # Entity classes
+│   │       ├── dto/                     # dto classes
 │   │       ├── security/                # Security configuration
 │   │       ├── config/                  # Application configuration
 │   │       └── exception/               # Exception handling
