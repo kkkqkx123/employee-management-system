@@ -18,27 +18,253 @@ demo/src/
 │   │   └── com/example/demo/
 │   │       ├── DemoApplication.java     # Main Spring Boot application
 │   │       ├── ServletInitializer.java  # WAR deployment configuration
-│   │       ├── controller/              # REST controllers
-│   │       │   ├── AuthController.java
-│   │       │   ├── EmployeeController.java
-│   │       │   ├── DepartmentController.java
-│   │       │   ├── ChatController.java
-│   │       │   ├── EmailController.java
-│   │       │   └── NotificationController.java
-│   │       ├── service/                 # Business logic services
-│   │       ├── repository/              # Data access layer
-│   │       ├── model/                   # Entity classes
-│   │       ├── dto/                     # dto classes
-│   │       ├── security/                # Security configuration
+│   │       ├── security/                # Security and Permission Management
+│   │       │   ├── config/
+│   │       │   │   ├── SecurityConfig.java
+│   │       │   │   ├── JwtConfig.java
+│   │       │   │   └── RedisConfig.java
+│   │       │   ├── entity/
+│   │       │   │   ├── User.java
+│   │       │   │   ├── Role.java
+│   │       │   │   ├── Resource.java
+│   │       │   │   ├── UserRole.java
+│   │       │   │   └── RoleResource.java
+│   │       │   ├── repository/
+│   │       │   │   ├── UserRepository.java
+│   │       │   │   ├── RoleRepository.java
+│   │       │   │   ├── ResourceRepository.java
+│   │       │   │   ├── UserRoleRepository.java
+│   │       │   │   └── RoleResourceRepository.java
+│   │       │   ├── service/
+│   │       │   │   ├── UserService.java
+│   │       │   │   ├── RoleService.java
+│   │       │   │   ├── ResourceService.java
+│   │       │   │   ├── AuthenticationService.java
+│   │       │   │   └── PermissionService.java
+│   │       │   ├── controller/
+│   │       │   │   ├── AuthController.java
+│   │       │   │   ├── UserController.java
+│   │       │   │   ├── RoleController.java
+│   │       │   │   └── ResourceController.java
+│   │       │   ├── dto/
+│   │       │   │   ├── LoginRequest.java
+│   │       │   │   ├── LoginResponse.java
+│   │       │   │   ├── UserDto.java
+│   │       │   │   ├── RoleDto.java
+│   │       │   │   └── ResourceDto.java
+│   │       │   ├── security/
+│   │       │   │   ├── JwtAuthenticationFilter.java
+│   │       │   │   ├── JwtTokenProvider.java
+│   │       │   │   ├── CustomUserDetailsService.java
+│   │       │   │   └── SecurityUtils.java
+│   │       │   └── exception/
+│   │       │       ├── AuthenticationException.java
+│   │       │       ├── AuthorizationException.java
+│   │       │       └── UserNotFoundException.java
+│   │       ├── department/              # Department Management
+│   │       │   ├── entity/
+│   │       │   │   └── Department.java
+│   │       │   ├── repository/
+│   │       │   │   └── DepartmentRepository.java
+│   │       │   ├── service/
+│   │       │   │   ├── DepartmentService.java
+│   │       │   │   └── impl/
+│   │       │   │       └── DepartmentServiceImpl.java
+│   │       │   ├── controller/
+│   │       │   │   └── DepartmentController.java
+│   │       │   ├── dto/
+│   │       │   │   ├── DepartmentDto.java
+│   │       │   │   ├── DepartmentTreeDto.java
+│   │       │   │   ├── DepartmentCreateRequest.java
+│   │       │   │   ├── DepartmentUpdateRequest.java
+│   │       │   │   └── DepartmentStatisticsDto.java
+│   │       │   └── exception/
+│   │       │       ├── DepartmentNotFoundException.java
+│   │       │       ├── DepartmentHierarchyException.java
+│   │       │       └── DepartmentInUseException.java
+│   │       ├── employee/                # Employee Management
+│   │       │   ├── entity/
+│   │       │   │   ├── Employee.java
+│   │       │   │   └── EmployeeStatus.java
+│   │       │   ├── repository/
+│   │       │   │   └── EmployeeRepository.java
+│   │       │   ├── service/
+│   │       │   │   ├── EmployeeService.java
+│   │       │   │   ├── EmployeeImportService.java
+│   │       │   │   ├── EmployeeExportService.java
+│   │       │   │   └── impl/
+│   │       │   │       ├── EmployeeServiceImpl.java
+│   │       │   │       ├── EmployeeImportServiceImpl.java
+│   │       │   │       └── EmployeeExportServiceImpl.java
+│   │       │   ├── controller/
+│   │       │   │   └── EmployeeController.java
+│   │       │   ├── dto/
+│   │       │   │   ├── EmployeeDto.java
+│   │       │   │   ├── EmployeeCreateRequest.java
+│   │       │   │   ├── EmployeeUpdateRequest.java
+│   │       │   │   ├── EmployeeSearchCriteria.java
+│   │       │   │   ├── EmployeeImportResult.java
+│   │       │   │   └── EmployeeExportRequest.java
+│   │       │   ├── util/
+│   │       │   │   ├── EmployeeExcelUtil.java
+│   │       │   │   └── EmployeeValidationUtil.java
+│   │       │   └── exception/
+│   │       │       ├── EmployeeNotFoundException.java
+│   │       │       ├── EmployeeAlreadyExistsException.java
+│   │       │       ├── EmployeeImportException.java
+│   │       │       └── EmployeeExportException.java
+│   │       ├── position/                # Position and Title Management
+│   │       │   ├── entity/
+│   │       │   │   └── Position.java
+│   │       │   ├── repository/
+│   │       │   │   └── PositionRepository.java
+│   │       │   ├── service/
+│   │       │   │   ├── PositionService.java
+│   │       │   │   └── impl/
+│   │       │   │       └── PositionServiceImpl.java
+│   │       │   ├── controller/
+│   │       │   │   └── PositionController.java
+│   │       │   ├── dto/
+│   │       │   │   ├── PositionDto.java
+│   │       │   │   ├── PositionCreateRequest.java
+│   │       │   │   ├── PositionUpdateRequest.java
+│   │       │   │   └── PositionSearchCriteria.java
+│   │       │   └── exception/
+│   │       │       ├── PositionNotFoundException.java
+│   │       │       ├── PositionAlreadyExistsException.java
+│   │       │       └── PositionInUseException.java
+│   │       ├── communication/           # Communication System
+│   │       │   ├── email/
+│   │       │   │   ├── entity/
+│   │       │   │   │   ├── EmailTemplate.java
+│   │       │   │   │   └── EmailLog.java
+│   │       │   │   ├── service/
+│   │       │   │   │   ├── EmailService.java
+│   │       │   │   │   ├── EmailTemplateService.java
+│   │       │   │   │   └── impl/
+│   │       │   │   │       ├── EmailServiceImpl.java
+│   │       │   │   │       └── EmailTemplateServiceImpl.java
+│   │       │   │   ├── controller/
+│   │       │   │   │   └── EmailController.java
+│   │       │   │   ├── dto/
+│   │       │   │   │   ├── EmailRequest.java
+│   │       │   │   │   ├── BulkEmailRequest.java
+│   │       │   │   │   ├── EmailTemplateDto.java
+│   │       │   │   │   └── EmailLogDto.java
+│   │       │   │   └── util/
+│   │       │   │       └── EmailTemplateProcessor.java
+│   │       │   ├── chat/
+│   │       │   │   ├── entity/
+│   │       │   │   │   ├── ChatMessage.java
+│   │       │   │   │   ├── ChatRoom.java
+│   │       │   │   │   └── ChatParticipant.java
+│   │       │   │   ├── service/
+│   │       │   │   │   ├── ChatService.java
+│   │       │   │   │   └── impl/
+│   │       │   │   │       └── ChatServiceImpl.java
+│   │       │   │   ├── controller/
+│   │       │   │   │   └── ChatController.java
+│   │       │   │   ├── dto/
+│   │       │   │   │   ├── ChatMessageDto.java
+│   │       │   │   │   ├── ChatRoomDto.java
+│   │       │   │   │   └── ChatParticipantDto.java
+│   │       │   │   └── websocket/
+│   │       │   │       ├── ChatWebSocketHandler.java
+│   │       │   │       └── WebSocketConfig.java
+│   │       │   ├── notification/
+│   │       │   │   ├── entity/
+│   │       │   │   │   ├── MessageContent.java
+│   │       │   │   │   └── SystemMessage.java
+│   │       │   │   ├── service/
+│   │       │   │   │   ├── NotificationService.java
+│   │       │   │   │   └── impl/
+│   │       │   │   │       └── NotificationServiceImpl.java
+│   │       │   │   ├── controller/
+│   │       │   │   │   └── NotificationController.java
+│   │       │   │   ├── dto/
+│   │       │   │   │   ├── NotificationDto.java
+│   │       │   │   │   ├── NotificationCreateRequest.java
+│   │       │   │   │   └── NotificationMarkReadRequest.java
+│   │       │   │   └── websocket/
+│   │       │   │       └── NotificationWebSocketHandler.java
+│   │       │   └── exception/
+│   │       │       ├── EmailSendingException.java
+│   │       │       ├── TemplateNotFoundException.java
+│   │       │       ├── ChatRoomNotFoundException.java
+│   │       │       └── NotificationException.java
+│   │       ├── payroll/                 # Payroll Management
+│   │       │   ├── entity/
+│   │       │   │   ├── PayrollLedger.java
+│   │       │   │   ├── PayrollPeriod.java
+│   │       │   │   ├── SalaryComponent.java
+│   │       │   │   └── PayrollAudit.java
+│   │       │   ├── repository/
+│   │       │   │   ├── PayrollLedgerRepository.java
+│   │       │   │   ├── PayrollPeriodRepository.java
+│   │       │   │   ├── SalaryComponentRepository.java
+│   │       │   │   └── PayrollAuditRepository.java
+│   │       │   ├── service/
+│   │       │   │   ├── PayrollService.java
+│   │       │   │   ├── PayrollCalculationService.java
+│   │       │   │   ├── PayrollReportService.java
+│   │       │   │   └── impl/
+│   │       │   │       ├── PayrollServiceImpl.java
+│   │       │   │       ├── PayrollCalculationServiceImpl.java
+│   │       │   │       └── PayrollReportServiceImpl.java
+│   │       │   ├── controller/
+│   │       │   │   └── PayrollController.java
+│   │       │   ├── dto/
+│   │       │   │   ├── PayrollLedgerDto.java
+│   │       │   │   ├── PayrollPeriodDto.java
+│   │       │   │   ├── SalaryComponentDto.java
+│   │       │   │   ├── PayrollCalculationRequest.java
+│   │       │   │   ├── PayrollReportRequest.java
+│   │       │   │   └── PayrollSummaryDto.java
+│   │       │   ├── util/
+│   │       │   │   ├── PayrollCalculationUtil.java
+│   │       │   │   └── PayrollValidationUtil.java
+│   │       │   └── exception/
+│   │       │       ├── PayrollNotFoundException.java
+│   │       │       ├── PayrollCalculationException.java
+│   │       │       ├── PayrollPeriodException.java
+│   │       │       └── PayrollValidationException.java
 │   │       ├── config/                  # Application configuration
-│   │       └── exception/               # Exception handling
+│   │       │   ├── RedisConfig.java
+│   │       │   ├── WebSocketConfig.java
+│   │       │   ├── AsyncConfig.java
+│   │       │   └── CorsConfig.java
+│   │       └── common/                  # Common utilities and shared components
+│   │           ├── dto/
+│   │           │   ├── ApiResponse.java
+│   │           │   ├── ErrorResponse.java
+│   │           │   └── PageResponse.java
+│   │           ├── exception/
+│   │           │   ├── GlobalExceptionHandler.java
+│   │           │   ├── BusinessException.java
+│   │           │   └── ValidationException.java
+│   │           └── util/
+│   │               ├── DateUtil.java
+│   │               ├── StringUtil.java
+│   │               └── ValidationUtil.java
 │   └── resources/
 │       ├── application.properties       # Application configuration
+│       ├── application-dev.properties   # Development configuration
+│       ├── application-prod.properties  # Production configuration
 │       ├── static/                      # Static web assets (for React build)
-│       └── templates/                   # Server-side templates (if needed)
+│       └── templates/                   # Email templates (Freemarker .ftl files)
+│           ├── welcome-email.ftl
+│           ├── notification-email.ftl
+│           └── payroll-summary.ftl
 └── test/
     └── java/
         └── com/example/demo/            # Test classes mirror main structure
+            ├── security/
+            ├── department/
+            ├── employee/
+            ├── position/
+            ├── communication/
+            ├── payroll/
+            └── integration/             # Integration tests
 ```
 
 ## Frontend Structure (React)
@@ -90,12 +316,13 @@ frontend/
 
 ### Backend (Spring Boot)
 - **Base package**: `com.example.demo`
-- **Controllers**: REST endpoints in `controller` package
-- **Services**: Business logic in `service` and `service.impl` packages
-- **Repositories**: Data access in `repository` package
-- **Models**: Entities in `model.entity`, DTOs in `model.dto` packages
-- **Security**: Authentication/authorization in `security` package
-- **Configuration**: Application config in `config` package
+- **Feature-based organization**: Each major feature (security, department, employee, position, communication, payroll) has its own package
+- **Layered architecture within features**: Each feature contains entity, repository, service, controller, dto, and exception packages
+- **Security module**: Complete authentication and authorization system with JWT, roles, and permissions
+- **Communication module**: Subdivided into email, chat, and notification submodules
+- **Common package**: Shared utilities, DTOs, and exception handling across all features
+- **Configuration**: Application config in `config` package with feature-specific configurations
+- **Resources**: Application properties, email templates, and static assets
 
 ### Frontend (React)
 - **Feature-based organization**: Group related components, hooks, and services by feature
@@ -125,9 +352,15 @@ frontend/
 ### Backend
 - Keep the main application class minimal - only for bootstrapping
 - Use `@SpringBootApplication` annotation on the main class
-- Organize code by feature/domain rather than technical layers
+- Organize code by feature/domain with layered architecture within each feature
+- Each feature module should be self-contained with its own entities, repositories, services, controllers, DTOs, and exceptions
 - Use Maven commands: `mvn` (not `./mvnw` wrapper)
-- Follow Spring Boot conventions for package structure
+- Follow the established package structure with feature-based organization
+- Implement proper separation of concerns with clear boundaries between modules
+- Use Redis for data persistence with proper entity annotations (@RedisHash, @Indexed)
+- Implement comprehensive exception handling with feature-specific exceptions
+- Use Lombok annotations to reduce boilerplate code
+- Follow consistent naming conventions across all modules
 
 ### Frontend
 - Use feature-based organization for scalability

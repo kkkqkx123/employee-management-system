@@ -4,7 +4,7 @@
 
 ### Core Technologies
 - **Java 24** - Primary programming language
-- **Spring Boot 3.5.3** - Application framework
+- **Spring Boot 3.5.4** - Application framework
 - **Maven** - Build system and dependency management
 - **Redis** - Database/Cache
 - **Tomcat** - Embedded servlet container (provided scope for WAR deployment)
