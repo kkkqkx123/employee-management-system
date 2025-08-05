@@ -95,11 +95,11 @@ public class Department {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -283,9 +283,8 @@ public class DepartmentDto {
     
     private boolean enabled;
     
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     
     private Long createdBy;
     

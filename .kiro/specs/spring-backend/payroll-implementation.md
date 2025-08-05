@@ -45,6 +45,77 @@ com.example.demo.payroll/
 
 ## Entity Classes
 
+### Enum Definitions
+
+#### PayrollLedgerStatus Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum PayrollLedgerStatus {
+    PENDING,
+    CALCULATED,
+    APPROVED,
+    PAID,
+    REJECTED,
+    CANCELLED
+}
+```
+
+#### PaymentMethod Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum PaymentMethod {
+    BANK_TRANSFER,
+    CHECK,
+    CASH,
+    OTHER
+}
+```
+
+#### PayrollPeriodType Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum PayrollPeriodType {
+    MONTHLY,
+    BI_WEEKLY,
+    WEEKLY,
+    CUSTOM
+}
+```
+
+#### PayrollPeriodStatus Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum PayrollPeriodStatus {
+    DRAFT,
+    OPEN,
+    CLOSED,
+    ARCHIVED
+}
+```
+
+#### SalaryComponentType Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum SalaryComponentType {
+    ALLOWANCE,
+    DEDUCTION
+}
+```
+
+#### CalculationType Enum
+```java
+package com.example.demo.payroll.entity;
+
+public enum CalculationType {
+    FIXED,
+    PERCENTAGE
+}
+```
 ### PayrollLedger Entity
 ```java
 package com.example.demo.payroll.entity;
@@ -60,7 +131,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -143,11 +213,13 @@ public class PayrollLedger {
     @Column(name = "currency", length = 10)
     private String currency;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 20)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollLedgerStatus status;
 
     @Column(name = "pay_date")
     private LocalDate payDate;
@@ -211,8 +283,9 @@ public class PayrollPeriod {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type;
+    private PayrollPeriodType type;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -226,8 +299,9 @@ public class PayrollPeriod {
     @Column(name = "working_days")
     private Integer workingDays;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollPeriodStatus status;
 
     @Column(name = "description", length = 500)
     private String description;
@@ -290,11 +364,13 @@ public class SalaryComponent {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type; // ALLOWANCE, DEDUCTION
+    private SalaryComponentType type; // ALLOWANCE, DEDUCTION
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "calculation_type", nullable = false, length = 20)
-    private String calculationType; // FIXED, PERCENTAGE
+    private CalculationType calculationType; // FIXED, PERCENTAGE
 
     @Column(name = "value", precision = 12, scale = 2)
     private BigDecimal value; // Amount for FIXED, percentage for PERCENTAGE
@@ -899,5 +975,3 @@ The implementation documents are structured to provide developers with everythin
 - Return type specifications
 - Exception declarations
 - JavaDoc documentation explaining the purpose and behavior
-
-Would you like me to elaborate on any specific module or add additional implementation details for any particular aspect?

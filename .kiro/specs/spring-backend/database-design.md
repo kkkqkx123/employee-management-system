@@ -1314,6 +1314,21 @@ public class PayrollLedger {
     private String calculationDetails; // JSON string for all components
 }
 ```
+
+> **关键业务规则：薪资记录快照**
+>
+> `PayrollLedger` 实体中的以下字段必须被视为 **一次性创建的快照（Snapshot）**，以确保历史薪资报告的永久准确性：
+>
+> *   `employeeName`
+> *   `departmentName`
+> *   `positionName`
+> *   `baseSalary`, `hourlyRate`, 等所有与薪资计算相关的数值字段
+>
+> **实现要求**：
+> 1.  在创建一条新的 `PayrollLedger` 记录的业务逻辑（例如在 `PayrollService` 中）时，必须在一个事务内，从关联的 `Employee`, `Department`, `Position` 等实体中获取当前的名称和值，并填充到这些快照字段中。
+> 2.  一旦 `PayrollLedger` 记录被创建，这些快照字段 **绝对不能** 因为源实体信息（如员工改名、部门调动）的变更而被更新。它们必须永久保留创建时刻的状态。
+> 3.  此规则是确保系统财务审计合规性的核心要求。
+
 ### PayrollPeriod Entity
 ```java
 package com.example.demo.payroll.entity;

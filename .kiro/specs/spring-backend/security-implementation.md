@@ -438,7 +438,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Data
@@ -457,7 +457,7 @@ public class LoginResponse {
     
     private Set<String> permissions;
     
-    private LocalDateTime loginTime;
+    private Instant loginTime;
 }
 ```
 
@@ -473,7 +473,7 @@ import lombok.Builder;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Data
@@ -502,11 +502,11 @@ public class UserDto {
     
     private boolean enabled;
     
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
-    private LocalDateTime lastLoginAt;
+    private Instant lastLoginAt;
     
     private Set<RoleDto> roles;
 }
@@ -523,7 +523,7 @@ import lombok.Builder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Data
@@ -543,9 +543,9 @@ public class RoleDto {
     
     private boolean enabled;
     
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     private Set<ResourceDto> resources;
 }
@@ -563,7 +563,7 @@ import lombok.Builder;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -593,9 +593,9 @@ public class ResourceDto {
     
     private boolean enabled;
     
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }
 ```#
 # Service Layer Implementation

@@ -75,7 +75,6 @@ public enum PayType {
 ```
 
 ### Employee Entity
-### Employee Entity
 ```java
 package com.example.demo.employee.entity;
 
@@ -558,11 +557,141 @@ package com.example.demo.employee.dto;
 import lombok.Data;
 
 @Data
-public class EmployeeCreateRequest {
-    // To simplify the design and reduce redundancy, the EmployeeDto will be used for
-    // create and update operations. The @Valid annotation in the controller will
-    // ensure the DTO's constraints are enforced. This avoids maintaining a separate
-    // but nearly identical DTO for creation requests.
+    @NotNull(message = "Department is required")
+    private Long departmentId;
+ 
+    @NotNull(message = "Position is required")
+    private Long positionId;
+ 
+    private Long managerId;
+ 
+    @NotNull(message = "Hire date is required")
+    @PastOrPresent
+    private LocalDate hireDate;
+ 
+    @NotNull(message = "Employee status is required")
+    private EmployeeStatus status;
+    
+    @NotNull(message = "Pay type is required")
+    private PayType payType;
+    
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer = 10, fraction = 2)
+    private BigDecimal salary; // For SALARY pay type
+    
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer = 6, fraction = 2)
+    private BigDecimal hourlyRate; // For HOURLY pay type
+ 
+    // 其他允许在创建时由客户端提供的字段...
+    private String phone;
+    private String address;
+    // 注意：不包含 id, employeeNumber, createdAt, updatedAt 等系统生成或只读的字段
+}
+```
+
+### EmployeeUpdateRequest DTO
+```java
+package com.example.demo.employee.dto;
+
+import com.example.demo.employee.entity.EmployeeStatus;
+import com.example.demo.employee.entity.EmploymentType;
+import com.example.demo.employee.entity.Gender;
+import com.example.demo.employee.entity.MaritalStatus;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+/**
+ * 用于更新员工信息的数据传输对象。
+ * 包含所有允许客户端修改的字段。
+ */
+@Data
+public class EmployeeUpdateRequest {
+
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name must not exceed 50 characters")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name must not exceed 50 characters")
+    private String lastName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
+    @Size(max = 100, message = "Email must not exceed 100 characters")
+    private String email;
+
+    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{7,20}$", message = "Phone number format is invalid")
+    private String phone;
+
+    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{7,20}$", message = "Mobile phone number format is invalid")
+    private String mobilePhone;
+
+    @Size(max = 255)
+    private String address;
+
+    @Size(max = 100)
+    private String city;
+
+    @Size(max = 100)
+    private String state;
+
+    @Size(max = 20)
+    private String zipCode;
+
+    @Size(max = 100)
+    private String country;
+
+    // 敏感字段在传输时是字符串，由服务器处理加密
+    private String dateOfBirth; 
+
+    private Gender gender;
+    
+    private MaritalStatus maritalStatus;
+
+    @Size(max = 50)
+    private String nationality;
+
+    @NotNull(message = "Department is required")
+    private Long departmentId;
+
+    @NotNull(message = "Position is required")
+    private Long positionId;
+
+    // 经理ID可以为null（例如，对于CEO）
+    private Long managerId;
+
+    @NotNull(message = "Hire date is required")
+    @PastOrPresent(message = "Hire date cannot be in the future")
+    private LocalDate hireDate;
+    
+    // 离职日期可以为null
+    private LocalDate terminationDate;
+
+    @NotNull(message = "Employee status is required")
+    private EmployeeStatus status;
+    
+    @NotNull(message = "Employment type is required")
+    private EmploymentType employmentType;
+
+    // 薪资和时薪可以为null，取决于员工的薪资类型
+    @DecimalMin(value = "0.0", inclusive = true, message = "Salary must be non-negative")
+    @Digits(integer = 10, fraction = 2, message = "Salary format is invalid")
+    private BigDecimal salary;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Hourly rate must be non-negative")
+    @Digits(integer = 6, fraction = 2, message = "Hourly rate format is invalid")
+    private BigDecimal hourlyRate;
+
+    // 敏感字段
+    private String bankAccount;
+    private String taxId;
+
+    @NotNull(message = "Enabled status is required")
+    private Boolean enabled;
 }
 ```
 
@@ -601,33 +730,48 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        // 1. Validate salary against the position's defined range
-        validateSalary(employeeDto.getPositionId(), employeeDto.getSalary());
-
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
+    public EmployeeDto createEmployee(EmployeeCreateRequest createRequest) {
+        // 1. 校验薪资范围
+        validateSalary(createRequest.getPositionId(), createRequest.getSalary());
+ 
+        // 2. 将 Request DTO 映射到新的 Employee 实体
+        Employee employee = modelMapper.map(createRequest, Employee.class);
       
-        // 2. Encrypt sensitive data before saving
-        encryptSensitiveData(employee, employeeDto);
-
+      
+        // 3. 生成系统控制的字段，如员工编号
+        employee.setEmployeeNumber("EMP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        employee.setEnabled(true); // 默认启用
+    
+        // 4. 在保存前加密敏感数据
+        if (createRequest.getDateOfBirth() != null) {
+            employee.setDateOfBirth(encryptionService.encrypt(createRequest.getDateOfBirth()));
+        }
+        if (createRequest.getBankAccount() != null) {
+            employee.setBankAccount(encryptionService.encrypt(createRequest.getBankAccount()));
+        }
+        if (createRequest.getTaxId() != null) {
+            employee.setTaxId(encryptionService.encrypt(createRequest.getTaxId()));
+        }
+    
+        // 5. 保存实体并将其转换为用于响应的 DTO
         Employee savedEmployee = employeeRepository.save(employee);
         return convertToDto(savedEmployee);
     }
 
     @Override
     @Transactional
-    public EmployeeDto updateEmployee(Long id, EmployeeDto employeeDto) {
+    public EmployeeDto updateEmployee(Long id, EmployeeUpdateRequest updateRequest) {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
 
         // 1. Validate salary against the position's defined range
-        validateSalary(employeeDto.getPositionId(), employeeDto.getSalary());
+        validateSalary(updateRequest.getPositionId(), updateRequest.getSalary());
 
         // Map non-sensitive fields from DTO to entity
-        modelMapper.map(employeeDto, existingEmployee);
+        modelMapper.map(updateRequest, existingEmployee);
       
         // 2. Encrypt sensitive data before saving
-        encryptSensitiveData(existingEmployee, employeeDto);
+        encryptSensitiveData(existingEmployee, updateRequest);
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return convertToDto(updatedEmployee);
@@ -672,7 +816,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private void encryptSensitiveData(Employee employee, EmployeeDto dto) {
+    private void encryptSensitiveData(Employee employee, EmployeeUpdateRequest dto) {
         if (dto.getDateOfBirth() != null) {
             employee.setDateOfBirth(encryptionService.encrypt(dto.getDateOfBirth()));
         }
@@ -739,8 +883,8 @@ public class EmployeeController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
-    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
-        EmployeeDto createdEmployee = employeeService.createEmployee(employeeDto);
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeCreateRequest createRequest) {
+        EmployeeDto createdEmployee = employeeService.createEmployee(createRequest);
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
@@ -760,8 +904,8 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EMPLOYEE_UPDATE')")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto) {
-        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employeeDto);
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeUpdateRequest updateRequest) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, updateRequest);
         return ResponseEntity.ok(updatedEmployee);
     }
 

@@ -50,7 +50,7 @@ The following is a summary of project requirements, architectural design, and de
 #### Database Design
 - **Permissions Database**: Includes resource tables, role tables, user tables, resource-role tables, and user-role tables.
 - **Department Database**: Includes standard fields, uses depPath for convenient querying, and isParent indicates whether it is a parent department.
-- **System Notification Database**: The msgcontent table stores system notifications, and the sysmsg table records the relationship between users and notifications.
+- **System Notification Database**: A modern and robust single-table model named `notifications` is used. This entity handles all aspects of notifications, including content, recipients, status, and type, ensuring a centralized and efficient notification system.
 
 #### Code Implementation
 - **Recursive Query**: Uses the collection feature in MyBatis' ResultMap to implement recursive queries for department data.

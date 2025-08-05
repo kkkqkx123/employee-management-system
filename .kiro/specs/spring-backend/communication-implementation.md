@@ -44,8 +44,8 @@ com.example.demo.communication/
 │       ├── ChatWebSocketHandler.java
 │       └── WebSocketConfig.java
 ├── notification/
-├── entity/
-│   │   └── SystemMessage.java
+│   ├── entity/
+│   │   └── Notification.java // Based on the single-table model in database-design.md
 │   ├── service/
 │   │   ├── NotificationService.java
 │   │   └── impl/
@@ -328,67 +328,97 @@ public interface EmailService {
      */
     EmailStatisticsDto getEmailStatistics();
 }
-```## 
-Chat System
+```
+
+## Chat System
 
 ### Chat Entity Classes
 
-#### ChatMessage Entity
+### Enum Definitions
+
+#### ChatRoomType Enum
 ```java
 package com.example.demo.communication.chat.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+public enum ChatRoomType {
+    DIRECT, // One-on-one chat
+    GROUP,  // Multi-user group chat
+    CHANNEL // Broadcast-style channel
+}
+```
 
-import java.time.LocalDateTime;
+#### ChatParticipantRole Enum
+```java
+package com.example.demo.communication.chat.entity;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("chat_messages")
+public enum ChatParticipantRole {
+    OWNER,
+    ADMIN,
+    MEMBER
+}
+```
+#### ChatMessage Entity
+```java
+package com.example.demo.communication.chat.entity;
+ 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+ 
+import java.time.Instant;
+ 
+@Entity
+@Table(name = "chat_messages", indexes = {
+    @Index(name = "idx_chatmessage_room_id", columnList = "room_id"),
+    @Index(name = "idx_chatmessage_sender_id", columnList = "sender_id"),
+    @Index(name = "idx_chatmessage_created_at", columnList = "created_at")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class ChatMessage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private Long roomId; // Chat room ID
-    
-    @Indexed
-    private Long senderId; // Sender user ID
-    
-    private String content; // Message content
-    
-    @Indexed
-    private String messageType; // TEXT, IMAGE, FILE, SYSTEM
-    
-    private String attachmentUrl; // URL for file/image attachments
-    
-    private String attachmentName; // Original file name
-    
-    private Long attachmentSize; // File size in bytes
-    
-    private boolean isEdited;
-    
-    private LocalDateTime editedAt;
-    
-    private boolean isDeleted;
-    
-    private LocalDateTime deletedAt;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
+  
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;           // Chat room ID
+  
+    @Column(name = "sender_id", nullable = false)
+    private Long senderId;         // Message sender
+  
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;        // Message content
+  
+    @Column(name = "message_type", length = 20)
+    private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
+  
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // 时区无关的时间戳
+  
+    @Column(name = "is_edited", nullable = false)
+    private Boolean isEdited = false;
+  
+    @Column(name = "edited_at")
+    private Instant editedAt;      // 时区无关的时间戳
+  
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+  
+    @Column(name = "deleted_at")
+    private Instant deletedAt;     // 时区无关的时间戳
     
     // Transient fields for display
     private transient String senderName;
     private transient String senderAvatar;
     private transient boolean isRead; // Whether current user has read this message
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", insertable = false, updatable = false)
+    private ChatRoom chatRoom;
 }
 ```
 
@@ -429,8 +459,9 @@ public class ChatRoom {
     @Column(name = "name", length = 100)
     private String name; // Room name (for group chats)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type; // DIRECT, GROUP, CHANNEL
+    private ChatRoomType type; // DIRECT, GROUP, CHANNEL
     
     @Column(name = "description", length = 500)
     private String description;
@@ -508,8 +539,9 @@ public class ChatParticipant {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
-    private String role; // OWNER, ADMIN, MEMBER
+    private ChatParticipantRole role; // OWNER, ADMIN, MEMBER
     
     @Column(name = "joined_at", nullable = false)
     private Instant joinedAt;
@@ -563,7 +595,7 @@ public interface ChatService {
      * @return Created chat room DTO
      * @throws ChatRoomCreationException if room creation fails
      */
-    ChatRoomDto createChatRoom(String name, String type, String description, Long createdBy, List<Long> participantIds);
+    ChatRoomDto createChatRoom(String name, ChatRoomType type, String description, Long createdBy, List<Long> participantIds);
     
     /**
      * Get chat room by ID
@@ -682,6 +714,8 @@ public interface ChatService {
 ```
 
 ## Notification & Announcement System
+
+**Note:** The implementation of the notification system must adhere to the `Notification` entity defined in `database-design.md`. The single-table model is the authoritative design standard, superseding any previous multi-table designs.
 
 This section covers system-wide notifications and announcements.
 

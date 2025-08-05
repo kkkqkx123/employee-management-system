@@ -112,10 +112,10 @@ This document outlines the requirements for a comprehensive Employee Management 
 #### Acceptance Criteria
 
 1. WHEN using chat functionality THEN the system SHALL provide real-time online chat capabilities
-2. WHEN system notifications are generated THEN the system SHALL save notifications to the msgcontent table
-3. WHEN managing user notifications THEN the system SHALL record user-notification relationships in the sysmsg table
-4. WHEN notifications are created THEN the system SHALL push notifications to relevant users
-5. WHEN users access notifications THEN the system SHALL provide viewing and management capabilities
+2. WHEN system notifications are generated THEN the system SHALL save them to a single `notifications` table, which serves as the sole source of truth for all notification data.
+3. WHEN managing user notifications THEN the system SHALL handle all aspects including content, recipients, status, and type within the `notifications` entity.
+4. WHEN notifications are created THEN the system SHALL push notifications to relevant users based on the data in the `notifications` table.
+5. WHEN users access notifications THEN the system SHALL provide viewing and management capabilities based on the unified `notifications` model.
 6. IF chat messages are sent THEN the system SHALL ensure real-time delivery and display
 
 ### Requirement 9: User Interface and Experience
