@@ -68,118 +68,170 @@ public enum EmployeeStatus {
 ```java
 package com.example.demo.employee.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("employees")
+@Entity
+@Table(name = "employees", indexes = {
+    @Index(name = "idx_employee_number", columnList = "employee_number", unique = true),
+    @Index(name = "idx_employee_email", columnList = "email", unique = true),
+    @Index(name = "idx_employee_department_id", columnList = "department_id"),
+    @Index(name = "idx_employee_position_id", columnList = "position_id"),
+    @Index(name = "idx_employee_status", columnList = "status")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Employee {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String employeeNumber; // Unique employee identifier
-    
-    @Indexed
+
+    @Column(name = "employee_number", nullable = false, unique = true, length = 20)
+    private String employeeNumber;
+
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
-    
-    @Indexed
+
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-    
-    @Indexed
+
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
-    
+
+    @Column(name = "phone", length = 20)
     private String phone;
-    
+
+    @Column(name = "mobile_phone", length = 20)
     private String mobilePhone;
-    
+
+    @Column(name = "address", length = 255)
     private String address;
-    
+
+    @Column(name = "city", length = 50)
     private String city;
-    
+
+    @Column(name = "state", length = 50)
     private String state;
-    
+
+    @Column(name = "zip_code", length = 10)
     private String zipCode;
-    
+
+    @Column(name = "country", length = 50)
     private String country;
-    
+
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-    
-    private String gender; // MALE, FEMALE, OTHER
-    
-    private String maritalStatus; // SINGLE, MARRIED, DIVORCED, WIDOWED
-    
+
+    @Column(name = "gender", length = 10)
+    private String gender;
+
+    @Column(name = "marital_status", length = 20)
+    private String maritalStatus;
+
+    @Column(name = "nationality", length = 50)
     private String nationality;
-    
+
+    @Column(name = "emergency_contact_name", length = 100)
     private String emergencyContactName;
-    
+
+    @Column(name = "emergency_contact_phone", length = 20)
     private String emergencyContactPhone;
-    
+
+    @Column(name = "emergency_contact_relation", length = 50)
     private String emergencyContactRelation;
-    
-    @Indexed
+
+    @Column(name = "department_id", nullable = false)
     private Long departmentId;
-    
-    @Indexed
+
+    @Column(name = "position_id", nullable = false)
     private Long positionId;
-    
-    @Indexed
-    private Long managerId; // Direct manager employee ID
-    
+
+    @Column(name = "manager_id")
+    private Long managerId;
+
+    @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
-    
+
+    @Column(name = "termination_date")
     private LocalDate terminationDate;
-    
-    @Indexed
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
     private EmployeeStatus status;
-    
+
+    @Column(name = "salary", precision = 12, scale = 2)
     private BigDecimal salary;
-    
+
+    @Column(name = "salary_grade", length = 20)
     private String salaryGrade;
-    
-    private String employmentType; // FULL_TIME, PART_TIME, CONTRACT, INTERN
-    
-    private String workLocation; // OFFICE, REMOTE, HYBRID
-    
-    private String skills; // Comma-separated skills
-    
+
+    @Column(name = "employment_type", length = 20)
+    private String employmentType;
+
+    @Column(name = "work_location", length = 20)
+    private String workLocation;
+
+    @Column(name = "skills", length = 500)
+    private String skills;
+
+    @Column(name = "education", length = 500)
     private String education;
-    
+
+    @Column(name = "certifications", length = 500)
     private String certifications;
-    
+
+    @Lob
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
-    
+
+    @Column(name = "profile_image_url", length = 255)
     private String profileImageUrl;
-    
-    private boolean enabled;
-    
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
+
+    // Relationships to be added if Department/Position entities are in the same module
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    // private Department department;
     
-    // Transient fields for display purposes (not stored in Redis)
-    private transient String departmentName;
-    private transient String positionName;
-    private transient String managerName;
-    private transient String fullName; // firstName + lastName
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "position_id", insertable = false, updatable = false)
+    // private Position position;
+
+    @Transient
+    private String departmentName;
+    @Transient
+    private String positionName;
+    @Transient
+    private String managerName;
+    @Transient
+    private String fullName;
 }
-```## Repos
+```
 itory Interface
 
 ### EmployeeRepository
@@ -190,7 +242,7 @@ import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.entity.EmployeeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -198,7 +250,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends CrudRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     
     /**
      * Find employee by employee number
@@ -378,7 +430,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;

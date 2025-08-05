@@ -49,215 +49,203 @@ com.example.demo.payroll/
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 
-@Data
+@Entity
+@Table(name = "payroll_ledgers", indexes = {
+    @Index(name = "idx_payrollledger_employee_id", columnList = "employee_id"),
+    @Index(name = "idx_payrollledger_period_id", columnList = "payroll_period_id"),
+    @Index(name = "idx_payrollledger_status", columnList = "status")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_ledgers")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollLedger {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+
+    @Column(name = "employee_id", nullable = false)
     private Long employeeId;
-    
-    @Indexed
+
+    @Column(name = "payroll_period_id", nullable = false)
     private Long payrollPeriodId;
-    
-    private String employeeNumber; // Denormalized for quick access
-    
-    private String employeeName; // Denormalized for quick access
-    
-    @Indexed
+
+    @Column(name = "employee_number", length = 20)
+    private String employeeNumber;
+
+    @Column(name = "employee_name", length = 100)
+    private String employeeName;
+
+    @Column(name = "department_id")
     private Long departmentId;
-    
-    private String departmentName; // Denormalized for quick access
-    
-    @Indexed
+
+    @Column(name = "department_name", length = 100)
+    private String departmentName;
+
+    @Column(name = "position_id")
     private Long positionId;
-    
-    private String positionName; // Denormalized for quick access
-    
-    // Basic Salary Information
+
+    @Column(name = "position_name", length = 100)
+    private String positionName;
+
+    @Column(name = "base_salary", precision = 12, scale = 2)
     private BigDecimal baseSalary;
-    
+
+    @Column(name = "hourly_rate", precision = 12, scale = 2)
     private BigDecimal hourlyRate;
-    
+
+    @Column(name = "hours_worked", precision = 10, scale = 2)
     private BigDecimal hoursWorked;
-    
+
+    @Column(name = "overtime_hours", precision = 10, scale = 2)
     private BigDecimal overtimeHours;
-    
+
+    @Column(name = "overtime_rate", precision = 12, scale = 2)
     private BigDecimal overtimeRate;
-    
-    // Allowances
-    private BigDecimal housingAllowance;
-    
-    private BigDecimal transportAllowance;
-    
-    private BigDecimal mealAllowance;
-    
-    private BigDecimal performanceBonus;
-    
-    private BigDecimal otherAllowances;
-    
+
+    @Column(name = "total_allowances", precision = 12, scale = 2)
     private BigDecimal totalAllowances;
-    
-    // Deductions
-    private BigDecimal incomeTax;
-    
-    private BigDecimal socialSecurityTax;
-    
-    private BigDecimal healthInsurance;
-    
-    private BigDecimal pensionContribution;
-    
-    private BigDecimal loanDeduction;
-    
-    private BigDecimal advanceDeduction;
-    
-    private BigDecimal otherDeductions;
-    
+
+    @Column(name = "total_deductions", precision = 12, scale = 2)
     private BigDecimal totalDeductions;
-    
-    // Calculated Amounts
-    private BigDecimal grossSalary; // baseSalary + totalAllowances
-    
-    private BigDecimal netSalary; // grossSalary - totalDeductions
-    
-    private BigDecimal employerContributions; // Employer's social security, etc.
-    
-    private BigDecimal totalCost; // netSalary + employerContributions
-    
-    // Additional Information
+
+    @Column(name = "gross_salary", precision = 12, scale = 2)
+    private BigDecimal grossSalary;
+
+    @Column(name = "net_salary", precision = 12, scale = 2)
+    private BigDecimal netSalary;
+
+    @Column(name = "employer_contributions", precision = 12, scale = 2)
+    private BigDecimal employerContributions;
+
+    @Column(name = "total_cost", precision = 12, scale = 2)
+    private BigDecimal totalCost;
+
+    @Column(name = "currency", length = 10)
     private String currency;
-    
-    private String paymentMethod; // BANK_TRANSFER, CASH, CHECK
-    
-    private String bankAccount;
-    
-    private String bankName;
-    
-    @Indexed
-    private String status; // DRAFT, CALCULATED, APPROVED, PAID, CANCELLED
-    
+
+    @Column(name = "payment_method", length = 20)
+    private String paymentMethod;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "pay_date")
     private LocalDate payDate;
-    
-    private String paymentReference;
-    
+
+    @Lob
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
-    
-    // Audit Information
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    private LocalDateTime calculatedAt;
-    
-    private Long calculatedBy;
-    
-    private LocalDateTime approvedAt;
-    
-    private Long approvedBy;
-    
-    private LocalDateTime paidAt;
-    
-    private Long paidBy;
-    
-    // Additional salary components (stored as JSON)
-    private Map<String, BigDecimal> customAllowances;
-    
-    private Map<String, BigDecimal> customDeductions;
-    
-    // Transient fields for calculations
-    private transient BigDecimal taxableIncome;
-    private transient BigDecimal taxRate;
-    private transient Integer workingDays;
-    private transient Integer actualWorkingDays;
+
+    @Lob
+    @Column(name = "calculation_details", columnDefinition = "TEXT")
+    private String calculationDetails; // JSON string for all components
 }
 ```
-
 ### PayrollPeriod Entity
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "payroll_periods", indexes = {
+    @Index(name = "idx_payrollperiod_start_end", columnList = "start_date, end_date"),
+    @Index(name = "idx_payrollperiod_status", columnList = "status")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_periods")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollPeriod {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String name; // e.g., "January 2024", "Q1 2024"
-    
-    @Indexed
-    private String type; // MONTHLY, QUARTERLY, YEARLY, WEEKLY, BI_WEEKLY
-    
-    @Indexed
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "type", nullable = false, length = 20)
+    private String type;
+
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
-    
-    @Indexed
+
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
-    
-    private LocalDate payDate; // When salaries should be paid
-    
-    private Integer workingDays; // Number of working days in period
-    
-    @Indexed
-    private String status; // OPEN, PROCESSING, CALCULATED, APPROVED, PAID, CLOSED
-    
+
+    @Column(name = "pay_date", nullable = false)
+    private LocalDate payDate;
+
+    @Column(name = "working_days")
+    private Integer workingDays;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "description", length = 500)
     private String description;
-    
-    private boolean isActive;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    private LocalDateTime closedAt;
-    
-    private Long closedBy;
-    
-    // Statistics (calculated fields)
-    private transient Long totalEmployees;
-    private transient Long processedEmployees;
-    private transient java.math.BigDecimal totalGrossSalary;
-    private transient java.math.BigDecimal totalNetSalary;
-    private transient java.math.BigDecimal totalDeductions;
 }
 ```
 
@@ -265,71 +253,63 @@ public class PayrollPeriod {
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Data
+@Entity
+@Table(name = "salary_components", indexes = {
+    @Index(name = "idx_salarycomponent_code", columnList = "code", unique = true),
+    @Index(name = "idx_salarycomponent_type", columnList = "type")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("salary_components")
+@EntityListeners(AuditingEntityListener.class)
 public class SalaryComponent {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String code; // Unique component code
-    
-    @Indexed
-    private String name; // Component name
-    
-    @Indexed
-    private String type; // ALLOWANCE, DEDUCTION, TAX
-    
-    @Indexed
-    private String category; // BASIC, HOUSING, TRANSPORT, INCOME_TAX, etc.
-    
-    private String description;
-    
-    @Indexed
-    private String calculationType; // FIXED, PERCENTAGE, FORMULA
-    
-    private BigDecimal fixedAmount; // For FIXED calculation type
-    
-    private BigDecimal percentage; // For PERCENTAGE calculation type
-    
-    private String formula; // For FORMULA calculation type
-    
-    private BigDecimal minAmount; // Minimum amount for this component
-    
-    private BigDecimal maxAmount; // Maximum amount for this component
-    
-    private boolean isTaxable; // Whether this component is taxable
-    
-    private boolean isMandatory; // Whether this component is mandatory
-    
-    private boolean isActive;
-    
-    private Integer sortOrder; // Display order
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
-    private Long createdBy;
-    
-    private Long updatedBy;
-    
-    // Applicability rules (stored as JSON)
-    private String applicabilityRules; // JSON rules for when this component applies
+
+    @Column(name = "code", nullable = false, unique = true, length = 50)
+    private String code;
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "type", nullable = false, length = 20)
+    private String type; // ALLOWANCE, DEDUCTION
+
+    @Column(name = "calculation_type", nullable = false, length = 20)
+    private String calculationType; // FIXED, PERCENTAGE
+
+    @Column(name = "value", precision = 12, scale = 2)
+    private BigDecimal value; // Amount for FIXED, percentage for PERCENTAGE
+
+    @Column(name = "is_taxable", nullable = false)
+    private boolean isTaxable = false;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }
 ```
 
@@ -337,48 +317,57 @@ public class SalaryComponent {
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Data
+@Entity
+@Table(name = "payroll_audits", indexes = {
+    @Index(name = "idx_payrollaudit_ledger_id", columnList = "payroll_ledger_id"),
+    @Index(name = "idx_payrollaudit_performed_by", columnList = "performed_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_audits")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollAudit {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+
+    @Column(name = "payroll_ledger_id", nullable = false)
     private Long payrollLedgerId;
-    
-    @Indexed
-    private String action; // CREATE, UPDATE, CALCULATE, APPROVE, PAY, CANCEL
-    
-    private String oldValues; // JSON of old values
-    
-    private String newValues; // JSON of new values
-    
-    private String reason; // Reason for the change
-    
-    @Indexed
+
+    @Column(name = "action", nullable = false, length = 50)
+    private String action;
+
+    @Lob
+    @Column(name = "details", columnDefinition = "TEXT")
+    private String details; // JSON string of changes
+
+    @Column(name = "reason", length = 500)
+    private String reason;
+
+    @Column(name = "performed_by", nullable = false)
     private Long performedBy;
-    
-    private String performedByName; // Denormalized for quick access
-    
-    private LocalDateTime performedAt;
-    
+
+    @CreatedDate
+    @Column(name = "performed_at", nullable = false, updatable = false)
+    private Instant performedAt;
+
+    @Column(name = "ip_address", length = 45)
     private String ipAddress;
-    
-    private String userAgent;
 }
+```
 ```## Repos
 itory Interfaces
 
@@ -389,7 +378,7 @@ package com.example.demo.payroll.repository;
 import com.example.demo.payroll.entity.PayrollLedger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -397,7 +386,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PayrollLedgerRepository extends CrudRepository<PayrollLedger, Long> {
+public interface PayrollLedgerRepository extends JpaRepository<PayrollLedger, Long> {
     
     /**
      * Find payroll ledger by employee and payroll period
@@ -508,7 +497,7 @@ package com.example.demo.payroll.repository;
 import com.example.demo.payroll.entity.PayrollPeriod;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -516,7 +505,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PayrollPeriodRepository extends CrudRepository<PayrollPeriod, Long> {
+public interface PayrollPeriodRepository extends JpaRepository<PayrollPeriod, Long> {
     
     /**
      * Find payroll period by name

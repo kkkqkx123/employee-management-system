@@ -32,65 +32,92 @@ com.example.demo.department/
 ```java
 package com.example.demo.department.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("departments")
+@Entity
+@Table(name = "departments", indexes = {
+    @Index(name = "idx_department_name", columnList = "name"),
+    @Index(name = "idx_department_code", columnList = "code"),
+    @Index(name = "idx_department_parent_id", columnList = "parent_id"),
+    @Index(name = "idx_department_dep_path", columnList = "dep_path"),
+    @Index(name = "idx_department_enabled", columnList = "enabled"),
+    @Index(name = "idx_department_manager_id", columnList = "manager_id")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Department {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     
+    @Column(name = "code", unique = true, nullable = false, length = 20)
+    private String code;
+    
+    @Column(name = "description", length = 500)
     private String description;
     
-    @Indexed
-    private Long parentId;
-    
-    @Indexed
-    private String depPath; // Hierarchical path like "/1/2/3"
-    
-    @Indexed
-    private Boolean isParent;
-    
-    private Integer level; // Depth level in hierarchy (0 for root)
-    
-    private Integer sortOrder; // Display order within same level
-    
-    private String code; // Department code for identification
-    
+    @Column(name = "location", length = 255)
     private String location;
     
-    private Long managerId; // Employee ID of department manager
+    @Column(name = "parent_id")
+    private Long parentId;
     
-    private boolean enabled;
+    @Column(name = "dep_path", length = 500)
+    private String depPath;
     
+    @Column(name = "is_parent", nullable = false)
+    private Boolean isParent = false;
+    
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+    
+    @Column(name = "level")
+    private Integer level = 0;
+    
+    @Column(name = "sort_order")
+    private Integer sortOrder = 0;
+    
+    @Column(name = "manager_id")
+    private Long managerId;
+    
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "created_by")
     private Long createdBy;
     
+    @Column(name = "updated_by")
     private Long updatedBy;
     
-    // Transient fields for tree operations (not stored in Redis)
-    private transient List<Department> children;
-    private transient Department parent;
-    private transient Set<Long> employeeIds; // IDs of employees in this department
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    private Department parent;
+    
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    private Set<Department> children = new HashSet<>();
+    
+    // Employee relationship is defined in the Employee entity
+    
+    @Transient
+    private Long employeeCount;
 }
 ```
 
@@ -101,14 +128,14 @@ public class Department {
 package com.example.demo.department.repository;
 
 import com.example.demo.department.entity.Department;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DepartmentRepository extends CrudRepository<Department, Long> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     /**
      * Find department by name
@@ -211,9 +238,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -332,9 +359,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor
@@ -373,9 +400,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor

@@ -13,15 +13,11 @@ com.example.demo.security/
 ├── entity/
 │   ├── User.java
 │   ├── Role.java
-│   ├── Resource.java
-│   ├── UserRole.java
-│   └── RoleResource.java
+│   └── Resource.java
 ├── repository/
 │   ├── UserRepository.java
 │   ├── RoleRepository.java
-│   ├── ResourceRepository.java
-│   ├── UserRoleRepository.java
-│   └── RoleResourceRepository.java
+│   └── ResourceRepository.java
 ├── service/
 │   ├── UserService.java
 │   ├── RoleService.java
@@ -56,89 +52,202 @@ com.example.demo.security/
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("users")
-public class User {
-    @Id
-    private Long id;
-    
-    @Indexed
-    private String username;
-    
-    private String password;
-    
-    @Indexed
-    private String email;
-    
-    private String firstName;
-    
-    private String lastName;
-    
-    private boolean enabled;
-    
-    private boolean accountNonExpired;
-    
-    private boolean accountNonLocked;
-    
-    private boolean credentialsNonExpired;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
-    private LocalDateTime lastLoginAt;
-    
-    // Relationships handled separately in Redis
-    private Set<Long> roleIds;
-}
-```### Rol
-e Entity
+### User Entity
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("roles")
-public class Role {
+@Entity
+@Table(name = "users",
+    indexes = {
+        @Index(name = "idx_user_username", columnList = "username"),
+        @Index(name = "idx_user_email", columnList = "email"),
+        @Index(name = "idx_user_enabled", columnList = "enabled"),
+        @Index(name = "idx_user_account_locked", columnList = "account_locked")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_username", columnNames = "username"),
+        @UniqueConstraint(name = "uk_user_email", columnNames = "email")
+    }
+)
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "username", nullable = false, length = 50)
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password is required")
+    private String password;
+    
+    @Column(name = "email", nullable = false, length = 100)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+    
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+    
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+    
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+    
+    @Column(name = "last_login")
+    private Instant lastLogin;
+    
+    @Column(name = "login_attempts", nullable = false)
+    private Integer loginAttempts = 0;
+    
+    @Column(name = "account_locked", nullable = false)
+    private Boolean accountLocked = false;
+    
+    @Column(name = "account_locked_until")
+    private Instant accountLockedUntil;
+    
+    @Column(name = "password_expired", nullable = false)
+    private Boolean passwordExpired = false;
+    
+    @Column(name = "password_change_required", nullable = false)
+    private Boolean passwordChangeRequired = false;
+    
+    @Column(name = "password_changed_at")
+    private Instant passwordChangedAt;
+    
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+    
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+    
+    @Column(name = "created_by")
+    private Long createdBy;
+    
+    @Column(name = "updated_by")
+    private Long updatedBy;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"),
+        foreignKey = @ForeignKey(name = "fk_user_roles_user"),
+        inverseForeignKey = @ForeignKey(name = "fk_user_roles_role")
+    )
+    private Set<Role> roles = new HashSet<>();
+    
+    public boolean isAccountNonLocked() {
+        if (!accountLocked) return true;
+        if (accountLockedUntil != null && Instant.now().isAfter(accountLockedUntil)) {
+            accountLocked = false;
+            accountLockedUntil = null;
+            return true;
+        }
+        return false;
+    }
+    
+    public void incrementLoginAttempts() {
+        this.loginAttempts++;
+        if (this.loginAttempts >= 5) {
+            this.accountLocked = true;
+            this.accountLockedUntil = Instant.now().plus(Duration.ofMinutes(30));
+        }
+    }
+    
+    public void resetLoginAttempts() {
+        this.loginAttempts = 0;
+        this.accountLocked = false;
+        this.accountLockedUntil = null;
+        this.lastLogin = Instant.now();
+    }
+}
+```
+
+### Role Entity
+```java
+package com.example.demo.security.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "roles", indexes = {
+    @Index(name = "idx_role_name", columnList = "name"),
+    @Index(name = "idx_role_active", columnList = "active")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(name = "name", unique = true, nullable = false, length = 50)
     private String name;
     
+    @Column(name = "description", length = 255)
     private String description;
     
-    private boolean enabled;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Relationships handled separately in Redis
-    private Set<Long> resourceIds;
+    @Column(name = "created_by")
+    private Long createdBy;
+    
+    @Column(name = "updated_by")
+    private Long updatedBy;
+    
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "role_resources",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "resource_id")
+    )
+    private Set<Resource> resources = new HashSet<>();
 }
 ```
 
@@ -146,107 +255,66 @@ public class Role {
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("resources")
+@Entity
+@Table(name = "resources", indexes = {
+    @Index(name = "idx_resource_url", columnList = "url"),
+    @Index(name = "idx_resource_method", columnList = "method"),
+    @Index(name = "idx_resource_category", columnList = "category"),
+    @Index(name = "idx_resource_active", columnList = "active")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Resource {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     
+    @Column(name = "url", nullable = false, length = 255)
     private String url;
     
-    private String method; // GET, POST, PUT, DELETE
+    @Column(name = "method", nullable = false, length = 10)
+    private String method;
     
+    @Column(name = "description", length = 255)
     private String description;
     
-    private String category; // EMPLOYEE, DEPARTMENT, PAYROLL, etc.
+    @Column(name = "category", nullable = false, length = 50)
+    private String category;
     
-    private boolean enabled;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-}
-```
-
-### UserRole Entity (Junction Table)
-```java
-package com.example.demo.security.entity;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("user_roles")
-public class UserRole {
-    @Id
-    private String id; // Composite key: userId:roleId
     
-    @Indexed
-    private Long userId;
+    @Column(name = "created_by")
+    private Long createdBy;
     
-    @Indexed
-    private Long roleId;
+    @Column(name = "updated_by")
+    private Long updatedBy;
     
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;
-}
-```
-
-### RoleResource Entity (Junction Table)
-```java
-package com.example.demo.security.entity;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("role_resources")
-public class RoleResource {
-    @Id
-    private String id; // Composite key: roleId:resourceId
-    
-    @Indexed
-    private Long roleId;
-    
-    @Indexed
-    private Long resourceId;
-    
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;
-}
-```## Reposi
+    @ManyToMany(mappedBy = "resources", fetch = FetchType.LAZY)
+    private Set<Role> roles = new HashSet<>();
 tory Interfaces
 
 ### UserRepository
@@ -256,14 +324,14 @@ package com.example.demo.security.repository;
 import com.example.demo.security.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     
     Optional<User> findByUsername(String username);
     
@@ -289,14 +357,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
 package com.example.demo.security.repository;
 
 import com.example.demo.security.entity.Role;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface RoleRepository extends CrudRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     
     Optional<Role> findByName(String name);
     
@@ -313,14 +381,14 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
 package com.example.demo.security.repository;
 
 import com.example.demo.security.entity.Resource;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ResourceRepository extends CrudRepository<Resource, Long> {
+public interface ResourceRepository extends JpaRepository<Resource, Long> {
     
     Optional<Resource> findByNameAndMethod(String name, String method);
     
@@ -333,62 +401,6 @@ public interface ResourceRepository extends CrudRepository<Resource, Long> {
     boolean existsByNameAndMethod(String name, String method);
 }
 ```
-
-### UserRoleRepository
-```java
-package com.example.demo.security.repository;
-
-import com.example.demo.security.entity.UserRole;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-@Repository
-public interface UserRoleRepository extends CrudRepository<UserRole, String> {
-    
-    List<UserRole> findByUserId(Long userId);
-    
-    List<UserRole> findByRoleId(Long roleId);
-    
-    boolean existsByUserIdAndRoleId(Long userId, Long roleId);
-    
-    void deleteByUserIdAndRoleId(Long userId, Long roleId);
-    
-    void deleteByUserId(Long userId);
-    
-    void deleteByRoleId(Long roleId);
-}
-```
-
-### RoleResourceRepository
-```java
-package com.example.demo.security.repository;
-
-import com.example.demo.security.entity.RoleResource;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-@Repository
-public interface RoleResourceRepository extends CrudRepository<RoleResource, String> {
-    
-    List<RoleResource> findByRoleId(Long roleId);
-    
-    List<RoleResource> findByResourceId(Long resourceId);
-    
-    boolean existsByRoleIdAndResourceId(Long roleId, Long resourceId);
-    
-    void deleteByRoleIdAndResourceId(Long roleId, Long resourceId);
-    
-    void deleteByRoleId(Long roleId);
-    
-    void deleteByResourceId(Long resourceId);
-}
-```## DTO Cl
-asses
-
 ### LoginRequest
 ```java
 package com.example.demo.security.dto;
@@ -397,8 +409,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -458,9 +470,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 

@@ -44,8 +44,7 @@ com.example.demo.communication/
 │       ├── ChatWebSocketHandler.java
 │       └── WebSocketConfig.java
 ├── notification/
-│   ├── entity/
-│   │   ├── MessageContent.java
+├── entity/
 │   │   └── SystemMessage.java
 │   ├── service/
 │   │   ├── NotificationService.java
@@ -74,53 +73,78 @@ com.example.demo.communication/
 ```java
 package com.example.demo.communication.email.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "email_templates", indexes = {
+    @Index(name = "idx_emailtemplate_code", columnList = "code", unique = true),
+    @Index(name = "idx_emailtemplate_category", columnList = "category")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("email_templates")
+@EntityListeners(AuditingEntityListener.class)
 public class EmailTemplate {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name; // Template name for identification
     
-    @Indexed
+    @Column(name = "code", nullable = false, unique = true, length = 50)
     private String code; // Unique template code
     
+    @Column(name = "subject", nullable = false, length = 255)
     private String subject; // Email subject template
     
+    @Lob
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content; // Email content template (HTML/Text)
     
+    @Column(name = "template_type", nullable = false, length = 20)
     private String templateType; // HTML, TEXT, FREEMARKER
     
+    @Column(name = "category", length = 50)
     private String category; // WELCOME, NOTIFICATION, REMINDER, etc.
     
+    @Column(name = "description", length = 500)
     private String description;
     
+    @Lob
+    @Column(name = "variables", columnDefinition = "TEXT")
     private String variables; // JSON string of available template variables
     
-    private boolean isDefault; // Whether this is a default system template
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
     
-    private boolean enabled;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "created_by")
     private Long createdBy;
     
+    @Column(name = "updated_by")
     private Long updatedBy;
 }
 ```
@@ -129,55 +153,77 @@ public class EmailTemplate {
 ```java
 package com.example.demo.communication.email.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "email_logs", indexes = {
+    @Index(name = "idx_emaillog_to_email", columnList = "to_email"),
+    @Index(name = "idx_emaillog_status", columnList = "status"),
+    @Index(name = "idx_emaillog_template_code", columnList = "template_code"),
+    @Index(name = "idx_emaillog_sent_by", columnList = "sent_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("email_logs")
+@EntityListeners(AuditingEntityListener.class)
 public class EmailLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "to_email", nullable = false)
     private String toEmail;
     
+    @Column(name = "cc_emails", length = 1000)
     private String ccEmails; // Comma-separated CC emails
     
+    @Column(name = "bcc_emails", length = 1000)
     private String bccEmails; // Comma-separated BCC emails
     
+    @Column(name = "subject", nullable = false)
     private String subject;
     
+    @Lob
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
     
-    @Indexed
+    @Column(name = "template_code", length = 50)
     private String templateCode; // Template used (if any)
     
-    @Indexed
+    @Column(name = "status", nullable = false, length = 20)
     private String status; // PENDING, SENT, FAILED, BOUNCED
     
+    @Column(name = "error_message", length = 2000)
     private String errorMessage; // Error details if failed
     
-    private Integer retryCount;
+    @Column(name = "retry_count", nullable = false)
+    private Integer retryCount = 0;
     
+    @Column(name = "sent_at")
     private LocalDateTime sentAt;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
-    @Indexed
+    @Column(name = "sent_by")
     private Long sentBy; // User who sent the email
     
+    @Column(name = "message_id", length = 255)
     private String messageId; // Email provider message ID
     
+    @Column(name = "priority", length = 20)
     private String priority; // HIGH, NORMAL, LOW
 }
 ```
@@ -350,56 +396,81 @@ public class ChatMessage {
 ```java
 package com.example.demo.communication.chat.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Entity
+@Table(name = "chat_rooms", indexes = {
+    @Index(name = "idx_chatroom_type", columnList = "type"),
+    @Index(name = "idx_chatroom_created_by", columnList = "created_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("chat_rooms")
+@EntityListeners(AuditingEntityListener.class)
 public class ChatRoom {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", length = 100)
     private String name; // Room name (for group chats)
     
-    @Indexed
+    @Column(name = "type", nullable = false, length = 20)
     private String type; // DIRECT, GROUP, CHANNEL
     
+    @Column(name = "description", length = 500)
     private String description;
     
+    @Column(name = "avatar_url", length = 255)
     private String avatarUrl;
     
-    @Indexed
+    @Column(name = "created_by", nullable = false)
     private Long createdBy; // User who created the room
     
-    private boolean isPrivate; // Whether room is private
+    @Column(name = "is_private", nullable = false)
+    private boolean isPrivate = false;
     
-    private boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "last_message_at")
     private LocalDateTime lastMessageAt;
     
-    private Long lastMessageId;
+    @Column(name = "last_message_id")
+    private Long lastMessageId; // Stored in Redis, synced periodically
     
-    // Transient fields
-    private transient Set<Long> participantIds;
-    private transient Long unreadCount; // For current user
-    private transient String lastMessageContent;
-    private transient String lastMessageSender;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants = new HashSet<>();
+
+    // Transient fields for DTO mapping
+    @Transient
+    private Long unreadCount;
+    @Transient
+    private String lastMessageContent;
+    @Transient
+    private String lastMessageSender;
 }
 ```
 
@@ -407,50 +478,64 @@ public class ChatRoom {
 ```java
 package com.example.demo.communication.chat.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "chat_participants", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"room_id", "user_id"}, name = "uk_participant_room_user")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("chat_participants")
 public class ChatParticipant {
     @Id
-    private String id; // Composite key: roomId:userId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-    @Indexed
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
     
-    @Indexed
+    @Column(name = "user_id", nullable = false)
     private Long userId;
     
-    @Indexed
+    @Column(name = "role", nullable = false, length = 20)
     private String role; // OWNER, ADMIN, MEMBER
     
+    @Column(name = "joined_at", nullable = false)
     private LocalDateTime joinedAt;
     
-    private LocalDateTime lastReadAt; // Last time user read messages in this room
+    @Column(name = "last_read_at")
+    private LocalDateTime lastReadAt;
     
-    private Long lastReadMessageId; // Last message ID read by user
+    @Column(name = "last_read_message_id")
+    private Long lastReadMessageId; // Stored in Redis, synced periodically
     
-    private boolean isMuted; // Whether user has muted this room
+    @Column(name = "is_muted", nullable = false)
+    private boolean isMuted = false;
     
-    private boolean isActive; // Whether user is still in the room
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
     
-    private LocalDateTime leftAt; // When user left the room (if applicable)
+    @Column(name = "left_at")
+    private LocalDateTime leftAt;
     
-    // Transient fields
-    private transient String userName;
-    private transient String userAvatar;
-    private transient boolean isOnline;
+    // Transient fields for DTO mapping
+    @Transient
+    private String userName;
+    @Transient
+    private String userAvatar;
+    @Transient
+    private boolean isOnline;
 }
 ```
 

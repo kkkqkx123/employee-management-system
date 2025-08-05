@@ -29,91 +29,182 @@ com.example.demo.position/
 
 ## Entity Class
 
+### Enums
+
+#### PositionCategory Enum
+```java
+package com.example.demo.position.enums;
+
+public enum PositionCategory {
+    TECHNICAL,
+    MANAGEMENT,
+    ADMINISTRATIVE,
+    SALES,
+    HR,
+    FINANCE,
+    MARKETING,
+    OPERATIONS,
+    SUPPORT,
+    OTHER
+}
+```
+
+#### PositionLevel Enum
+```java
+package com.example.demo.position.enums;
+
+public enum PositionLevel {
+    JUNIOR,
+    MID,
+    SENIOR,
+    LEAD,
+    MANAGER,
+    DIRECTOR,
+    VP,
+    EXECUTIVE
+}
+```
+
+#### EmploymentType Enum
+```java
+package com.example.demo.position.enums;
+
+public enum EmploymentType {
+    FULL_TIME,
+    PART_TIME,
+    CONTRACT,
+    INTERNSHIP,
+    TEMPORARY
+}
+```
 ### Position Entity
 ```java
 package com.example.demo.position.entity;
 
+import com.example.demo.department.entity.Department;
+import com.example.demo.employee.entity.Employee;
+import com.example.demo.position.enums.EmploymentType;
+import com.example.demo.position.enums.PositionCategory;
+import com.example.demo.position.enums.PositionLevel;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
+@Entity
+@Table(name = "positions", indexes = {
+    @Index(name = "idx_position_job_title", columnList = "job_title"),
+    @Index(name = "idx_position_code", columnList = "code"),
+    @Index(name = "idx_position_department_id", columnList = "department_id"),
+    @Index(name = "idx_position_level", columnList = "level"),
+    @Index(name = "idx_position_enabled", columnList = "enabled"),
+    @Index(name = "idx_position_category", columnList = "category")
+})
+@EntityListeners(AuditingEntityListener.class)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("positions")
 public class Position {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String jobTitle; // Job title (e.g., "Software Engineer")
-    
-    @Indexed
-    private String professionalTitle; // Professional title (e.g., "Senior", "Lead", "Manager")
-    
-    private String code; // Position code for identification
-    
+
+    @NotBlank(message = "Job title is required")
+    @Column(name = "job_title", nullable = false, length = 100)
+    private String jobTitle;
+
+    @Column(name = "professional_title", length = 100)
+    private String professionalTitle;
+
+    @NotBlank(message = "Position code is required")
+    @Column(name = "code", unique = true, nullable = false, length = 20)
+    private String code;
+
+    @Column(name = "description", length = 1000)
     private String description;
-    
-    @Indexed
-    private Long departmentId; // Department this position belongs to
-    
-    @Indexed
-    private String level; // Position level (ENTRY, JUNIOR, SENIOR, LEAD, MANAGER, DIRECTOR, VP, C_LEVEL)
-    
-    @Indexed
-    private String category; // Position category (TECHNICAL, MANAGEMENT, SALES, HR, FINANCE, etc.)
-    
-    private BigDecimal minSalary; // Minimum salary for this position
-    
-    private BigDecimal maxSalary; // Maximum salary for this position
-    
-    private String salaryGrade; // Salary grade/band
-    
-    private String requiredSkills; // Comma-separated required skills
-    
-    private String preferredSkills; // Comma-separated preferred skills
-    
-    private String requiredEducation; // Required education level
-    
-    private String requiredExperience; // Required years of experience
-    
-    private String responsibilities; // Job responsibilities
-    
-    private String requirements; // Job requirements
-    
-    private String benefits; // Position benefits
-    
-    private String workLocation; // OFFICE, REMOTE, HYBRID
-    
-    private String employmentType; // FULL_TIME, PART_TIME, CONTRACT, INTERN
-    
-    private boolean isManagerial; // Whether this is a managerial position
-    
-    private boolean isActive; // Whether position is currently active/available
-    
-    private boolean enabled;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @Column(name = "requirements", length = 2000)
+    private String requirements;
+
+    @Column(name = "responsibilities", length = 2000)
+    private String responsibilities;
+
+    @NotNull(message = "Position category is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false, length = 20)
+    private PositionCategory category = PositionCategory.TECHNICAL;
+
+    @Column(name = "salary_grade", length = 10)
+    private String salaryGrade;
+
+    @NotNull(message = "Department is required")
+    @Column(name = "department_id", nullable = false)
+    private Long departmentId;
+
+    @NotNull(message = "Position level is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level", nullable = false, length = 20)
+    private PositionLevel level = PositionLevel.JUNIOR;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+
+    @Column(name = "min_salary", precision = 12, scale = 2)
+    private BigDecimal minSalary;
+
+    @Column(name = "max_salary", precision = 12, scale = 2)
+    private BigDecimal maxSalary;
+
+    @Column(name = "required_skills", length = 1000)
+    private String requiredSkills;
+
+    @Column(name = "required_education", length = 500)
+    private String requiredEducation;
+
+    @Column(name = "required_experience")
+    private Integer requiredExperience;
+
+    @Column(name = "benefits", length = 1000)
+    private String benefits;
+
+    @Column(name = "work_location", length = 255)
+    private String workLocation;
+
+    @NotNull(message = "Employment type is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "employment_type", nullable = false, length = 20)
+    private EmploymentType employmentType = EmploymentType.FULL_TIME;
+
+    @Column(name = "is_managerial", nullable = false)
+    private Boolean isManagerial = false;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    // Transient fields for display purposes (not stored in Redis)
-    private transient String departmentName;
-    private transient Long employeeCount; // Number of employees in this position
-    private transient String fullTitle; // jobTitle + professionalTitle
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_position_department"))
+    private Department department;
+
+    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
+    private Set<Employee> employees = new HashSet<>();
 }
 ```
 
@@ -124,170 +215,87 @@ public class Position {
 package com.example.demo.position.repository;
 
 import com.example.demo.position.entity.Position;
+import com.example.demo.position.enums.PositionCategory;
+import com.example.demo.position.enums.PositionLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PositionRepository extends CrudRepository<Position, Long> {
-    
+public interface PositionRepository extends JpaRepository<Position, Long>, JpaSpecificationExecutor<Position> {
+
     /**
-     * Find position by job title and professional title
-     * @param jobTitle Job title
-     * @param professionalTitle Professional title
-     * @return Optional position
-     */
-    Optional<Position> findByJobTitleAndProfessionalTitle(String jobTitle, String professionalTitle);
-    
-    /**
-     * Find position by code
-     * @param code Position code
-     * @return Optional position
+     * Find a position by its unique code.
+     *
+     * @param code The position code.
+     * @return An Optional containing the found position or empty if not found.
      */
     Optional<Position> findByCode(String code);
-    
+
     /**
-     * Find positions by department ID
-     * @param departmentId Department ID
-     * @return List of positions
-     */
-    List<Position> findByDepartmentIdOrderByJobTitle(Long departmentId);
-    
-    /**
-     * Find positions by department ID with pagination
-     * @param departmentId Department ID
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByDepartmentId(Long departmentId, Pageable pageable);
-    
-    /**
-     * Find positions by level
-     * @param level Position level
-     * @return List of positions
-     */
-    List<Position> findByLevelOrderByJobTitle(String level);
-    
-    /**
-     * Find positions by category
-     * @param category Position category
-     * @return List of positions
-     */
-    List<Position> findByCategoryOrderByJobTitle(String category);
-    
-    /**
-     * Find positions by job title containing (case insensitive)
-     * @param jobTitle Job title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByJobTitleContainingIgnoreCase(String jobTitle, Pageable pageable);
-    
-    /**
-     * Find positions by professional title containing (case insensitive)
-     * @param professionalTitle Professional title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByProfessionalTitleContainingIgnoreCase(String professionalTitle, Pageable pageable);
-    
-    /**
-     * Find positions by job title or professional title containing (case insensitive)
-     * @param jobTitle Job title search term
-     * @param professionalTitle Professional title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByJobTitleContainingIgnoreCaseOrProfessionalTitleContainingIgnoreCase(
-        String jobTitle, String professionalTitle, Pageable pageable);
-    
-    /**
-     * Find enabled positions
-     * @param pageable Pagination parameters
-     * @return Page of enabled positions
-     */
-    Page<Position> findByEnabledTrue(Pageable pageable);
-    
-    /**
-     * Find active positions
-     * @param pageable Pagination parameters
-     * @return Page of active positions
-     */
-    Page<Position> findByIsActiveTrue(Pageable pageable);
-    
-    /**
-     * Find managerial positions
-     * @param pageable Pagination parameters
-     * @return Page of managerial positions
-     */
-    Page<Position> findByIsManagerialTrue(Pageable pageable);
-    
-    /**
-     * Find positions by employment type
-     * @param employmentType Employment type
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByEmploymentType(String employmentType, Pageable pageable);
-    
-    /**
-     * Find positions by work location
-     * @param workLocation Work location
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByWorkLocation(String workLocation, Pageable pageable);
-    
-    /**
-     * Check if position exists by job title and professional title
-     * @param jobTitle Job title
-     * @param professionalTitle Professional title
-     * @return true if exists
-     */
-    boolean existsByJobTitleAndProfessionalTitle(String jobTitle, String professionalTitle);
-    
-    /**
-     * Check if position code exists
-     * @param code Position code
-     * @return true if exists
+     * Check if a position with the given code exists.
+     *
+     * @param code The position code.
+     * @return true if a position with the code exists, false otherwise.
      */
     boolean existsByCode(String code);
-    
+
     /**
-     * Count positions by department ID
-     * @param departmentId Department ID
-     * @return Count of positions
+     * Find all positions within a specific department.
+     *
+     * @param departmentId The ID of the department.
+     * @return A list of positions in the specified department.
      */
-    long countByDepartmentId(Long departmentId);
-    
+    List<Position> findByDepartmentId(Long departmentId);
+
     /**
-     * Count positions by level
-     * @param level Position level
-     * @return Count of positions
+     * Find all positions matching a specific level.
+     *
+     * @param level The position level.
+     * @return A list of positions with the specified level.
      */
-    long countByLevel(String level);
-    
+    List<Position> findByLevel(PositionLevel level);
+
     /**
-     * Count positions by category
-     * @param category Position category
-     * @return Count of positions
+     * Find all positions belonging to a specific category.
+     *
+     * @param category The position category.
+     * @return A list of positions in the specified category.
      */
-    long countByCategory(String category);
-    
+    List<Position> findByCategory(PositionCategory category);
+
     /**
-     * Find positions by multiple criteria (for advanced search)
-     * @param departmentId Department ID (optional)
-     * @param level Position level (optional)
-     * @param category Position category (optional)
-     * @param isManagerial Managerial flag (optional)
-     * @param pageable Pagination parameters
-     * @return Page of positions matching criteria
+     * Find all enabled positions with pagination.
+     *
+     * @param pageable Pagination information.
+     * @return A Page of enabled positions.
      */
-    Page<Position> findByDepartmentIdAndLevelAndCategoryAndIsManagerial(
-        Long departmentId, String level, String category, Boolean isManagerial, Pageable pageable);
+    Page<Position> findByEnabledTrue(Pageable pageable);
+
+    /**
+     * Search for positions by job title.
+     *
+     * @param jobTitle The job title to search for (case-insensitive).
+     * @param pageable Pagination information.
+     * @return A Page of positions matching the job title.
+     */
+    Page<Position> findByJobTitleContainingIgnoreCase(String jobTitle, Pageable pageable);
+
+    /**
+     * Custom query to find positions by department and filter by job title.
+     *
+     * @param departmentId The ID of the department.
+     * @param jobTitle     A part of the job title to search for.
+     * @return A list of matching positions.
+     */
+    @Query("SELECT p FROM Position p WHERE p.departmentId = :departmentId AND lower(p.jobTitle) LIKE lower(concat('%', :jobTitle, '%'))")
+    List<Position> findByDepartmentAndJobTitle(@Param("departmentId") Long departmentId, @Param("jobTitle") String jobTitle);
 }
 ```
