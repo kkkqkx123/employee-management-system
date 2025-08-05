@@ -231,11 +231,11 @@ public class Role {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -298,11 +298,11 @@ public class Resource {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -374,11 +374,11 @@ public class Department {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -882,19 +882,22 @@ public class EmailTemplate {
     @Column(name = "category", length = 50)
     private String category;       // Template category
     
-    @Column(name = "active", nullable = false)
-    private Boolean active = true; // Template status
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+    
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
     
     @Column(name = "variables", columnDefinition = "TEXT")
     private String variables;      // JSON array of template variables
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;        // User who created template
@@ -953,7 +956,7 @@ public class EmailLog {
     private EmailStatus status = EmailStatus.PENDING; // PENDING, SENT, FAILED, BOUNCED
     
     @Column(name = "sent_at")
-    private LocalDateTime sentAt;  // When email was sent
+    private Instant sentAt;  // When email was sent
     
     @Column(name = "error_message", length = 1000)
     private String errorMessage;   // Error details if failed
@@ -966,11 +969,11 @@ public class EmailLog {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     // Relationship with template (optional, as template might be deleted)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -990,122 +993,195 @@ public enum EmailStatus {
 }
 ```
 
-#### Chat Message Entity (Redis-based for real-time performance)
+#### Chat Message Entity
 ```java
-@RedisHash("chat_messages")
+@Entity
+@Table(name = "chat_messages", indexes = {
+    @Index(name = "idx_chatmessage_room_id", columnList = "room_id"),
+    @Index(name = "idx_chatmessage_sender_id", columnList = "sender_id"),
+    @Index(name = "idx_chatmessage_created_at", columnList = "created_at")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class ChatMessage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+  
+    @Column(name = "room_id", nullable = false)
     private Long roomId;           // Chat room ID
-    
-    @Indexed
+  
+    @Column(name = "sender_id", nullable = false)
     private Long senderId;         // Message sender
-    
+  
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;        // Message content
-    
-    @Indexed
+  
+    @Column(name = "message_type", length = 20)
     private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
-    
-    @Indexed
-    private LocalDateTime createdAt; // Message timestamp (consistent naming)
-    
-    private Boolean isEdited = false; // Message was edited (consistent naming)
-    private LocalDateTime editedAt; // Edit timestamp
-    
+  
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // Time-zone aware timestamp
+  
+    @Column(name = "is_edited", nullable = false)
+    private Boolean isEdited = false;
+  
+    @Column(name = "edited_at")
+    private Instant editedAt;      // Time-zone aware timestamp
+  
+    @Column(name = "reply_to_id")
     private Long replyToId;        // Reply to message ID
-    private String attachmentUrl;  // Attachment URL if any
-    private String attachmentType; // Attachment MIME type
-    private Long attachmentSize;   // Attachment size in bytes
-    
-    @Indexed
-    private Boolean isDeleted = false; // Soft delete flag (consistent naming)
-    
-    private LocalDateTime deletedAt; // Deletion timestamp
-    
-    // Message metadata
-    private String metadata;       // Additional message metadata (JSON)
-    
-    // Read receipts (stored as JSON array of user IDs and timestamps)
-    private String readReceipts;   // JSON array of read receipts
+  
+    @Column(name = "attachment_url", length = 500)
+    private String attachmentUrl;
+  
+    @Column(name = "attachment_type", length = 100)
+    private String attachmentType;
+  
+    @Column(name = "attachment_size")
+    private Long attachmentSize;
+  
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+  
+    @Column(name = "deleted_at")
+    private Instant deletedAt;     // Time-zone aware timestamp
+  
+    @Column(name = "metadata", columnDefinition = "TEXT")
+    private String metadata;       // JSON
+  
+    @Column(name = "read_receipts", columnDefinition = "TEXT")
+    private String readReceipts;   // JSON
+  
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", insertable = false, updatable = false)
+    private ChatRoom chatRoom;
 }
 ```
 
-**Note:** Chat messages remain in Redis for optimal real-time performance. Historical messages can be archived to PostgreSQL periodically.
+**Note:** Chat messages are stored in PostgreSQL to ensure data integrity and support complex queries.
 
 #### Chat Room Entity
 ```java
-@RedisHash("chat_rooms")
+@Entity
+@Table(name = "chat_rooms", indexes = {
+    @Index(name = "idx_chatroom_name", columnList = "name"),
+    @Index(name = "idx_chatroom_type", columnList = "type"),
+    @Index(name = "idx_chatroom_created_by", columnList = "created_by")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class ChatRoom {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+  
+    @Column(name = "name", length = 100)
     private String name;           // Room name
-    
-    @Indexed
-    private String type;           // DIRECT, GROUP, CHANNEL
-    
-    private String description;    // Room description
-    
-    @Indexed
-    private Long createdBy;        // Room creator
-    
-    @Indexed
-    private Boolean active;        // Room status
-    
+  
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false, length = 20)
+    private ChatRoomType type;     // DIRECT, GROUP, CHANNEL
+  
+    @Column(name = "description", length = 500)
+    private String description;
+  
+    @Column(name = "created_by")
+    private Long createdBy;
+  
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+  
     @CreatedDate
-    private LocalDateTime createdAt;
-    
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // Time-zone aware timestamp
+  
     @LastModifiedDate
-    private LocalDateTime updatedAt;
-    
-    private LocalDateTime lastMessageAt; // Last message timestamp
-    
-    // Participant user IDs
-    private Set<Long> participantIds;
-    
-    // Room settings
-    private Boolean isPrivate;
+    @Column(name = "updated_at")
+    private Instant updatedAt;     // Time-zone aware timestamp
+  
+    @Column(name = "last_message_at")
+    private Instant lastMessageAt; // Time-zone aware timestamp
+  
+    @Column(name = "is_private", nullable = false)
+    private Boolean isPrivate = false;
+  
+    @Column(name = "max_participants")
     private Integer maxParticipants;
+  
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatMessage> messages = new HashSet<>();
+  
+    @ManyToMany
+    @JoinTable(
+        name = "chat_room_participants",
+        joinColumns = @JoinColumn(name = "room_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> participants = new HashSet<>();
+}
+
+public enum ChatRoomType {
+    DIRECT,
+    GROUP,
+    CHANNEL
 }
 ```
 
 #### Notification Entity
 ```java
-@RedisHash("notifications")
+@Entity
+@Table(name = "notifications", indexes = {
+    @Index(name = "idx_notification_user_id", columnList = "user_id"),
+    @Index(name = "idx_notification_type", columnList = "type"),
+    @Index(name = "idx_notification_read_status", columnList = "read_status")
+})
+@EntityListeners(AuditingEntityListener.class)
 public class Notification {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+  
+    @Column(name = "user_id", nullable = false)
     private Long userId;           // Target user
-    
-    @Indexed
+  
+    @Column(name = "type", length = 50)
     private String type;           // SYSTEM, EMAIL, CHAT, TASK, etc.
-    
-    private String title;          // Notification title
-    private String content;        // Notification content
+  
+    @Column(name = "title", length = 255)
+    private String title;
+  
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
+  
+    @Column(name = "data", columnDefinition = "TEXT")
     private String data;           // Additional JSON data
-    
-    @Indexed
-    private Boolean read;          // Read status
-    
-    @Indexed
+  
+    @Column(name = "read_status", nullable = false)
+    private Boolean read = false;
+  
+    @Column(name = "priority", length = 20)
     private String priority;       // LOW, MEDIUM, HIGH, URGENT
-    
-    @Indexed
-    private LocalDateTime createdAt; // Creation timestamp
-    
-    private LocalDateTime readAt;  // Read timestamp
-    private LocalDateTime expiresAt; // Expiration timestamp
-    
-    private String actionUrl;      // Action URL if clickable
-    private Long relatedEntityId;  // Related entity ID
-    private String relatedEntityType; // Related entity type
+  
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // Time-zone aware timestamp
+  
+    @Column(name = "read_at")
+    private Instant readAt;        // Time-zone aware timestamp
+  
+    @Column(name = "expires_at")
+    private Instant expiresAt;     // Time-zone aware timestamp
+  
+    @Column(name = "action_url", length = 500)
+    private String actionUrl;
+  
+    @Column(name = "related_entity_id")
+    private Long relatedEntityId;
+  
+    @Column(name = "related_entity_type", length = 50)
+    private String relatedEntityType;
 }
-```### 
+```
 ### 6. Payroll Management Entities
 
 ### PayrollLedger Entity
@@ -1438,52 +1514,9 @@ public class PayrollAudit {
 
 ### Many-to-Many Relationships
 
-#### User-Role Relationship
-```java
-@RedisHash("user_roles")
-public class UserRole {
-    @Id
-    private String id;             // Composite key: userId:roleId
-    
-    @Indexed
-    private Long userId;
-    
-    @Indexed
-    private Long roleId;
-    
-    @Indexed
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;       // User who assigned role
-    private LocalDateTime expiresAt; // Role expiration (optional)
-    
-    @Indexed
-    private Boolean active;        // Assignment status
-}
-```
+Many-to-many relationships like `User-Role` and `Role-Resource` are managed directly via JPA's `@ManyToMany` and `@JoinTable` annotations within the `User` and `Role` entities. This ensures that the relationships are stored in PostgreSQL junction tables (`user_roles`, `role_resources`), maintaining full ACID compliance and referential integrity.
 
-#### Role-Resource Relationship
-```java
-@RedisHash("role_resources")
-public class RoleResource {
-    @Id
-    private String id;             // Composite key: roleId:resourceId
-    
-    @Indexed
-    private Long roleId;
-    
-    @Indexed
-    private Long resourceId;
-    
-    @Indexed
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;       // User who assigned permission
-    
-    @Indexed
-    private Boolean active;        // Permission status
-}
-```
+The previous design of storing these critical relationships in Redis (`@RedisHash`) was a severe design flaw and has been removed. The correct implementation is already defined in the `User` and `Role` entities.
 
 ## Caching Strategy
 

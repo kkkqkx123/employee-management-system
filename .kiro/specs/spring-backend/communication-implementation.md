@@ -83,7 +83,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "email_templates", indexes = {
@@ -135,11 +135,11 @@ public class EmailTemplate {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -162,7 +162,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "email_logs", indexes = {
@@ -211,11 +211,11 @@ public class EmailLog {
     private Integer retryCount = 0;
     
     @Column(name = "sent_at")
-    private LocalDateTime sentAt;
+    private Instant sentAt;
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @Column(name = "sent_by")
     private Long sentBy; // User who sent the email
@@ -406,7 +406,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -449,14 +449,14 @@ public class ChatRoom {
     
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     
     @Column(name = "last_message_at")
-    private LocalDateTime lastMessageAt;
+    private Instant lastMessageAt;
     
     @Column(name = "last_message_id")
     private Long lastMessageId; // Stored in Redis, synced periodically
@@ -485,7 +485,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "chat_participants", uniqueConstraints = {
@@ -512,10 +512,10 @@ public class ChatParticipant {
     private String role; // OWNER, ADMIN, MEMBER
     
     @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
+    private Instant joinedAt;
     
     @Column(name = "last_read_at")
-    private LocalDateTime lastReadAt;
+    private Instant lastReadAt;
     
     @Column(name = "last_read_message_id")
     private Long lastReadMessageId; // Stored in Redis, synced periodically
@@ -527,7 +527,7 @@ public class ChatParticipant {
     private boolean isActive = true;
     
     @Column(name = "left_at")
-    private LocalDateTime leftAt;
+    private Instant leftAt;
     
     // Transient fields for DTO mapping
     @Transient
@@ -678,5 +678,236 @@ public interface ChatService {
      * @return Page of matching message DTOs
      */
     Page<ChatMessageDto> searchMessages(Long roomId, Long userId, String searchTerm, Pageable pageable);
+}
+```
+
+## Notification & Announcement System
+
+This section covers system-wide notifications and announcements.
+
+### Announcement Entity
+```java
+package com.example.demo.communication.announcement.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "announcements")
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+public class Announcement {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 200)
+    private String title;
+
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "author_id", nullable = false)
+    private Long authorId; // Added author ID
+
+    @Column(name = "target_audience", length = 50) // e.g., ALL, DEPARTMENT, specific roles
+    private String targetAudience;
+
+    @Column(name = "department_id") // if target is a specific department
+    private Long departmentId;
+
+    @Column(name = "publish_date")
+    private LocalDate publishDate;
+
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;
+
+    @Column(nullable = false)
+    private boolean published = false;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt; // Added updatedAt
+
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "updated_by")
+    private Long updatedBy; // Added updatedBy
+}
+```
+
+### Notification Service Implementation
+```java
+package com.example.demo.communication.notification.service.impl;
+
+import com.example.demo.communication.notification.service.NotificationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class NotificationServiceImpl implements NotificationService {
+
+    // Assume WebSocket and Email services are injected
+    // private final SimpMessagingTemplate messagingTemplate;
+    // private final EmailService emailService;
+
+    @Override
+    @Async // Execute asynchronously to avoid blocking the caller thread
+    public void sendNotification(Long userId, String message) {
+        try {
+            log.info("Sending notification to user {}: {}", userId, message);
+            // 1. Send via WebSocket for real-time update
+            // messagingTemplate.convertAndSendToUser(userId.toString(), "/queue/notifications", message);
+
+            // 2. Optionally, send an email as well
+            // Employee user = employeeRepository.findById(userId).orElse(null);
+            // if (user != null && user.getEmail() != null) {
+            //     emailService.sendSimpleMessage(user.getEmail(), "New Notification", message);
+            // }
+            log.info("Successfully sent notification to user {}", userId);
+        } catch (Exception e) {
+            // Robust error handling
+            log.error("Failed to send notification to user {}: {}", userId, e.getMessage(), e);
+            // Here you could add logic to retry, or flag the notification as failed
+        }
+    }
+}
+```
+
+### Announcement Service Implementation
+```java
+package com.example.demo.communication.announcement.service.impl;
+
+import com.example.demo.communication.announcement.dto.AnnouncementDto;
+import com.example.demo.communication.announcement.entity.Announcement;
+import com.example.demo.communication.announcement.repository.AnnouncementRepository;
+import com.example.demo.communication.announcement.service.AnnouncementService;
+import com.example.demo.communication.notification.service.NotificationService;
+import com.example.demo.employee.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AnnouncementServiceImpl implements AnnouncementService {
+
+    private final AnnouncementRepository announcementRepository;
+    private final NotificationService notificationService;
+    private final EmployeeRepository employeeRepository; // To get target employees
+    private final ModelMapper modelMapper;
+
+    @Override
+    @Transactional
+    public AnnouncementDto createAnnouncement(AnnouncementDto announcementDto) {
+        Announcement announcement = modelMapper.map(announcementDto, Announcement.class);
+        Announcement savedAnnouncement = announcementRepository.save(announcement);
+
+        // If the announcement is published, send notifications
+        if (savedAnnouncement.isPublished()) {
+            notifyUsers(savedAnnouncement);
+        }
+
+        return modelMapper.map(savedAnnouncement, AnnouncementDto.class);
+    }
+  
+    @Override
+    @Transactional
+    public AnnouncementDto updateAnnouncement(Long id, AnnouncementDto announcementDto) {
+        Announcement existing = announcementRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Announcement not found"));
+      
+        modelMapper.map(announcementDto, existing);
+        Announcement updatedAnnouncement = announcementRepository.save(existing);
+
+        // If the announcement is published, send notifications
+        if (updatedAnnouncement.isPublished()) {
+            notifyUsers(updatedAnnouncement);
+        }
+      
+        return modelMapper.map(updatedAnnouncement, AnnouncementDto.class);
+    }
+
+    private void notifyUsers(Announcement announcement) {
+        String message = "New Announcement: " + announcement.getTitle();
+        List<Long> targetUserIds = getTargetUserIds(announcement);
+      
+        targetUserIds.forEach(userId -> notificationService.sendNotification(userId, message));
+    }
+
+    private List<Long> getTargetUserIds(Announcement announcement) {
+        // Logic to determine which users should be notified based on target_audience
+        // For example:
+        if ("ALL".equals(announcement.getTargetAudience())) {
+            return employeeRepository.findAll().stream().map(e -> e.getId()).collect(Collectors.toList());
+        } else if ("DEPARTMENT".equals(announcement.getTargetAudience()) && announcement.getDepartmentId() != null) {
+            // Assuming EmployeeRepository has findByDepartmentId method
+            // return employeeRepository.findByDepartmentId(announcement.getDepartmentId()).stream()...
+        }
+        return List.of(); // return empty list if no target
+    }
+    // Other methods (get, delete, etc.) would be implemented here.
+}
+```
+
+### Announcement Controller
+```java
+package com.example.demo.communication.announcement.controller;
+
+import com.example.demo.communication.announcement.dto.AnnouncementDto;
+import com.example.demo.communication.announcement.service.AnnouncementService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/announcements")
+@RequiredArgsConstructor
+public class AnnouncementController {
+
+    private final AnnouncementService announcementService;
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('ANNOUNCEMENT_MANAGE')")
+    public ResponseEntity<AnnouncementDto> createAnnouncement(@Valid @RequestBody AnnouncementDto announcementDto) {
+        AnnouncementDto created = announcementService.createAnnouncement(announcementDto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ANNOUNCEMENT_MANAGE')")
+    public ResponseEntity<AnnouncementDto> updateAnnouncement(@PathVariable Long id, @Valid @RequestBody AnnouncementDto announcementDto) {
+        AnnouncementDto updated = announcementService.updateAnnouncement(id, announcementDto);
+        return ResponseEntity.ok(updated);
+    }
+
+    // Endpoints for getting/deleting announcements would be here
 }
 ```

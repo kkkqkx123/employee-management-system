@@ -579,6 +579,122 @@ public interface PayrollPeriodRepository extends JpaRepository<PayrollPeriod, Lo
 }
 ```
 
+## DTO Classes
+
+### PayrollLedgerDto
+```java
+package com.example.demo.payroll.dto;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PayrollLedgerDto {
+    private Long id;
+
+    @NotNull
+    private Long employeeId;
+
+    @NotNull
+    private Long payrollPeriodId;
+
+    private String employeeNumber;
+    private String employeeName;
+    private Long departmentId;
+    private String departmentName;
+    private Long positionId;
+    private String positionName;
+
+    @Positive
+    private BigDecimal baseSalary;
+    private BigDecimal hourlyRate;
+    private BigDecimal hoursWorked;
+    private BigDecimal overtimeHours;
+    private BigDecimal overtimeRate;
+    private BigDecimal totalAllowances;
+    private BigDecimal totalDeductions;
+
+    @NotNull
+    private BigDecimal grossSalary;
+
+    @NotNull
+    private BigDecimal netSalary;
+
+    private BigDecimal employerContributions;
+    private BigDecimal totalCost;
+    private String currency;
+    private String paymentMethod;
+
+    @NotNull
+    private String status;
+
+    private LocalDate payDate;
+    private String notes;
+    private String calculationDetails;
+
+    private Instant createdAt;
+    private Instant updatedAt;
+}
+```
+
+### PayrollPeriodDto
+```java
+package com.example.demo.payroll.dto;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.Instant;
+import java.time.LocalDate;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PayrollPeriodDto {
+    private Long id;
+
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private String type;
+
+    @NotNull
+    private LocalDate startDate;
+
+    @NotNull
+    private LocalDate endDate;
+
+    @NotNull
+    private LocalDate payDate;
+
+    private Integer workingDays;
+
+    @NotBlank
+    private String status;
+
+    private String description;
+    private boolean isActive;
+
+    private Instant createdAt;
+    private Instant updatedAt;
+}
+```
+
 ## Service Interfaces
 
 ### PayrollService
@@ -596,6 +712,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PayrollService {
+
+    /**
+     * ### Business Rule for Payroll Ledger Snapshot
+     *
+     * When creating a `PayrollLedger` record, the `PayrollService` must, within a transaction,
+     * fetch the current names of associated entities like employee, department, and position.
+     * These names must be stored as a **one-time snapshot** in the corresponding fields
+     * (`employeeName`, `departmentName`, etc.). These snapshot fields **should not be automatically
+     * updated** after the record is created to ensure the historical accuracy of payroll reports.
+     */
     
     /**
      * Create a new payroll ledger

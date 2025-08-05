@@ -75,9 +75,14 @@ public enum PayType {
 ```
 
 ### Employee Entity
+### Employee Entity
 ```java
 package com.example.demo.employee.entity;
 
+import com.example.demo.config.security.EncryptedStringConverter;
+import com.example.demo.department.entity.Department;
+import com.example.demo.position.entity.Position;
+import com.example.demo.payroll.entity.PayrollLedger;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,23 +90,22 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.example.demo.employee.entity.PayType;
-import com.example.demo.payroll.entity.PayrollLedger;
-import jakarta.persistence.CascadeType;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "employees", indexes = {
-    @Index(name = "idx_employee_number", columnList = "employee_number", unique = true),
-    @Index(name = "idx_employee_email", columnList = "email", unique = true),
-    @Index(name = "idx_employee_department_id", columnList = "department_id"),
-    @Index(name = "idx_employee_position_id", columnList = "position_id"),
-    @Index(name = "idx_employee_status", columnList = "status")
-})
+@Table(name = "employees",
+    indexes = {
+        @Index(name = "idx_employee_number", columnList = "employee_number", unique = true),
+        @Index(name = "idx_employee_email", columnList = "email", unique = true),
+        @Index(name = "idx_employee_department_id", columnList = "department_id"),
+        @Index(name = "idx_employee_position_id", columnList = "position_id"),
+        @Index(name = "idx_employee_status", columnList = "status")
+    }
+)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
@@ -131,38 +135,32 @@ public class Employee {
     @Column(name = "address", length = 255)
     private String address;
 
-    @Column(name = "city", length = 50)
+    @Column(name = "city", length = 100)
     private String city;
 
-    @Column(name = "state", length = 50)
+    @Column(name = "state", length = 100)
     private String state;
 
-    @Column(name = "zip_code", length = 10)
+    @Column(name = "zip_code", length = 20)
     private String zipCode;
 
-    @Column(name = "country", length = 50)
+    @Column(name = "country", length = 100)
     private String country;
 
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    @Convert(converter = EncryptedStringConverter.class)
+    @Column(name = "date_of_birth_encrypted")
+    private String dateOfBirth; // Encrypted
 
-    @Column(name = "gender", length = 10)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", length = 20)
+    private Gender gender;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "marital_status", length = 20)
-    private String maritalStatus;
+    private MaritalStatus maritalStatus;
 
     @Column(name = "nationality", length = 50)
     private String nationality;
-
-    @Column(name = "emergency_contact_name", length = 100)
-    private String emergencyContactName;
-
-    @Column(name = "emergency_contact_phone", length = 20)
-    private String emergencyContactPhone;
-
-    @Column(name = "emergency_contact_relation", length = 50)
-    private String emergencyContactRelation;
 
     @Column(name = "department_id", nullable = false)
     private Long departmentId;
@@ -181,53 +179,40 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private EmployeeStatus status;
+    private EmployeeStatus status = EmployeeStatus.ACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "employment_type", nullable = false, length = 20)
+    private EmploymentType employmentType = EmploymentType.FULL_TIME;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pay_type", nullable = false, length = 10)
+    private PayType payType = PayType.SALARY;
 
     @Column(name = "salary", precision = 12, scale = 2)
     private BigDecimal salary;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pay_type", nullable = false, length = 20)
-    private PayType payType = PayType.SALARIED;
-
-    @Column(name = "hourly_rate", precision = 12, scale = 2)
+    @Column(name = "hourly_rate", precision = 8, scale = 2)
     private BigDecimal hourlyRate;
 
-    @Column(name = "salary_grade", length = 20)
-    private String salaryGrade;
+    @Convert(converter = EncryptedStringConverter.class)
+    @Column(name = "bank_account_encrypted")
+    private String bankAccount; // Encrypted
 
-    @Column(name = "employment_type", length = 20)
-    private String employmentType;
-
-    @Column(name = "work_location", length = 20)
-    private String workLocation;
-
-    @Column(name = "skills", length = 500)
-    private String skills;
-
-    @Column(name = "education", length = 500)
-    private String education;
-
-    @Column(name = "certifications", length = 500)
-    private String certifications;
-
-    @Lob
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
-
-    @Column(name = "profile_image_url", length = 255)
-    private String profileImageUrl;
+    @Convert(converter = EncryptedStringConverter.class)
+    @Column(name = "tax_id_encrypted")
+    private String taxId; // Encrypted
 
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "created_by")
     private Long createdBy;
@@ -235,31 +220,31 @@ public class Employee {
     @Column(name = "updated_by")
     private Long updatedBy;
 
-    // Relationships to be added if Department/Position entities are in the same module
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "department_id", insertable = false, updatable = false)
-    // private Department department;
-    
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "position_id", insertable = false, updatable = false)
-    // private Position position;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    private Department department;
 
-    // TODO: This relationship requires the PayrollLedger entity to have a 'employee' field with a ManyToOne mapping.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id", insertable = false, updatable = false)
+    private Position position;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id", insertable = false, updatable = false)
+    private Employee manager;
+
+    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
+    private Set<Employee> directReports = new HashSet<>();
+
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PayrollLedger> payrollLedgers = new HashSet<>();
 
-    @Transient
-    private String departmentName;
-    @Transient
-    private String positionName;
-    @Transient
-    private String managerName;
-    @Transient
-    private String fullName;
+    // Helper methods
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }
 ```
 itory Interface
-
 ### EmployeeRepository
 ```java
 package com.example.demo.employee.repository;
@@ -458,7 +443,7 @@ import lombok.Builder;
 
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.math.BigDecimal;
 
 @Data
@@ -466,137 +451,103 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class EmployeeDto {
-    
+  
     private Long id;
-    
+  
     @NotBlank(message = "Employee number is required")
     @Size(max = 20, message = "Employee number must not exceed 20 characters")
     private String employeeNumber;
-    
+  
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     private String firstName;
-    
+  
     @NotBlank(message = "Last name is required")
     @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
-    
+  
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     @Size(max = 100, message = "Email must not exceed 100 characters")
     private String email;
-    
+  
     @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Phone number format is invalid")
     private String phone;
-    
+  
     @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Mobile phone number format is invalid")
     private String mobilePhone;
-    
+  
     @Size(max = 255, message = "Address must not exceed 255 characters")
     private String address;
-    
-    @Size(max = 50, message = "City must not exceed 50 characters")
+  
+    @Size(max = 100, message = "City must not exceed 100 characters")
     private String city;
-    
-    @Size(max = 50, message = "State must not exceed 50 characters")
+  
+    @Size(max = 100, message = "State must not exceed 100 characters")
     private String state;
-    
-    @Size(max = 10, message = "Zip code must not exceed 10 characters")
+  
+    @Size(max = 20, message = "Zip code must not exceed 20 characters")
     private String zipCode;
-    
-    @Size(max = 50, message = "Country must not exceed 50 characters")
+  
+    @Size(max = 100, message = "Country must not exceed 100 characters")
     private String country;
-    
-    @Past(message = "Date of birth must be in the past")
-    private LocalDate dateOfBirth;
-    
-    @Pattern(regexp = "MALE|FEMALE|OTHER", message = "Gender must be MALE, FEMALE, or OTHER")
+  
+    // Sensitive fields are strings in DTO, service layer handles encryption/decryption
+    private String dateOfBirth;
+  
     private String gender;
-    
-    @Pattern(regexp = "SINGLE|MARRIED|DIVORCED|WIDOWED", message = "Invalid marital status")
+  
     private String maritalStatus;
-    
+  
     @Size(max = 50, message = "Nationality must not exceed 50 characters")
     private String nationality;
-    
-    @Size(max = 100, message = "Emergency contact name must not exceed 100 characters")
-    private String emergencyContactName;
-    
-    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Emergency contact phone format is invalid")
-    private String emergencyContactPhone;
-    
-    @Size(max = 50, message = "Emergency contact relation must not exceed 50 characters")
-    private String emergencyContactRelation;
-    
+  
     @NotNull(message = "Department is required")
     private Long departmentId;
-    
+  
     private String departmentName; // Transient field for display
-    
+  
     @NotNull(message = "Position is required")
     private Long positionId;
-    
+  
     private String positionName; // Transient field for display
-    
+  
     private Long managerId;
-    
+  
     private String managerName; // Transient field for display
-    
+  
     @NotNull(message = "Hire date is required")
     @PastOrPresent(message = "Hire date cannot be in the future")
     private LocalDate hireDate;
-    
+  
     private LocalDate terminationDate;
-    
+  
     @NotNull(message = "Employee status is required")
     private EmployeeStatus status;
-    
-    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be positive")
+  
+    private String employmentType;
+  
+    private String payType;
+  
+    @DecimalMin(value = "0.0", inclusive = true, message = "Salary must be non-negative")
     @Digits(integer = 10, fraction = 2, message = "Salary format is invalid")
     private BigDecimal salary;
-    
-    @Size(max = 20, message = "Salary grade must not exceed 20 characters")
-    private String salaryGrade;
-    
-    @Pattern(regexp = "FULL_TIME|PART_TIME|CONTRACT|INTERN", message = "Invalid employment type")
-    private String employmentType;
-    
-    @Pattern(regexp = "OFFICE|REMOTE|HYBRID", message = "Invalid work location")
-    private String workLocation;
-    
-    @Size(max = 500, message = "Skills must not exceed 500 characters")
-    private String skills;
-    
-    @Size(max = 500, message = "Education must not exceed 500 characters")
-    private String education;
-    
-    @Size(max = 500, message = "Certifications must not exceed 500 characters")
-    private String certifications;
-    
-    @Size(max = 1000, message = "Notes must not exceed 1000 characters")
-    private String notes;
-    
-    private String profileImageUrl;
-    
+  
+    @DecimalMin(value = "0.0", inclusive = true, message = "Hourly rate must be non-negative")
+    @Digits(integer = 6, fraction = 2, message = "Hourly rate format is invalid")
+    private BigDecimal hourlyRate;
+  
+    // Sensitive fields are strings in DTO
+    private String bankAccount;
+    private String taxId;
+  
     private boolean enabled;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
-    private Long createdBy;
-    
-    private Long updatedBy;
-    
-    private String createdByName; // Transient field for display
-    
-    private String updatedByName; // Transient field for display
-    
+  
+    private Instant createdAt;
+  
+    private Instant updatedAt;
+  
     private String fullName; // firstName + lastName
-    
-    private Integer age; // Calculated from dateOfBirth
-    
-    private Integer yearsOfService; // Calculated from hireDate
 }
 ```
 
@@ -604,121 +555,221 @@ public class EmployeeDto {
 ```java
 package com.example.demo.employee.dto;
 
-import com.example.demo.employee.entity.EmployeeStatus;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
-import javax.validation.constraints.*;
-import java.time.LocalDate;
-import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class EmployeeCreateRequest {
-    
-    @NotBlank(message = "Employee number is required")
-    @Size(max = 20, message = "Employee number must not exceed 20 characters")
-    private String employeeNumber;
-    
-    @NotBlank(message = "First name is required")
-    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    private String firstName;
-    
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    private String lastName;
-    
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    @Size(max = 100, message = "Email must not exceed 100 characters")
-    private String email;
-    
-    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Phone number format is invalid")
-    private String phone;
-    
-    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Mobile phone number format is invalid")
-    private String mobilePhone;
-    
-    @Size(max = 255, message = "Address must not exceed 255 characters")
-    private String address;
-    
-    @Size(max = 50, message = "City must not exceed 50 characters")
-    private String city;
-    
-    @Size(max = 50, message = "State must not exceed 50 characters")
-    private String state;
-    
-    @Size(max = 10, message = "Zip code must not exceed 10 characters")
-    private String zipCode;
-    
-    @Size(max = 50, message = "Country must not exceed 50 characters")
-    private String country;
-    
-    @Past(message = "Date of birth must be in the past")
-    private LocalDate dateOfBirth;
-    
-    @Pattern(regexp = "MALE|FEMALE|OTHER", message = "Gender must be MALE, FEMALE, or OTHER")
-    private String gender;
-    
-    @Pattern(regexp = "SINGLE|MARRIED|DIVORCED|WIDOWED", message = "Invalid marital status")
-    private String maritalStatus;
-    
-    @Size(max = 50, message = "Nationality must not exceed 50 characters")
-    private String nationality;
-    
-    @Size(max = 100, message = "Emergency contact name must not exceed 100 characters")
-    private String emergencyContactName;
-    
-    @Pattern(regexp = "^[+]?[0-9\\s\\-\\(\\)]{10,20}$", message = "Emergency contact phone format is invalid")
-    private String emergencyContactPhone;
-    
-    @Size(max = 50, message = "Emergency contact relation must not exceed 50 characters")
-    private String emergencyContactRelation;
-    
-    @NotNull(message = "Department is required")
-    private Long departmentId;
-    
-    @NotNull(message = "Position is required")
-    private Long positionId;
-    
-    private Long managerId;
-    
-    @NotNull(message = "Hire date is required")
-    @PastOrPresent(message = "Hire date cannot be in the future")
-    private LocalDate hireDate;
-    
-    @NotNull(message = "Employee status is required")
-    private EmployeeStatus status = EmployeeStatus.ACTIVE;
-    
-    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be positive")
-    @Digits(integer = 10, fraction = 2, message = "Salary format is invalid")
-    private BigDecimal salary;
-    
-    @Size(max = 20, message = "Salary grade must not exceed 20 characters")
-    private String salaryGrade;
-    
-    @Pattern(regexp = "FULL_TIME|PART_TIME|CONTRACT|INTERN", message = "Invalid employment type")
-    private String employmentType = "FULL_TIME";
-    
-    @Pattern(regexp = "OFFICE|REMOTE|HYBRID", message = "Invalid work location")
-    private String workLocation = "OFFICE";
-    
-    @Size(max = 500, message = "Skills must not exceed 500 characters")
-    private String skills;
-    
-    @Size(max = 500, message = "Education must not exceed 500 characters")
-    private String education;
-    
-    @Size(max = 500, message = "Certifications must not exceed 500 characters")
-    private String certifications;
-    
-    @Size(max = 1000, message = "Notes must not exceed 1000 characters")
-    private String notes;
-    
-    private String profileImageUrl;
-    
-    private boolean enabled = true;
+    // To simplify the design and reduce redundancy, the EmployeeDto will be used for
+    // create and update operations. The @Valid annotation in the controller will
+    // ensure the DTO's constraints are enforced. This avoids maintaining a separate
+    // but nearly identical DTO for creation requests.
+}
+```
+
+## Service Implementation
+
+### EmployeeServiceImpl
+```java
+package com.example.demo.employee.service.impl;
+
+import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.entity.Employee;
+import com.example.demo.employee.exception.EmployeeNotFoundException;
+import com.example.demo.employee.exception.SalaryValidationException;
+import com.example.demo.employee.repository.EmployeeRepository;
+import com.example.demo.employee.service.EmployeeService;
+import com.example.demo.position.entity.Position;
+import com.example.demo.position.repository.PositionRepository;
+import com.example.demo.util.EncryptionService; // Assume this service exists for PII
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+
+@Service
+@RequiredArgsConstructor
+public class EmployeeServiceImpl implements EmployeeService {
+
+    private final EmployeeRepository employeeRepository;
+    private final PositionRepository positionRepository;
+    private final ModelMapper modelMapper;
+    private final EncryptionService encryptionService;
+
+    @Override
+    @Transactional
+    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+        // 1. Validate salary against the position's defined range
+        validateSalary(employeeDto.getPositionId(), employeeDto.getSalary());
+
+        Employee employee = modelMapper.map(employeeDto, Employee.class);
+      
+        // 2. Encrypt sensitive data before saving
+        encryptSensitiveData(employee, employeeDto);
+
+        Employee savedEmployee = employeeRepository.save(employee);
+        return convertToDto(savedEmployee);
+    }
+
+    @Override
+    @Transactional
+    public EmployeeDto updateEmployee(Long id, EmployeeDto employeeDto) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
+
+        // 1. Validate salary against the position's defined range
+        validateSalary(employeeDto.getPositionId(), employeeDto.getSalary());
+
+        // Map non-sensitive fields from DTO to entity
+        modelMapper.map(employeeDto, existingEmployee);
+      
+        // 2. Encrypt sensitive data before saving
+        encryptSensitiveData(existingEmployee, employeeDto);
+
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        return convertToDto(updatedEmployee);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EmployeeDto getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
+        // 3. Decrypt sensitive data when retrieving
+        return convertToDto(employee);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EmployeeDto> getAllEmployees(Pageable pageable) {
+        return employeeRepository.findAll(pageable).map(this::convertToDto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEmployee(Long id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new EmployeeNotFoundException("Employee not found with id: " + id);
+        }
+        employeeRepository.deleteById(id);
+    }
+
+    private void validateSalary(Long positionId, BigDecimal salary) {
+        if (positionId == null || salary == null) {
+            return; // Cannot validate if position or salary is not provided
+        }
+        Position position = positionRepository.findById(positionId)
+                .orElseThrow(() -> new RuntimeException("Position not found with id: " + positionId));
+
+        if (position.getMinSalary() != null && salary.compareTo(position.getMinSalary()) < 0) {
+            throw new SalaryValidationException("Salary is below the minimum for this position.");
+        }
+        if (position.getMaxSalary() != null && salary.compareTo(position.getMaxSalary()) > 0) {
+            throw new SalaryValidationException("Salary is above the maximum for this position.");
+        }
+    }
+
+    private void encryptSensitiveData(Employee employee, EmployeeDto dto) {
+        if (dto.getDateOfBirth() != null) {
+            employee.setDateOfBirth(encryptionService.encrypt(dto.getDateOfBirth()));
+        }
+        if (dto.getBankAccount() != null) {
+            employee.setBankAccount(encryptionService.encrypt(dto.getBankAccount()));
+        }
+        if (dto.getTaxId() != null) {
+            employee.setTaxId(encryptionService.encrypt(dto.getTaxId()));
+        }
+    }
+
+    private EmployeeDto convertToDto(Employee employee) {
+        EmployeeDto dto = modelMapper.map(employee, EmployeeDto.class);
+      
+        // Decrypt sensitive data for display
+        if (employee.getDateOfBirth() != null) {
+            dto.setDateOfBirth(encryptionService.decrypt(employee.getDateOfBirth()));
+        }
+        if (employee.getBankAccount() != null) {
+            // For security, bank account might be masked or omitted in general DTOs
+            dto.setBankAccount("****" + encryptionService.decrypt(employee.getBankAccount()).substring(4));
+        }
+        if (employee.getTaxId() != null) {
+            dto.setTaxId(encryptionService.decrypt(employee.getTaxId()));
+        }
+      
+        // Populate transient fields for display purposes
+        if (employee.getDepartment() != null) {
+            dto.setDepartmentName(employee.getDepartment().getName());
+        }
+        if (employee.getPosition() != null) {
+            dto.setPositionName(employee.getPosition().getJobTitle());
+        }
+        dto.setFullName(employee.getFullName());
+      
+        return dto;
+    }
+}
+```
+
+## Controller Implementation
+
+### EmployeeController
+```java
+package com.example.demo.employee.controller;
+
+import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.service.EmployeeService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/employees")
+@RequiredArgsConstructor
+public class EmployeeController {
+
+    private final EmployeeService employeeService;
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto createdEmployee = employeeService.createEmployee(employeeDto);
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE_READ')")
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
+        EmployeeDto employeeDto = employeeService.getEmployeeById(id);
+        return ResponseEntity.ok(employeeDto);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('EMPLOYEE_READ')")
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(Pageable pageable) {
+        Page<EmployeeDto> employees = employeeService.getAllEmployees(pageable);
+        return ResponseEntity.ok(employees);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE_UPDATE')")
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto employeeDto) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employeeDto);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE_DELETE')")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 ```
