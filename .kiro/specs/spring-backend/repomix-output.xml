@@ -40,7 +40,6 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-advice.md
 communication-implementation.md
 database-design.md
 department-implementation.md
@@ -55,85 +54,6 @@ tasks.md
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="advice.md">
-经过对您更新后的项目文档进行再次全面审查，我很高兴地确认，您已经成功解决了之前报告中的大部分核心冲突。特别是**聊天系统存储策略**、**全局时间戳类型**以及**薪资快照规则文档化**这几个关键问题，现在已经在各文档中达成了一致，设计质量得到了显著提升。
-
-然而，在这次更深入的审查中，我发现了一些**新的、更细微的冲突和设计缺陷**。解决这些问题将是确保项目最终一致性和健壮性的关键。
-
-以下是当前仍然存在的问题：
-
-### 审查结论：大部分冲突已解决，但仍存在实现层面的不一致
-
-项目的设计在宏观架构层面已基本统一。`database-design.md` 作为核心数据模型的权威地位已经确立。当前遗留的问题主要集中在**具体实现文档与核心设计规范之间的脱节**，以及**部分模块未严格遵守项目自身的最佳实践要求**。
-
----
-
-### 发现的剩余冲突与设计缺陷
-
-#### 1. 【中等冲突】员工模块的API实现与DTO设计不一致
-
-尽管您已经按照建议创建了 `EmployeeCreateRequest` 和 `EmployeeUpdateRequest` DTO，但在 `employee-implementation.md` 文件中，相应的**服务层和控制层代码示例并未完全同步更新**。
-
-*   **冲突点**:
-    *   **DTO已定义**：`employee-implementation.md` 中已存在 `EmployeeCreateRequest` 和 `EmployeeUpdateRequest` 的定义。
-    *   **代码未更新**：
-        *   `EmployeeServiceImpl` 中的 `updateEmployee` 方法签名仍然接受通用的 `EmployeeDto` 作为参数，而不是 `EmployeeUpdateRequest`。
-        *   `EmployeeController` 中的 `createEmployee` 和 `updateEmployee` 方法的 `@RequestBody` 参数也仍然是 `EmployeeDto`。
-
-*   **影响**: 这使得之前创建专用Request DTOs的努力付诸东流。如果实现时直接复制代码，将再次引入复用DTO带来的安全风险和数据校验问题。
-
-*   **解决方案**:
-    *   **必须同步更新 `employee-implementation.md` 中的代码示例**。确保 `EmployeeService` 接口和实现、以及 `EmployeeController` 中所有创建和更新方法的签名，都正确使用 `EmployeeCreateRequest` 和 `EmployeeUpdateRequest`。
-
-#### 2. 【严重冲突】安全模块DTO的时间戳类型错误
-
-这是一个非常严重的疏忽。在全局统一使用 `java.time.Instant` 的背景下，安全模块的所有DTO都错误地使用了 `LocalDateTime`。
-
-*   **冲突点**:
-    *   **`security-implementation.md`** 文件中，所有DTO（`UserDto`, `RoleDto`, `ResourceDto`, `LoginResponse`）的时间戳字段（如 `createdAt`, `updatedAt`, `lastLoginAt`）**全部被定义为 `LocalDateTime`**。
-    *   这与 `database-design.md` 中所有实体以及其他模块都使用 `Instant` 的规范**直接冲突**。
-
-*   **影响**: 安全和审计日志是系统中最需要精确、无歧义时间记录的地方。使用 `LocalDateTime` 将导致在跨时区部署或分析日志时产生严重的时间混乱和错误。
-
-*   **解决方案**:
-    *   **立即修正 `security-implementation.md`**。将该文件中所有DTO内的 `LocalDateTime` 字段**全部修改为 `java.time.Instant`**，以符合项目的全局时间标准。
-
-#### 3. 【设计缺陷】多个模块滥用字符串代替枚举类型
-
-多个实现文档中的实体定义违反了项目需求（Requirement 11.5）中“使用枚举代替字符串”的最佳实践。
-
-*   **缺陷描述**:
-    *   **`communication-implementation.md`**:
-        *   `ChatRoom` 实体的 `type` 字段（应为 `DIRECT`, `GROUP`, `CHANNEL`）被定义为 `String`。
-        *   `ChatParticipant` 实体的 `role` 字段（应为 `OWNER`, `ADMIN`, `MEMBER`）被定义为 `String`。
-    *   **`payroll-implementation.md`**:
-        *   `PayrollLedger` 实体的 `status` 和 `paymentMethod` 字段是 `String`。
-        *   `PayrollPeriod` 实体的 `type` 和 `status` 字段是 `String`。
-        *   `SalaryComponent` 实体的 `type` 和 `calculationType` 字段是 `String`。
-
-*   **影响**: 使用字符串（“Magic Strings”）来表示固定的选项集合，会大大增加因拼写错误、大小写不一致等问题导致的数据污染风险，并且代码的可读性和类型安全性都较差。
-
-*   **解决方案**:
-    *   **为所有相关字段创建枚举类型**。例如，为聊天室类型创建 `ChatRoomType` 枚举。
-    *   在上述所有实体的定义中，将这些 `String` 类型的字段修改为对应的**枚举类型**，并使用 `@Enumerated(EnumType.STRING)` 注解以确保数据库中存储的是可读的字符串值。
-
-#### 4. 【设计不一致】通知系统的设计在多份文档中存在矛盾
-
-关于通知系统的设计，需求、高层设计和数据库设计三份文档描述了不同的模型，这会给开发者带来极大的困惑。
-
-*   **冲突点**:
-    *   **`requirements.md` (Req 8)** 和 **`design.md`**：描述了一个由 `msgcontent` 和 `sysmsg` 两个表组成的通知系统。
-    *   **`database-design.md`**：定义了一个更为现代化和健壮的、名为 `notifications` 的**单表模型**，该模型结构更优。
-    *   **`communication-implementation.md`**：目录结构中提到了 `SystemMessage.java`，但没有给出具体实现，且与 `database-design.md` 的模型不符。
-
-*   **影响**: 开发者无法确定应以哪个设计为准来实现通知功能。
-
-*   **解决方案**:
-    *   **确立 `database-design.md` 为唯一标准**。`notifications` 单表模型的设计最为完善，应作为最终实现方案。
-    *   **同步更新其他文档**：修改 `requirements.md` 和 `design.md` 中关于通知系统的描述，使其与 `database-design.md` 中的 `Notification` 实体定义保持一致。
-    *   **清理 `communication-implementation.md`**：移除对 `SystemMessage.java` 的引用，并根据 `database-design.md` 的 `Notification` 实体来规划该模块的实现。
-</file>
 
 <file path="communication-implementation.md">
 # Communication System Implementation
@@ -222,6 +142,20 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+ 
+public enum TemplateType {
+    HTML,
+    TEXT,
+    MIXED
+}
+ 
+public enum TemplateCategory {
+    WELCOME,
+    NOTIFICATION,
+    REMINDER,
+    MARKETING,
+    PASSWORD_RESET
+}
 
 @Entity
 @Table(name = "email_templates", indexes = {
@@ -252,11 +186,13 @@ public class EmailTemplate {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content; // Email content template (HTML/Text)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "template_type", nullable = false, length = 20)
-    private String templateType; // HTML, TEXT, FREEMARKER
+    private TemplateType templateType; // HTML, TEXT, FREEMARKER
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", length = 50)
-    private String category; // WELCOME, NOTIFICATION, REMINDER, etc.
+    private TemplateCategory category; // WELCOME, NOTIFICATION, REMINDER, etc.
     
     @Column(name = "description", length = 500)
     private String description;
@@ -302,6 +238,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
+public enum EmailStatus {
+    PENDING,
+    SENT,
+    FAILED,
+    BOUNCED,
+    DELIVERED,
+    OPENED,
+    CLICKED
+}
+ 
+public enum EmailPriority {
+    HIGH,
+    NORMAL,
+    LOW
+}
+
 @Entity
 @Table(name = "email_logs", indexes = {
     @Index(name = "idx_emaillog_to_email", columnList = "to_email"),
@@ -339,8 +291,9 @@ public class EmailLog {
     @Column(name = "template_code", length = 50)
     private String templateCode; // Template used (if any)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status; // PENDING, SENT, FAILED, BOUNCED
+    private EmailStatus status; // PENDING, SENT, FAILED, BOUNCED
     
     @Column(name = "error_message", length = 2000)
     private String errorMessage; // Error details if failed
@@ -361,8 +314,9 @@ public class EmailLog {
     @Column(name = "message_id", length = 255)
     private String messageId; // Email provider message ID
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority", length = 20)
-    private String priority; // HIGH, NORMAL, LOW
+    private EmailPriority priority; // HIGH, NORMAL, LOW
 }
 ```
 
@@ -506,6 +460,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  
 import java.time.Instant;
+
+public enum ChatMessageType {
+    TEXT,
+    IMAGE,
+    FILE,
+    SYSTEM // 系统消息, e.g., "User A has joined the room"
+}
  
 @Entity
 @Table(name = "chat_messages", indexes = {
@@ -521,8 +482,9 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;           // Chat room ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
   
     @Column(name = "sender_id", nullable = false)
     private Long senderId;         // Message sender
@@ -530,8 +492,9 @@ public class ChatMessage {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;        // Message content
   
+    @Enumerated(EnumType.STRING)
     @Column(name = "message_type", length = 20)
-    private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
+    private ChatMessageType messageType;    // TEXT, IMAGE, FILE, SYSTEM
   
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -870,6 +833,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDate;
+ 
+public enum AnnouncementTarget {
+    ALL,          // 全体员工
+    DEPARTMENT,   // 特定部门
+    ROLE          // 特定角色
+}
 
 @Entity
 @Table(name = "announcements")
@@ -891,8 +860,9 @@ public class Announcement {
     @Column(name = "author_id", nullable = false)
     private Long authorId; // Added author ID
 
-    @Column(name = "target_audience", length = 50) // e.g., ALL, DEPARTMENT, specific roles
-    private String targetAudience;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "target_audience", length = 50) // e.g., ALL, DEPARTMENT, ROLE
+    private AnnouncementTarget targetAudience;
 
     @Column(name = "department_id") // if target is a specific department
     private Long departmentId;
@@ -1353,6 +1323,17 @@ public class Role {
 
 #### Resource Entity
 ```java
+public enum ResourceCategory {
+    USER,
+    EMPLOYEE,
+    DEPARTMENT,
+    POSITION,
+    PAYROLL,
+    COMMUNICATION,
+    SECURITY,
+    OTHER
+}
+
 @Entity
 @Table(name = "resources", indexes = {
     @Index(name = "idx_resource_url", columnList = "url"),
@@ -1378,8 +1359,9 @@ public class Resource {
     @Column(name = "description", length = 255)
     private String description;    // Resource description
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 50)
-    private String category;       // Resource category (USER, EMPLOYEE, DEPARTMENT, etc.)
+    private ResourceCategory category; // Resource category (USER, EMPLOYEE, DEPARTMENT, etc.)
     
     @Column(name = "active", nullable = false)
     private Boolean active = true; // Resource status
@@ -1967,8 +1949,9 @@ public class EmailTemplate {
     @Column(name = "template_type", nullable = false, length = 10)
     private TemplateType templateType = TemplateType.HTML; // HTML, TEXT, MIXED
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", length = 50)
-    private String category;       // Template category
+    private TemplateCategory category; // Template category
     
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
@@ -2095,54 +2078,53 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;           // Chat room ID
-  
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
+      
     @Column(name = "sender_id", nullable = false)
     private Long senderId;         // Message sender
-  
+      
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;        // Message content
-  
+      
+    @Enumerated(EnumType.STRING)
     @Column(name = "message_type", length = 20)
-    private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
-  
+    private ChatMessageType messageType;    // TEXT, IMAGE, FILE, SYSTEM
+      
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;     // Time-zone aware timestamp
-  
+      
     @Column(name = "is_edited", nullable = false)
     private Boolean isEdited = false;
-  
+      
     @Column(name = "edited_at")
     private Instant editedAt;      // Time-zone aware timestamp
-  
+      
     @Column(name = "reply_to_id")
     private Long replyToId;        // Reply to message ID
-  
+      
     @Column(name = "attachment_url", length = 500)
     private String attachmentUrl;
-  
+      
     @Column(name = "attachment_type", length = 100)
     private String attachmentType;
-  
+      
     @Column(name = "attachment_size")
     private Long attachmentSize;
-  
+      
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-  
+      
     @Column(name = "deleted_at")
     private Instant deletedAt;     // Time-zone aware timestamp
-  
+      
     @Column(name = "metadata", columnDefinition = "TEXT")
     private String metadata;       // JSON
-  
+      
     @Column(name = "read_receipts", columnDefinition = "TEXT")
     private String readReceipts;   // JSON
-  
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", insertable = false, updatable = false)
     private ChatRoom chatRoom;
 }
 ```
@@ -2198,20 +2180,56 @@ public class ChatRoom {
   
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChatMessage> messages = new HashSet<>();
-  
-    @ManyToMany
-    @JoinTable(
-        name = "chat_room_participants",
-        joinColumns = @JoinColumn(name = "room_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> participants = new HashSet<>();
+    
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants = new HashSet<>();
 }
 
 public enum ChatRoomType {
     DIRECT,
     GROUP,
     CHANNEL
+}
+
+#### ChatParticipant Entity
+```java
+@Entity
+@Table(name = "chat_participants", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"room_id", "user_id"}, name = "uk_participant_room_user")
+})
+public class ChatParticipant {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
+    
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
+    private ChatParticipantRole role; // OWNER, ADMIN, MEMBER
+    
+    @Column(name = "joined_at", nullable = false)
+    private Instant joinedAt;
+    
+    @Column(name = "last_read_at")
+    private Instant lastReadAt;
+    
+    @Column(name = "last_read_message_id")
+    private Long lastReadMessageId;
+    
+    @Column(name = "is_muted", nullable = false)
+    private boolean isMuted = false;
+    
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+    
+    @Column(name = "left_at")
+    private Instant leftAt;
 }
 ```
 
@@ -2370,11 +2388,13 @@ public class PayrollLedger {
     @Column(name = "currency", length = 10)
     private String currency;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 20)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollLedgerStatus status;
 
     @Column(name = "pay_date")
     private LocalDate payDate;
@@ -2453,8 +2473,9 @@ public class PayrollPeriod {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type;
+    private PayrollPeriodType type;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -2468,8 +2489,9 @@ public class PayrollPeriod {
     @Column(name = "working_days")
     private Integer workingDays;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollPeriodStatus status;
 
     @Column(name = "description", length = 500)
     private String description;
@@ -2532,11 +2554,13 @@ public class SalaryComponent {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type; // ALLOWANCE, DEDUCTION
+    private SalaryComponentType type; // ALLOWANCE, DEDUCTION
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "calculation_type", nullable = false, length = 20)
-    private String calculationType; // FIXED, PERCENTAGE
+    private CalculationType calculationType; // FIXED, PERCENTAGE
 
     @Column(name = "value", precision = 12, scale = 2)
     private BigDecimal value; // Amount for FIXED, percentage for PERCENTAGE
@@ -2793,25 +2817,8 @@ public class QueryOptimizationPatterns {
         });
     }
     
-    // Use Lua scripts for atomic operations
-    public boolean transferEmployee(Long employeeId, Long fromDept, Long toDept) {
-        String script = """
-            local employee = redis.call('HGET', KEYS[1], 'departmentId')
-            if employee == ARGV[1] then
-                redis.call('HSET', KEYS[1], 'departmentId', ARGV[2])
-                redis.call('HINCRBY', KEYS[2], 'employeeCount', -1)
-                redis.call('HINCRBY', KEYS[3], 'employeeCount', 1)
-                return 1
-            end
-            return 0
-            """;
-        
-        return redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class),
-            Arrays.asList("employees:" + employeeId, 
-                         "departments:" + fromDept, 
-                         "departments:" + toDept),
-            fromDept.toString(), toDept.toString());
-    }
+    // **Architectural Mandate:** Caching layers are only to be updated or invalidated *after* a successful transaction in the primary PostgreSQL database.
+    // The following Lua script example is removed as it violates this principle.
 }
 ```
 
@@ -3135,7 +3142,23 @@ CREATE INDEX idx_active_departments ON departments(parent_id) WHERE enabled = tr
 
 -- Full-text search indexes
 CREATE INDEX idx_employee_search ON employees USING gin(to_tsvector('english', first_name || ' ' || last_name || ' ' || email));
-```
+
+-- Announcements Table
+CREATE TABLE announcements (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    author_id BIGINT NOT NULL,
+    target_audience VARCHAR(50),
+    department_id BIGINT,
+    publish_date DATE,
+    expiry_date DATE,
+    published BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT
+);
 
 ### Query Optimization Patterns
 
@@ -3233,6 +3256,7 @@ com.example.demo.department/
 │   ├── DepartmentDto.java
 │   ├── DepartmentTreeDto.java
 │   └── DepartmentCreateRequest.java
+|   └── DepartmentUpdateRequest.java
 └── exception/
     ├── DepartmentNotFoundException.java
     ├── DepartmentHierarchyException.java
@@ -3252,7 +3276,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -3454,7 +3478,7 @@ import lombok.Builder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -4209,22 +4233,58 @@ public class EmailService {
 #### Chat and Notification System
 ```java
 @Entity
-public class MessageContent {
+@Table(name = "notifications", indexes = {
+    @Index(name = "idx_notification_user_id", columnList = "user_id"),
+    @Index(name = "idx_notification_type", columnList = "type"),
+    @Index(name = "idx_notification_read_status", columnList = "read_status")
+})
+@EntityListeners(AuditingEntityListener.class)
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
+    @Column(name = "user_id", nullable = false)
+    private Long userId;           // 目标用户
+  
+    @Column(name = "type", length = 50)
+    private String type;           // SYSTEM, EMAIL, CHAT, TASK, etc.
+  
+    @Column(name = "title", length = 255)
+    private String title;
+  
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    private LocalDateTime createdAt;
-    private Long senderId;
-    private MessageType type;
+  
+    @Column(name = "data", columnDefinition = "TEXT")
+    private String data;           // 附加的 JSON 数据
+  
+    @Column(name = "read_status", nullable = false)
+    private Boolean read = false;
+  
+    @Column(name = "priority", length = 20)
+    private String priority;       // LOW, MEDIUM, HIGH, URGENT
+  
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // 时区无关的时间戳
+  
+    @Column(name = "read_at")
+    private Instant readAt;        // 时区无关的时间戳
+  
+    @Column(name = "expires_at")
+    private Instant expiresAt;     // 时区无关的时间戳
+  
+    @Column(name = "action_url", length = 500)
+    private String actionUrl;
+  
+    @Column(name = "related_entity_id")
+    private Long relatedEntityId;
+  
+    @Column(name = "related_entity_type", length = 50)
+    private String relatedEntityType;
 }
 
-@Entity
-public class SystemMessage {
-    private Long id;
-    private Long userId;
-    private Long messageId;
-    private Boolean isRead;
-    private LocalDateTime readAt;
-}
 
 @Service
 public class NotificationService {
@@ -4232,6 +4292,69 @@ public class NotificationService {
     public List<SystemMessage> getUserNotifications(Long userId);
     public void markAsRead(Long messageId, Long userId);
 }
+
+#### Chat and Announcement Entities
+```java
+@Entity
+@Table(name = "chat_rooms")
+public class ChatRoom {
+    @Id
+    private Long id;
+    private String name;
+    @Enumerated(EnumType.STRING)
+    private ChatRoomType type; // DIRECT, GROUP, CHANNEL
+    private Long createdBy;
+    
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants;
+}
+
+@Entity
+@Table(name = "chat_participants")
+public class ChatParticipant {
+    @Id
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom room;
+    
+    private Long userId;
+    
+    @Enumerated(EnumType.STRING)
+    private ChatParticipantRole role; // OWNER, ADMIN, MEMBER
+}
+
+@Entity
+@Table(name = "chat_messages")
+public class ChatMessage {
+    @Id
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom room;
+    
+    private Long senderId;
+    private String content;
+    
+    @Enumerated(EnumType.STRING)
+    private ChatMessageType messageType; // TEXT, IMAGE, FILE, SYSTEM
+}
+
+@Entity
+@Table(name = "announcements")
+public class Announcement {
+    @Id
+    private Long id;
+    private String title;
+    private String content;
+    private Long authorId;
+    @Enumerated(EnumType.STRING)
+    private AnnouncementTarget targetAudience; // ALL, DEPARTMENT, ROLE
+    private boolean published;
+}
+```
 ```
 
 ### 6. Payroll Management
@@ -4320,6 +4443,10 @@ employees (id, employee_number, first_name, last_name, email, phone, department_
 -- Communication (PostgreSQL for persistence, Redis for real-time)
 email_templates (id, name, code, subject, content, template_type, category, active, variables, created_at, updated_at, created_by, updated_by)
 email_logs (id, template_code, to_email, cc_emails, bcc_emails, subject, content, status, sent_at, error_message, retry_count, sent_by, created_at, updated_at)
+chat_rooms (id, name, type, description, created_by, is_active, created_at, updated_at, last_message_at)
+chat_participants (id, room_id, user_id, role, joined_at, last_read_at, is_muted)
+chat_messages (id, room_id, sender_id, content, message_type, created_at, is_edited, is_deleted)
+announcements (id, title, content, author_id, target_audience, department_id, publish_date, expiry_date, published, created_at, updated_at)
 notifications (id, user_id, title, content, type, priority, is_read, read_at, created_at, updated_at)
 
 -- Payroll (PostgreSQL)
@@ -5073,8 +5200,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     List<Employee> findByDateOfBirthBetween(LocalDate startDate, LocalDate endDate);
 }
-```#
-# DTO Classes
+```
+## DTO Classes
 
 ### EmployeeDto
 ```java
@@ -5343,11 +5470,12 @@ public class EmployeeUpdateRequest {
 
 ## Service Implementation
 
-### EmployeeServiceImpl
 ```java
 package com.example.demo.employee.service.impl;
 
+import com.example.demo.employee.dto.EmployeeCreateRequest;
 import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.dto.EmployeeUpdateRequest;
 import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.exception.EmployeeNotFoundException;
 import com.example.demo.employee.exception.SalaryValidationException;
@@ -5355,7 +5483,7 @@ import com.example.demo.employee.repository.EmployeeRepository;
 import com.example.demo.employee.service.EmployeeService;
 import com.example.demo.position.entity.Position;
 import com.example.demo.position.repository.PositionRepository;
-import com.example.demo.util.EncryptionService; // Assume this service exists for PII
+import com.example.demo.util.EncryptionService; // 假设此服务存在
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -5364,6 +5492,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID; // <--- 新增：确保导入UUID
 
 @Service
 @RequiredArgsConstructor
@@ -5377,18 +5506,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto createEmployee(EmployeeCreateRequest createRequest) {
-        // 1. 校验薪资范围
+        // 校验薪资范围
         validateSalary(createRequest.getPositionId(), createRequest.getSalary());
  
-        // 2. 将 Request DTO 映射到新的 Employee 实体
+        // 将 Request DTO 映射到新的 Employee 实体
         Employee employee = modelMapper.map(createRequest, Employee.class);
       
-      
-        // 3. 生成系统控制的字段，如员工编号
+        // 生成系统控制的字段，如员工编号
         employee.setEmployeeNumber("EMP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         employee.setEnabled(true); // 默认启用
     
-        // 4. 在保存前加密敏感数据
+        // 在保存前加密敏感数据
         if (createRequest.getDateOfBirth() != null) {
             employee.setDateOfBirth(encryptionService.encrypt(createRequest.getDateOfBirth()));
         }
@@ -5399,26 +5527,102 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setTaxId(encryptionService.encrypt(createRequest.getTaxId()));
         }
     
-        // 5. 保存实体并将其转换为用于响应的 DTO
+        // 保存实体并将其转换为用于响应的 DTO
         Employee savedEmployee = employeeRepository.save(employee);
         return convertToDto(savedEmployee);
     }
 
+    /**
+     * --- (2) 修改：重构 updateEmployee 方法以确保安全 ---
+     *
+     * 我们不再使用 modelMapper.map() 进行直接映射，以避免意外地将非空字段更新为 null。
+     * 而是手动、有选择地更新每一个字段，只有当请求中的值不为 null 时才进行更新。
+     * 这使得更新操作更加明确和安全。
+     */
     @Override
     @Transactional
     public EmployeeDto updateEmployee(Long id, EmployeeUpdateRequest updateRequest) {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
-
-        // 1. Validate salary against the position's defined range
+    
+        // 校验薪资是否在职位范围内
         validateSalary(updateRequest.getPositionId(), updateRequest.getSalary());
-
-        // Map non-sensitive fields from DTO to entity
-        modelMapper.map(updateRequest, existingEmployee);
-      
-        // 2. Encrypt sensitive data before saving
+    
+        // **安全更新模式**
+        // 有选择地更新非空字段
+        if (updateRequest.getFirstName() != null) {
+            existingEmployee.setFirstName(updateRequest.getFirstName());
+        }
+        if (updateRequest.getLastName() != null) {
+            existingEmployee.setLastName(updateRequest.getLastName());
+        }
+        if (updateRequest.getEmail() != null) {
+            existingEmployee.setEmail(updateRequest.getEmail());
+        }
+        if (updateRequest.getPhone() != null) {
+            existingEmployee.setPhone(updateRequest.getPhone());
+        }
+        if (updateRequest.getMobilePhone() != null) {
+            existingEmployee.setMobilePhone(updateRequest.getMobilePhone());
+        }
+        if (updateRequest.getAddress() != null) {
+            existingEmployee.setAddress(updateRequest.getAddress());
+        }
+        if (updateRequest.getCity() != null) {
+            existingEmployee.setCity(updateRequest.getCity());
+        }
+        if (updateRequest.getState() != null) {
+            existingEmployee.setState(updateRequest.getState());
+        }
+        if (updateRequest.getZipCode() != null) {
+            existingEmployee.setZipCode(updateRequest.getZipCode());
+        }
+        if (updateRequest.getCountry() != null) {
+            existingEmployee.setCountry(updateRequest.getCountry());
+        }
+        if (updateRequest.getGender() != null) {
+            existingEmployee.setGender(updateRequest.getGender());
+        }
+        if (updateRequest.getMaritalStatus() != null) {
+            existingEmployee.setMaritalStatus(updateRequest.getMaritalStatus());
+        }
+        if (updateRequest.getNationality() != null) {
+            existingEmployee.setNationality(updateRequest.getNationality());
+        }
+        if (updateRequest.getDepartmentId() != null) {
+            existingEmployee.setDepartmentId(updateRequest.getDepartmentId());
+        }
+        if (updateRequest.getPositionId() != null) {
+            existingEmployee.setPositionId(updateRequest.getPositionId());
+        }
+        if (updateRequest.getManagerId() != null) {
+            existingEmployee.setManagerId(updateRequest.getManagerId());
+        }
+        if (updateRequest.getHireDate() != null) {
+            existingEmployee.setHireDate(updateRequest.getHireDate());
+        }
+        if (updateRequest.getTerminationDate() != null) {
+            existingEmployee.setTerminationDate(updateRequest.getTerminationDate());
+        }
+        if (updateRequest.getStatus() != null) {
+            existingEmployee.setStatus(updateRequest.getStatus());
+        }
+        if (updateRequest.getEmploymentType() != null) {
+            existingEmployee.setEmploymentType(updateRequest.getEmploymentType());
+        }
+        if (updateRequest.getSalary() != null) {
+            existingEmployee.setSalary(updateRequest.getSalary());
+        }
+        if (updateRequest.getHourlyRate() != null) {
+            existingEmployee.setHourlyRate(updateRequest.getHourlyRate());
+        }
+        if (updateRequest.getEnabled() != null) {
+            existingEmployee.setEnabled(updateRequest.getEnabled());
+        }
+    
+        // 加密敏感数据
         encryptSensitiveData(existingEmployee, updateRequest);
-
+    
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return convertToDto(updatedEmployee);
     }
@@ -5428,7 +5632,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
-        // 3. Decrypt sensitive data when retrieving
         return convertToDto(employee);
     }
 
@@ -5449,7 +5652,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void validateSalary(Long positionId, BigDecimal salary) {
         if (positionId == null || salary == null) {
-            return; // Cannot validate if position or salary is not provided
+            return;
         }
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new RuntimeException("Position not found with id: " + positionId));
@@ -5474,22 +5677,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    /**
+     * --- (3) 修改：增强数据转换的健壮性 ---
+     *
+     * 在对银行账号进行脱敏处理时，增加了长度检查。
+     * 这可以防止当银行账号长度不足时，substring 操作抛出异常。
+     */
     private EmployeeDto convertToDto(Employee employee) {
         EmployeeDto dto = modelMapper.map(employee, EmployeeDto.class);
       
-        // Decrypt sensitive data for display
+        // 解密敏感数据以供显示
         if (employee.getDateOfBirth() != null) {
             dto.setDateOfBirth(encryptionService.decrypt(employee.getDateOfBirth()));
         }
         if (employee.getBankAccount() != null) {
-            // For security, bank account might be masked or omitted in general DTOs
-            dto.setBankAccount("****" + encryptionService.decrypt(employee.getBankAccount()).substring(4));
+            String decryptedAccount = encryptionService.decrypt(employee.getBankAccount());
+            // 增加健壮性检查
+            if (decryptedAccount != null && decryptedAccount.length() > 4) {
+                dto.setBankAccount("****" + decryptedAccount.substring(decryptedAccount.length() - 4));
+            } else {
+                dto.setBankAccount("****"); // 或者返回一个完全屏蔽的值
+            }
         }
         if (employee.getTaxId() != null) {
             dto.setTaxId(encryptionService.decrypt(employee.getTaxId()));
         }
       
-        // Populate transient fields for display purposes
+        // 填充用于显示的瞬态字段
         if (employee.getDepartment() != null) {
             dto.setDepartmentName(employee.getDepartment().getName());
         }
@@ -5501,6 +5715,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return dto;
     }
 }
+
 ```
 
 ## Controller Implementation
@@ -6366,7 +6581,7 @@ public interface PayrollService {
      * (`employeeName`, `departmentName`, etc.). These snapshot fields **should not be automatically
      * updated** after the record is created to ensure the historical accuracy of payroll reports.
      */
-    
+
     /**
      * Create a new payroll ledger
      * @param payrollLedgerDto Payroll ledger data
@@ -6964,7 +7179,7 @@ This document outlines the requirements for a comprehensive Employee Management 
 #### Acceptance Criteria
 
 1. WHEN using chat functionality THEN the system SHALL provide real-time online chat capabilities
-2. WHEN system notifications are generated THEN the system SHALL save them to a single `notifications` table, which serves as the sole source of truth for all notification data.
+WHEN system notifications are generated THEN the system SHALL save them to a single `notifications` table. This table is the source of truth for real-time, user-specific notifications. This is distinct from the `announcements` feature, which handles broader, system-wide communications.
 3. WHEN managing user notifications THEN the system SHALL handle all aspects including content, recipients, status, and type within the `notifications` entity.
 4. WHEN notifications are created THEN the system SHALL push notifications to relevant users based on the data in the `notifications` table.
 5. WHEN users access notifications THEN the system SHALL provide viewing and management capabilities based on the unified `notifications` model.
@@ -7279,6 +7494,53 @@ public class Role {
     )
     private Set<Resource> resources = new HashSet<>();
 }
+```
+
+
+### UserCreateRequest DTO
+```java
+package com.example.demo.security.dto;
+
+import lombok.Data;
+import jakarta.validation.constraints.*;
+import java.util.Set;
+
+@Data
+public class UserCreateRequest {
+    @NotBlank @Size(min = 3, max = 50)
+    private String username;
+    @NotBlank @Email
+    private String email;
+    @NotBlank @Size(min = 8, max = 100)
+    private String password;
+    @NotBlank @Size(max = 50)
+    private String firstName;
+    @NotBlank @Size(max = 50)
+    private String lastName;
+    private Set<Long> roleIds;
+}
+```
+
+### UserUpdateRequest DTO
+```java
+package com.example.demo.security.dto;
+
+import lombok.Data;
+import jakarta.validation.constraints.*;
+import java.util.Set;
+
+@Data
+public class UserUpdateRequest {
+    @NotBlank @Email
+    private String email;
+    @NotBlank @Size(max = 50)
+    private String firstName;
+    @NotBlank @Size(max = 50)
+    private String lastName;
+    private Boolean enabled;
+    private Set<Long> roleIds;
+}
+
 ```
 
 ### Resource Entity
@@ -7651,7 +7913,7 @@ public interface UserService {
      * @return Created user DTO
      * @throws UserAlreadyExistsException if username or email already exists
      */
-    UserDto createUser(UserDto userDto);
+    UserDto createUser(UserCreateRequest createRequest);
     
     /**
      * Update an existing user
@@ -7660,7 +7922,7 @@ public interface UserService {
      * @return Updated user DTO
      * @throws UserNotFoundException if user not found
      */
-    UserDto updateUser(Long id, UserDto userDto);
+    UserDto updateUser(Long id, UserUpdateRequest updateRequest);
     
     /**
      * Get user by ID

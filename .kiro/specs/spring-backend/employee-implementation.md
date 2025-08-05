@@ -427,8 +427,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
      */
     List<Employee> findByDateOfBirthBetween(LocalDate startDate, LocalDate endDate);
 }
-```#
-# DTO Classes
+```
+## DTO Classes
 
 ### EmployeeDto
 ```java
@@ -697,11 +697,12 @@ public class EmployeeUpdateRequest {
 
 ## Service Implementation
 
-### EmployeeServiceImpl
 ```java
 package com.example.demo.employee.service.impl;
 
+import com.example.demo.employee.dto.EmployeeCreateRequest;
 import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.dto.EmployeeUpdateRequest;
 import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.exception.EmployeeNotFoundException;
 import com.example.demo.employee.exception.SalaryValidationException;
@@ -709,7 +710,7 @@ import com.example.demo.employee.repository.EmployeeRepository;
 import com.example.demo.employee.service.EmployeeService;
 import com.example.demo.position.entity.Position;
 import com.example.demo.position.repository.PositionRepository;
-import com.example.demo.util.EncryptionService; // Assume this service exists for PII
+import com.example.demo.util.EncryptionService; // 假设此服务存在
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -718,6 +719,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID; // <--- 新增：确保导入UUID
 
 @Service
 @RequiredArgsConstructor
@@ -731,18 +733,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public EmployeeDto createEmployee(EmployeeCreateRequest createRequest) {
-        // 1. 校验薪资范围
+        // 校验薪资范围
         validateSalary(createRequest.getPositionId(), createRequest.getSalary());
  
-        // 2. 将 Request DTO 映射到新的 Employee 实体
+        // 将 Request DTO 映射到新的 Employee 实体
         Employee employee = modelMapper.map(createRequest, Employee.class);
       
-      
-        // 3. 生成系统控制的字段，如员工编号
+        // 生成系统控制的字段，如员工编号
         employee.setEmployeeNumber("EMP-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         employee.setEnabled(true); // 默认启用
     
-        // 4. 在保存前加密敏感数据
+        // 在保存前加密敏感数据
         if (createRequest.getDateOfBirth() != null) {
             employee.setDateOfBirth(encryptionService.encrypt(createRequest.getDateOfBirth()));
         }
@@ -753,26 +754,102 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setTaxId(encryptionService.encrypt(createRequest.getTaxId()));
         }
     
-        // 5. 保存实体并将其转换为用于响应的 DTO
+        // 保存实体并将其转换为用于响应的 DTO
         Employee savedEmployee = employeeRepository.save(employee);
         return convertToDto(savedEmployee);
     }
 
+    /**
+     * --- (2) 修改：重构 updateEmployee 方法以确保安全 ---
+     *
+     * 我们不再使用 modelMapper.map() 进行直接映射，以避免意外地将非空字段更新为 null。
+     * 而是手动、有选择地更新每一个字段，只有当请求中的值不为 null 时才进行更新。
+     * 这使得更新操作更加明确和安全。
+     */
     @Override
     @Transactional
     public EmployeeDto updateEmployee(Long id, EmployeeUpdateRequest updateRequest) {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
-
-        // 1. Validate salary against the position's defined range
+    
+        // 校验薪资是否在职位范围内
         validateSalary(updateRequest.getPositionId(), updateRequest.getSalary());
-
-        // Map non-sensitive fields from DTO to entity
-        modelMapper.map(updateRequest, existingEmployee);
-      
-        // 2. Encrypt sensitive data before saving
+    
+        // **安全更新模式**
+        // 有选择地更新非空字段
+        if (updateRequest.getFirstName() != null) {
+            existingEmployee.setFirstName(updateRequest.getFirstName());
+        }
+        if (updateRequest.getLastName() != null) {
+            existingEmployee.setLastName(updateRequest.getLastName());
+        }
+        if (updateRequest.getEmail() != null) {
+            existingEmployee.setEmail(updateRequest.getEmail());
+        }
+        if (updateRequest.getPhone() != null) {
+            existingEmployee.setPhone(updateRequest.getPhone());
+        }
+        if (updateRequest.getMobilePhone() != null) {
+            existingEmployee.setMobilePhone(updateRequest.getMobilePhone());
+        }
+        if (updateRequest.getAddress() != null) {
+            existingEmployee.setAddress(updateRequest.getAddress());
+        }
+        if (updateRequest.getCity() != null) {
+            existingEmployee.setCity(updateRequest.getCity());
+        }
+        if (updateRequest.getState() != null) {
+            existingEmployee.setState(updateRequest.getState());
+        }
+        if (updateRequest.getZipCode() != null) {
+            existingEmployee.setZipCode(updateRequest.getZipCode());
+        }
+        if (updateRequest.getCountry() != null) {
+            existingEmployee.setCountry(updateRequest.getCountry());
+        }
+        if (updateRequest.getGender() != null) {
+            existingEmployee.setGender(updateRequest.getGender());
+        }
+        if (updateRequest.getMaritalStatus() != null) {
+            existingEmployee.setMaritalStatus(updateRequest.getMaritalStatus());
+        }
+        if (updateRequest.getNationality() != null) {
+            existingEmployee.setNationality(updateRequest.getNationality());
+        }
+        if (updateRequest.getDepartmentId() != null) {
+            existingEmployee.setDepartmentId(updateRequest.getDepartmentId());
+        }
+        if (updateRequest.getPositionId() != null) {
+            existingEmployee.setPositionId(updateRequest.getPositionId());
+        }
+        if (updateRequest.getManagerId() != null) {
+            existingEmployee.setManagerId(updateRequest.getManagerId());
+        }
+        if (updateRequest.getHireDate() != null) {
+            existingEmployee.setHireDate(updateRequest.getHireDate());
+        }
+        if (updateRequest.getTerminationDate() != null) {
+            existingEmployee.setTerminationDate(updateRequest.getTerminationDate());
+        }
+        if (updateRequest.getStatus() != null) {
+            existingEmployee.setStatus(updateRequest.getStatus());
+        }
+        if (updateRequest.getEmploymentType() != null) {
+            existingEmployee.setEmploymentType(updateRequest.getEmploymentType());
+        }
+        if (updateRequest.getSalary() != null) {
+            existingEmployee.setSalary(updateRequest.getSalary());
+        }
+        if (updateRequest.getHourlyRate() != null) {
+            existingEmployee.setHourlyRate(updateRequest.getHourlyRate());
+        }
+        if (updateRequest.getEnabled() != null) {
+            existingEmployee.setEnabled(updateRequest.getEnabled());
+        }
+    
+        // 加密敏感数据
         encryptSensitiveData(existingEmployee, updateRequest);
-
+    
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return convertToDto(updatedEmployee);
     }
@@ -782,7 +859,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee not found with id: " + id));
-        // 3. Decrypt sensitive data when retrieving
         return convertToDto(employee);
     }
 
@@ -803,7 +879,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void validateSalary(Long positionId, BigDecimal salary) {
         if (positionId == null || salary == null) {
-            return; // Cannot validate if position or salary is not provided
+            return;
         }
         Position position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new RuntimeException("Position not found with id: " + positionId));
@@ -828,22 +904,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    /**
+     * --- (3) 修改：增强数据转换的健壮性 ---
+     *
+     * 在对银行账号进行脱敏处理时，增加了长度检查。
+     * 这可以防止当银行账号长度不足时，substring 操作抛出异常。
+     */
     private EmployeeDto convertToDto(Employee employee) {
         EmployeeDto dto = modelMapper.map(employee, EmployeeDto.class);
       
-        // Decrypt sensitive data for display
+        // 解密敏感数据以供显示
         if (employee.getDateOfBirth() != null) {
             dto.setDateOfBirth(encryptionService.decrypt(employee.getDateOfBirth()));
         }
         if (employee.getBankAccount() != null) {
-            // For security, bank account might be masked or omitted in general DTOs
-            dto.setBankAccount("****" + encryptionService.decrypt(employee.getBankAccount()).substring(4));
+            String decryptedAccount = encryptionService.decrypt(employee.getBankAccount());
+            // 增加健壮性检查
+            if (decryptedAccount != null && decryptedAccount.length() > 4) {
+                dto.setBankAccount("****" + decryptedAccount.substring(decryptedAccount.length() - 4));
+            } else {
+                dto.setBankAccount("****"); // 或者返回一个完全屏蔽的值
+            }
         }
         if (employee.getTaxId() != null) {
             dto.setTaxId(encryptionService.decrypt(employee.getTaxId()));
         }
       
-        // Populate transient fields for display purposes
+        // 填充用于显示的瞬态字段
         if (employee.getDepartment() != null) {
             dto.setDepartmentName(employee.getDepartment().getName());
         }
@@ -855,6 +942,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return dto;
     }
 }
+
 ```
 
 ## Controller Implementation

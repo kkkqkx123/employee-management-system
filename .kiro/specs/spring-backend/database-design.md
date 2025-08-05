@@ -265,6 +265,17 @@ public class Role {
 
 #### Resource Entity
 ```java
+public enum ResourceCategory {
+    USER,
+    EMPLOYEE,
+    DEPARTMENT,
+    POSITION,
+    PAYROLL,
+    COMMUNICATION,
+    SECURITY,
+    OTHER
+}
+
 @Entity
 @Table(name = "resources", indexes = {
     @Index(name = "idx_resource_url", columnList = "url"),
@@ -290,8 +301,9 @@ public class Resource {
     @Column(name = "description", length = 255)
     private String description;    // Resource description
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 50)
-    private String category;       // Resource category (USER, EMPLOYEE, DEPARTMENT, etc.)
+    private ResourceCategory category; // Resource category (USER, EMPLOYEE, DEPARTMENT, etc.)
     
     @Column(name = "active", nullable = false)
     private Boolean active = true; // Resource status
@@ -879,8 +891,9 @@ public class EmailTemplate {
     @Column(name = "template_type", nullable = false, length = 10)
     private TemplateType templateType = TemplateType.HTML; // HTML, TEXT, MIXED
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", length = 50)
-    private String category;       // Template category
+    private TemplateCategory category; // Template category
     
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
@@ -1007,56 +1020,54 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;           // Chat room ID
-  
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
+      
     @Column(name = "sender_id", nullable = false)
     private Long senderId;         // Message sender
-  
+      
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;        // Message content
-  
+      
+    @Enumerated(EnumType.STRING)
     @Column(name = "message_type", length = 20)
-    private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
-  
+    private ChatMessageType messageType;    // Mapped from ChatMessageType enum (TEXT, IMAGE, FILE, SYSTEM)
+      
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;     // Time-zone aware timestamp
-  
+      
     @Column(name = "is_edited", nullable = false)
     private Boolean isEdited = false;
-  
+      
     @Column(name = "edited_at")
     private Instant editedAt;      // Time-zone aware timestamp
-  
+      
     @Column(name = "reply_to_id")
     private Long replyToId;        // Reply to message ID
-  
+      
     @Column(name = "attachment_url", length = 500)
     private String attachmentUrl;
-  
+      
     @Column(name = "attachment_type", length = 100)
     private String attachmentType;
-  
+      
     @Column(name = "attachment_size")
     private Long attachmentSize;
-  
+      
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted = false;
-  
+      
     @Column(name = "deleted_at")
     private Instant deletedAt;     // Time-zone aware timestamp
-  
+      
     @Column(name = "metadata", columnDefinition = "TEXT")
     private String metadata;       // JSON
-  
+      
     @Column(name = "read_receipts", columnDefinition = "TEXT")
     private String readReceipts;   // JSON
-  
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", insertable = false, updatable = false)
-    private ChatRoom chatRoom;
-}
+    }
 ```
 
 **Note:** Chat messages are stored in PostgreSQL to ensure data integrity and support complex queries.
@@ -1108,22 +1119,58 @@ public class ChatRoom {
     @Column(name = "max_participants")
     private Integer maxParticipants;
   
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ChatMessage> messages = new HashSet<>();
-  
-    @ManyToMany
-    @JoinTable(
-        name = "chat_room_participants",
-        joinColumns = @JoinColumn(name = "room_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> participants = new HashSet<>();
+    
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants = new HashSet<>();
 }
 
 public enum ChatRoomType {
     DIRECT,
     GROUP,
     CHANNEL
+}
+
+#### ChatParticipant Entity
+```java
+@Entity
+@Table(name = "chat_participants", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"room_id", "user_id"}, name = "uk_participant_room_user")
+})
+public class ChatParticipant {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
+    
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
+    private ChatParticipantRole role; // OWNER, ADMIN, MEMBER
+    
+    @Column(name = "joined_at", nullable = false)
+    private Instant joinedAt;
+    
+    @Column(name = "last_read_at")
+    private Instant lastReadAt;
+    
+    @Column(name = "last_read_message_id")
+    private Long lastReadMessageId;
+    
+    @Column(name = "is_muted", nullable = false)
+    private boolean isMuted = false;
+    
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+    
+    @Column(name = "left_at")
+    private Instant leftAt;
 }
 ```
 
@@ -1282,11 +1329,13 @@ public class PayrollLedger {
     @Column(name = "currency", length = 10)
     private String currency;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 20)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollLedgerStatus status;
 
     @Column(name = "pay_date")
     private LocalDate payDate;
@@ -1365,8 +1414,9 @@ public class PayrollPeriod {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type;
+    private PayrollPeriodType type;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
@@ -1380,8 +1430,9 @@ public class PayrollPeriod {
     @Column(name = "working_days")
     private Integer workingDays;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private PayrollPeriodStatus status;
 
     @Column(name = "description", length = 500)
     private String description;
@@ -1444,11 +1495,13 @@ public class SalaryComponent {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
-    private String type; // ALLOWANCE, DEDUCTION
+    private SalaryComponentType type; // ALLOWANCE, DEDUCTION
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "calculation_type", nullable = false, length = 20)
-    private String calculationType; // FIXED, PERCENTAGE
+    private CalculationType calculationType; // FIXED, PERCENTAGE
 
     @Column(name = "value", precision = 12, scale = 2)
     private BigDecimal value; // Amount for FIXED, percentage for PERCENTAGE
@@ -1705,25 +1758,8 @@ public class QueryOptimizationPatterns {
         });
     }
     
-    // Use Lua scripts for atomic operations
-    public boolean transferEmployee(Long employeeId, Long fromDept, Long toDept) {
-        String script = """
-            local employee = redis.call('HGET', KEYS[1], 'departmentId')
-            if employee == ARGV[1] then
-                redis.call('HSET', KEYS[1], 'departmentId', ARGV[2])
-                redis.call('HINCRBY', KEYS[2], 'employeeCount', -1)
-                redis.call('HINCRBY', KEYS[3], 'employeeCount', 1)
-                return 1
-            end
-            return 0
-            """;
-        
-        return redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class),
-            Arrays.asList("employees:" + employeeId, 
-                         "departments:" + fromDept, 
-                         "departments:" + toDept),
-            fromDept.toString(), toDept.toString());
-    }
+    // **Architectural Mandate:** Caching layers are only to be updated or invalidated *after* a successful transaction in the primary PostgreSQL database.
+    // The following Lua script example is removed as it violates this principle.
 }
 ```
 
@@ -2047,7 +2083,23 @@ CREATE INDEX idx_active_departments ON departments(parent_id) WHERE enabled = tr
 
 -- Full-text search indexes
 CREATE INDEX idx_employee_search ON employees USING gin(to_tsvector('english', first_name || ' ' || last_name || ' ' || email));
-```
+
+-- Announcements Table
+CREATE TABLE announcements (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    author_id BIGINT NOT NULL,
+    target_audience VARCHAR(50),
+    department_id BIGINT,
+    publish_date DATE,
+    expiry_date DATE,
+    published BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT
+);
 
 ### Query Optimization Patterns
 

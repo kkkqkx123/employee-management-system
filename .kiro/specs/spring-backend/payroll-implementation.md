@@ -798,7 +798,7 @@ public interface PayrollService {
      * (`employeeName`, `departmentName`, etc.). These snapshot fields **should not be automatically
      * updated** after the record is created to ensure the historical accuracy of payroll reports.
      */
-    
+
     /**
      * Create a new payroll ledger
      * @param payrollLedgerDto Payroll ledger data

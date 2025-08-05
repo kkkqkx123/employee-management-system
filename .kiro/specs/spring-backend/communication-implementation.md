@@ -84,6 +84,20 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+ 
+public enum TemplateType {
+    HTML,
+    TEXT,
+    MIXED
+}
+ 
+public enum TemplateCategory {
+    WELCOME,
+    NOTIFICATION,
+    REMINDER,
+    MARKETING,
+    PASSWORD_RESET
+}
 
 @Entity
 @Table(name = "email_templates", indexes = {
@@ -114,11 +128,13 @@ public class EmailTemplate {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content; // Email content template (HTML/Text)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "template_type", nullable = false, length = 20)
-    private String templateType; // HTML, TEXT, FREEMARKER
+    private TemplateType templateType; // Template type (e.g., HTML, TEXT, MIXED)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", length = 50)
-    private String category; // WELCOME, NOTIFICATION, REMINDER, etc.
+    private TemplateCategory category; // WELCOME, NOTIFICATION, REMINDER, etc.
     
     @Column(name = "description", length = 500)
     private String description;
@@ -164,6 +180,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
+public enum EmailStatus {
+    PENDING,
+    SENT,
+    FAILED,
+    BOUNCED,
+    DELIVERED,
+    OPENED,
+    CLICKED
+}
+ 
+public enum EmailPriority {
+    HIGH,
+    NORMAL,
+    LOW
+}
+
 @Entity
 @Table(name = "email_logs", indexes = {
     @Index(name = "idx_emaillog_to_email", columnList = "to_email"),
@@ -201,8 +233,9 @@ public class EmailLog {
     @Column(name = "template_code", length = 50)
     private String templateCode; // Template used (if any)
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private String status; // PENDING, SENT, FAILED, BOUNCED
+    private EmailStatus status; // PENDING, SENT, FAILED, BOUNCED
     
     @Column(name = "error_message", length = 2000)
     private String errorMessage; // Error details if failed
@@ -223,8 +256,9 @@ public class EmailLog {
     @Column(name = "message_id", length = 255)
     private String messageId; // Email provider message ID
     
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority", length = 20)
-    private String priority; // HIGH, NORMAL, LOW
+    private EmailPriority priority; // HIGH, NORMAL, LOW
 }
 ```
 
@@ -368,6 +402,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
  
 import java.time.Instant;
+
+public enum ChatMessageType {
+    TEXT,
+    IMAGE,
+    FILE,
+    SYSTEM // 系统消息, e.g., "User A has joined the room"
+}
  
 @Entity
 @Table(name = "chat_messages", indexes = {
@@ -383,8 +424,9 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
   
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;           // Chat room ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
   
     @Column(name = "sender_id", nullable = false)
     private Long senderId;         // Message sender
@@ -392,8 +434,9 @@ public class ChatMessage {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;        // Message content
   
+    @Enumerated(EnumType.STRING)
     @Column(name = "message_type", length = 20)
-    private String messageType;    // TEXT, IMAGE, FILE, SYSTEM
+    private ChatMessageType messageType;    // TEXT, IMAGE, FILE, SYSTEM
   
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -416,9 +459,6 @@ public class ChatMessage {
     private transient String senderAvatar;
     private transient boolean isRead; // Whether current user has read this message
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", insertable = false, updatable = false)
-    private ChatRoom chatRoom;
 }
 ```
 
@@ -732,6 +772,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDate;
+ 
+public enum AnnouncementTarget {
+    ALL,          // 全体员工
+    DEPARTMENT,   // 特定部门
+    ROLE          // 特定角色
+}
 
 @Entity
 @Table(name = "announcements")
@@ -753,8 +799,9 @@ public class Announcement {
     @Column(name = "author_id", nullable = false)
     private Long authorId; // Added author ID
 
-    @Column(name = "target_audience", length = 50) // e.g., ALL, DEPARTMENT, specific roles
-    private String targetAudience;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "target_audience", length = 50) // e.g., ALL, DEPARTMENT, ROLE
+    private AnnouncementTarget targetAudience;
 
     @Column(name = "department_id") // if target is a specific department
     private Long departmentId;

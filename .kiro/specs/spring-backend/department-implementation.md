@@ -20,6 +20,7 @@ com.example.demo.department/
 │   ├── DepartmentDto.java
 │   ├── DepartmentTreeDto.java
 │   └── DepartmentCreateRequest.java
+|   └── DepartmentUpdateRequest.java
 └── exception/
     ├── DepartmentNotFoundException.java
     ├── DepartmentHierarchyException.java
@@ -39,7 +40,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -241,7 +242,7 @@ import lombok.Builder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data

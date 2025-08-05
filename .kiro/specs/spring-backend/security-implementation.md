@@ -251,6 +251,53 @@ public class Role {
 }
 ```
 
+
+### UserCreateRequest DTO
+```java
+package com.example.demo.security.dto;
+
+import lombok.Data;
+import jakarta.validation.constraints.*;
+import java.util.Set;
+
+@Data
+public class UserCreateRequest {
+    @NotBlank @Size(min = 3, max = 50)
+    private String username;
+    @NotBlank @Email
+    private String email;
+    @NotBlank @Size(min = 8, max = 100)
+    private String password;
+    @NotBlank @Size(max = 50)
+    private String firstName;
+    @NotBlank @Size(max = 50)
+    private String lastName;
+    private Set<Long> roleIds;
+}
+```
+
+### UserUpdateRequest DTO
+```java
+package com.example.demo.security.dto;
+
+import lombok.Data;
+import jakarta.validation.constraints.*;
+import java.util.Set;
+
+@Data
+public class UserUpdateRequest {
+    @NotBlank @Email
+    private String email;
+    @NotBlank @Size(max = 50)
+    private String firstName;
+    @NotBlank @Size(max = 50)
+    private String lastName;
+    private Boolean enabled;
+    private Set<Long> roleIds;
+}
+
+```
+
 ### Resource Entity
 ```java
 package com.example.demo.security.entity;
@@ -621,7 +668,7 @@ public interface UserService {
      * @return Created user DTO
      * @throws UserAlreadyExistsException if username or email already exists
      */
-    UserDto createUser(UserDto userDto);
+    UserDto createUser(UserCreateRequest createRequest);
     
     /**
      * Update an existing user
@@ -630,7 +677,7 @@ public interface UserService {
      * @return Updated user DTO
      * @throws UserNotFoundException if user not found
      */
-    UserDto updateUser(Long id, UserDto userDto);
+    UserDto updateUser(Long id, UserUpdateRequest updateRequest);
     
     /**
      * Get user by ID

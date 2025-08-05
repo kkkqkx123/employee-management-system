@@ -355,22 +355,58 @@ public class EmailService {
 #### Chat and Notification System
 ```java
 @Entity
-public class MessageContent {
+@Table(name = "notifications", indexes = {
+    @Index(name = "idx_notification_user_id", columnList = "user_id"),
+    @Index(name = "idx_notification_type", columnList = "type"),
+    @Index(name = "idx_notification_read_status", columnList = "read_status")
+})
+@EntityListeners(AuditingEntityListener.class)
+public class Notification {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+  
+    @Column(name = "user_id", nullable = false)
+    private Long userId;           // 目标用户
+  
+    @Column(name = "type", length = 50)
+    private String type;           // SYSTEM, EMAIL, CHAT, TASK, etc.
+  
+    @Column(name = "title", length = 255)
+    private String title;
+  
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-    private LocalDateTime createdAt;
-    private Long senderId;
-    private MessageType type;
+  
+    @Column(name = "data", columnDefinition = "TEXT")
+    private String data;           // 附加的 JSON 数据
+  
+    @Column(name = "read_status", nullable = false)
+    private Boolean read = false;
+  
+    @Column(name = "priority", length = 20)
+    private String priority;       // LOW, MEDIUM, HIGH, URGENT
+  
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;     // 时区无关的时间戳
+  
+    @Column(name = "read_at")
+    private Instant readAt;        // 时区无关的时间戳
+  
+    @Column(name = "expires_at")
+    private Instant expiresAt;     // 时区无关的时间戳
+  
+    @Column(name = "action_url", length = 500)
+    private String actionUrl;
+  
+    @Column(name = "related_entity_id")
+    private Long relatedEntityId;
+  
+    @Column(name = "related_entity_type", length = 50)
+    private String relatedEntityType;
 }
 
-@Entity
-public class SystemMessage {
-    private Long id;
-    private Long userId;
-    private Long messageId;
-    private Boolean isRead;
-    private LocalDateTime readAt;
-}
 
 @Service
 public class NotificationService {
@@ -378,6 +414,69 @@ public class NotificationService {
     public List<SystemMessage> getUserNotifications(Long userId);
     public void markAsRead(Long messageId, Long userId);
 }
+
+#### Chat and Announcement Entities
+```java
+@Entity
+@Table(name = "chat_rooms")
+public class ChatRoom {
+    @Id
+    private Long id;
+    private String name;
+    @Enumerated(EnumType.STRING)
+    private ChatRoomType type; // DIRECT, GROUP, CHANNEL
+    private Long createdBy;
+    
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants;
+}
+
+@Entity
+@Table(name = "chat_participants")
+public class ChatParticipant {
+    @Id
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom room;
+    
+    private Long userId;
+    
+    @Enumerated(EnumType.STRING)
+    private ChatParticipantRole role; // OWNER, ADMIN, MEMBER
+}
+
+@Entity
+@Table(name = "chat_messages")
+public class ChatMessage {
+    @Id
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom room;
+    
+    private Long senderId;
+    private String content;
+    
+    @Enumerated(EnumType.STRING)
+    private ChatMessageType messageType; // TEXT, IMAGE, FILE, SYSTEM
+}
+
+@Entity
+@Table(name = "announcements")
+public class Announcement {
+    @Id
+    private Long id;
+    private String title;
+    private String content;
+    private Long authorId;
+    @Enumerated(EnumType.STRING)
+    private AnnouncementTarget targetAudience; // ALL, DEPARTMENT, ROLE
+    private boolean published;
+}
+```
 ```
 
 ### 6. Payroll Management
@@ -466,6 +565,10 @@ employees (id, employee_number, first_name, last_name, email, phone, department_
 -- Communication (PostgreSQL for persistence, Redis for real-time)
 email_templates (id, name, code, subject, content, template_type, category, active, variables, created_at, updated_at, created_by, updated_by)
 email_logs (id, template_code, to_email, cc_emails, bcc_emails, subject, content, status, sent_at, error_message, retry_count, sent_by, created_at, updated_at)
+chat_rooms (id, name, type, description, created_by, is_active, created_at, updated_at, last_message_at)
+chat_participants (id, room_id, user_id, role, joined_at, last_read_at, is_muted)
+chat_messages (id, room_id, sender_id, content, message_type, created_at, is_edited, is_deleted)
+announcements (id, title, content, author_id, target_audience, department_id, publish_date, expiry_date, published, created_at, updated_at)
 notifications (id, user_id, title, content, type, priority, is_read, read_at, created_at, updated_at)
 
 -- Payroll (PostgreSQL)
