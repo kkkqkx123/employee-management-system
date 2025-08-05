@@ -64,6 +64,16 @@ public enum EmployeeStatus {
 }
 ```
 
+### PayType Enum
+```java
+package com.example.demo.employee.entity;
+
+public enum PayType {
+    SALARIED,
+    HOURLY
+}
+```
+
 ### Employee Entity
 ```java
 package com.example.demo.employee.entity;
@@ -75,9 +85,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.example.demo.employee.entity.PayType;
+import com.example.demo.payroll.entity.PayrollLedger;
+import jakarta.persistence.CascadeType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees", indexes = {
@@ -171,6 +186,13 @@ public class Employee {
     @Column(name = "salary", precision = 12, scale = 2)
     private BigDecimal salary;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pay_type", nullable = false, length = 20)
+    private PayType payType = PayType.SALARIED;
+
+    @Column(name = "hourly_rate", precision = 12, scale = 2)
+    private BigDecimal hourlyRate;
+
     @Column(name = "salary_grade", length = 20)
     private String salaryGrade;
 
@@ -221,6 +243,10 @@ public class Employee {
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "position_id", insertable = false, updatable = false)
     // private Position position;
+
+    // TODO: This relationship requires the PayrollLedger entity to have a 'employee' field with a ManyToOne mapping.
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<PayrollLedger> payrollLedgers = new HashSet<>();
 
     @Transient
     private String departmentName;

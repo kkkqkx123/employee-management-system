@@ -176,8 +176,7 @@ com.example.demo.communication/
 │       ├── ChatWebSocketHandler.java
 │       └── WebSocketConfig.java
 ├── notification/
-│   ├── entity/
-│   │   ├── MessageContent.java
+├── entity/
 │   │   └── SystemMessage.java
 │   ├── service/
 │   │   ├── NotificationService.java
@@ -206,53 +205,78 @@ com.example.demo.communication/
 ```java
 package com.example.demo.communication.email.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "email_templates", indexes = {
+    @Index(name = "idx_emailtemplate_code", columnList = "code", unique = true),
+    @Index(name = "idx_emailtemplate_category", columnList = "category")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("email_templates")
+@EntityListeners(AuditingEntityListener.class)
 public class EmailTemplate {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name; // Template name for identification
     
-    @Indexed
+    @Column(name = "code", nullable = false, unique = true, length = 50)
     private String code; // Unique template code
     
+    @Column(name = "subject", nullable = false, length = 255)
     private String subject; // Email subject template
     
+    @Lob
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content; // Email content template (HTML/Text)
     
+    @Column(name = "template_type", nullable = false, length = 20)
     private String templateType; // HTML, TEXT, FREEMARKER
     
+    @Column(name = "category", length = 50)
     private String category; // WELCOME, NOTIFICATION, REMINDER, etc.
     
+    @Column(name = "description", length = 500)
     private String description;
     
+    @Lob
+    @Column(name = "variables", columnDefinition = "TEXT")
     private String variables; // JSON string of available template variables
     
-    private boolean isDefault; // Whether this is a default system template
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
     
-    private boolean enabled;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "created_by")
     private Long createdBy;
     
+    @Column(name = "updated_by")
     private Long updatedBy;
 }
 ```
@@ -261,55 +285,77 @@ public class EmailTemplate {
 ```java
 package com.example.demo.communication.email.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "email_logs", indexes = {
+    @Index(name = "idx_emaillog_to_email", columnList = "to_email"),
+    @Index(name = "idx_emaillog_status", columnList = "status"),
+    @Index(name = "idx_emaillog_template_code", columnList = "template_code"),
+    @Index(name = "idx_emaillog_sent_by", columnList = "sent_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("email_logs")
+@EntityListeners(AuditingEntityListener.class)
 public class EmailLog {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "to_email", nullable = false)
     private String toEmail;
     
+    @Column(name = "cc_emails", length = 1000)
     private String ccEmails; // Comma-separated CC emails
     
+    @Column(name = "bcc_emails", length = 1000)
     private String bccEmails; // Comma-separated BCC emails
     
+    @Column(name = "subject", nullable = false)
     private String subject;
     
+    @Lob
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
     
-    @Indexed
+    @Column(name = "template_code", length = 50)
     private String templateCode; // Template used (if any)
     
-    @Indexed
+    @Column(name = "status", nullable = false, length = 20)
     private String status; // PENDING, SENT, FAILED, BOUNCED
     
+    @Column(name = "error_message", length = 2000)
     private String errorMessage; // Error details if failed
     
-    private Integer retryCount;
+    @Column(name = "retry_count", nullable = false)
+    private Integer retryCount = 0;
     
+    @Column(name = "sent_at")
     private LocalDateTime sentAt;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
-    @Indexed
+    @Column(name = "sent_by")
     private Long sentBy; // User who sent the email
     
+    @Column(name = "message_id", length = 255)
     private String messageId; // Email provider message ID
     
+    @Column(name = "priority", length = 20)
     private String priority; // HIGH, NORMAL, LOW
 }
 ```
@@ -482,56 +528,81 @@ public class ChatMessage {
 ```java
 package com.example.demo.communication.chat.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Entity
+@Table(name = "chat_rooms", indexes = {
+    @Index(name = "idx_chatroom_type", columnList = "type"),
+    @Index(name = "idx_chatroom_created_by", columnList = "created_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("chat_rooms")
+@EntityListeners(AuditingEntityListener.class)
 public class ChatRoom {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", length = 100)
     private String name; // Room name (for group chats)
     
-    @Indexed
+    @Column(name = "type", nullable = false, length = 20)
     private String type; // DIRECT, GROUP, CHANNEL
     
+    @Column(name = "description", length = 500)
     private String description;
     
+    @Column(name = "avatar_url", length = 255)
     private String avatarUrl;
     
-    @Indexed
+    @Column(name = "created_by", nullable = false)
     private Long createdBy; // User who created the room
     
-    private boolean isPrivate; // Whether room is private
+    @Column(name = "is_private", nullable = false)
+    private boolean isPrivate = false;
     
-    private boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "last_message_at")
     private LocalDateTime lastMessageAt;
     
-    private Long lastMessageId;
+    @Column(name = "last_message_id")
+    private Long lastMessageId; // Stored in Redis, synced periodically
     
-    // Transient fields
-    private transient Set<Long> participantIds;
-    private transient Long unreadCount; // For current user
-    private transient String lastMessageContent;
-    private transient String lastMessageSender;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatParticipant> participants = new HashSet<>();
+
+    // Transient fields for DTO mapping
+    @Transient
+    private Long unreadCount;
+    @Transient
+    private String lastMessageContent;
+    @Transient
+    private String lastMessageSender;
 }
 ```
 
@@ -539,50 +610,64 @@ public class ChatRoom {
 ```java
 package com.example.demo.communication.chat.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "chat_participants", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"room_id", "user_id"}, name = "uk_participant_room_user")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("chat_participants")
 public class ChatParticipant {
     @Id
-    private String id; // Composite key: roomId:userId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
-    @Indexed
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private ChatRoom room;
     
-    @Indexed
+    @Column(name = "user_id", nullable = false)
     private Long userId;
     
-    @Indexed
+    @Column(name = "role", nullable = false, length = 20)
     private String role; // OWNER, ADMIN, MEMBER
     
+    @Column(name = "joined_at", nullable = false)
     private LocalDateTime joinedAt;
     
-    private LocalDateTime lastReadAt; // Last time user read messages in this room
+    @Column(name = "last_read_at")
+    private LocalDateTime lastReadAt;
     
-    private Long lastReadMessageId; // Last message ID read by user
+    @Column(name = "last_read_message_id")
+    private Long lastReadMessageId; // Stored in Redis, synced periodically
     
-    private boolean isMuted; // Whether user has muted this room
+    @Column(name = "is_muted", nullable = false)
+    private boolean isMuted = false;
     
-    private boolean isActive; // Whether user is still in the room
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
     
-    private LocalDateTime leftAt; // When user left the room (if applicable)
+    @Column(name = "left_at")
+    private LocalDateTime leftAt;
     
-    // Transient fields
-    private transient String userName;
-    private transient String userAvatar;
-    private transient boolean isOnline;
+    // Transient fields for DTO mapping
+    @Transient
+    private String userName;
+    @Transient
+    private String userAvatar;
+    @Transient
+    private boolean isOnline;
 }
 ```
 
@@ -2641,65 +2726,92 @@ com.example.demo.department/
 ```java
 package com.example.demo.department.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("departments")
+@Entity
+@Table(name = "departments", indexes = {
+    @Index(name = "idx_department_name", columnList = "name"),
+    @Index(name = "idx_department_code", columnList = "code"),
+    @Index(name = "idx_department_parent_id", columnList = "parent_id"),
+    @Index(name = "idx_department_dep_path", columnList = "dep_path"),
+    @Index(name = "idx_department_enabled", columnList = "enabled"),
+    @Index(name = "idx_department_manager_id", columnList = "manager_id")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Department {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     
+    @Column(name = "code", unique = true, nullable = false, length = 20)
+    private String code;
+    
+    @Column(name = "description", length = 500)
     private String description;
     
-    @Indexed
-    private Long parentId;
-    
-    @Indexed
-    private String depPath; // Hierarchical path like "/1/2/3"
-    
-    @Indexed
-    private Boolean isParent;
-    
-    private Integer level; // Depth level in hierarchy (0 for root)
-    
-    private Integer sortOrder; // Display order within same level
-    
-    private String code; // Department code for identification
-    
+    @Column(name = "location", length = 255)
     private String location;
     
-    private Long managerId; // Employee ID of department manager
+    @Column(name = "parent_id")
+    private Long parentId;
     
-    private boolean enabled;
+    @Column(name = "dep_path", length = 500)
+    private String depPath;
     
+    @Column(name = "is_parent", nullable = false)
+    private Boolean isParent = false;
+    
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+    
+    @Column(name = "level")
+    private Integer level = 0;
+    
+    @Column(name = "sort_order")
+    private Integer sortOrder = 0;
+    
+    @Column(name = "manager_id")
+    private Long managerId;
+    
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "created_by")
     private Long createdBy;
     
+    @Column(name = "updated_by")
     private Long updatedBy;
     
-    // Transient fields for tree operations (not stored in Redis)
-    private transient List<Department> children;
-    private transient Department parent;
-    private transient Set<Long> employeeIds; // IDs of employees in this department
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    private Department parent;
+    
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    private Set<Department> children = new HashSet<>();
+    
+    // Employee relationship is defined in the Employee entity
+    
+    @Transient
+    private Long employeeCount;
 }
 ```
 
@@ -2710,14 +2822,14 @@ public class Department {
 package com.example.demo.department.repository;
 
 import com.example.demo.department.entity.Department;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DepartmentRepository extends CrudRepository<Department, Long> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     /**
      * Find department by name
@@ -2820,9 +2932,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -2941,9 +3053,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor
@@ -2982,9 +3094,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Data
 @NoArgsConstructor
@@ -4084,118 +4196,170 @@ public enum EmployeeStatus {
 ```java
 package com.example.demo.employee.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("employees")
+@Entity
+@Table(name = "employees", indexes = {
+    @Index(name = "idx_employee_number", columnList = "employee_number", unique = true),
+    @Index(name = "idx_employee_email", columnList = "email", unique = true),
+    @Index(name = "idx_employee_department_id", columnList = "department_id"),
+    @Index(name = "idx_employee_position_id", columnList = "position_id"),
+    @Index(name = "idx_employee_status", columnList = "status")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Employee {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String employeeNumber; // Unique employee identifier
-    
-    @Indexed
+
+    @Column(name = "employee_number", nullable = false, unique = true, length = 20)
+    private String employeeNumber;
+
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
-    
-    @Indexed
+
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-    
-    @Indexed
+
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
-    
+
+    @Column(name = "phone", length = 20)
     private String phone;
-    
+
+    @Column(name = "mobile_phone", length = 20)
     private String mobilePhone;
-    
+
+    @Column(name = "address", length = 255)
     private String address;
-    
+
+    @Column(name = "city", length = 50)
     private String city;
-    
+
+    @Column(name = "state", length = 50)
     private String state;
-    
+
+    @Column(name = "zip_code", length = 10)
     private String zipCode;
-    
+
+    @Column(name = "country", length = 50)
     private String country;
-    
+
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-    
-    private String gender; // MALE, FEMALE, OTHER
-    
-    private String maritalStatus; // SINGLE, MARRIED, DIVORCED, WIDOWED
-    
+
+    @Column(name = "gender", length = 10)
+    private String gender;
+
+    @Column(name = "marital_status", length = 20)
+    private String maritalStatus;
+
+    @Column(name = "nationality", length = 50)
     private String nationality;
-    
+
+    @Column(name = "emergency_contact_name", length = 100)
     private String emergencyContactName;
-    
+
+    @Column(name = "emergency_contact_phone", length = 20)
     private String emergencyContactPhone;
-    
+
+    @Column(name = "emergency_contact_relation", length = 50)
     private String emergencyContactRelation;
-    
-    @Indexed
+
+    @Column(name = "department_id", nullable = false)
     private Long departmentId;
-    
-    @Indexed
+
+    @Column(name = "position_id", nullable = false)
     private Long positionId;
-    
-    @Indexed
-    private Long managerId; // Direct manager employee ID
-    
+
+    @Column(name = "manager_id")
+    private Long managerId;
+
+    @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
-    
+
+    @Column(name = "termination_date")
     private LocalDate terminationDate;
-    
-    @Indexed
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
     private EmployeeStatus status;
-    
+
+    @Column(name = "salary", precision = 12, scale = 2)
     private BigDecimal salary;
-    
+
+    @Column(name = "salary_grade", length = 20)
     private String salaryGrade;
-    
-    private String employmentType; // FULL_TIME, PART_TIME, CONTRACT, INTERN
-    
-    private String workLocation; // OFFICE, REMOTE, HYBRID
-    
-    private String skills; // Comma-separated skills
-    
+
+    @Column(name = "employment_type", length = 20)
+    private String employmentType;
+
+    @Column(name = "work_location", length = 20)
+    private String workLocation;
+
+    @Column(name = "skills", length = 500)
+    private String skills;
+
+    @Column(name = "education", length = 500)
     private String education;
-    
+
+    @Column(name = "certifications", length = 500)
     private String certifications;
-    
+
+    @Lob
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
-    
+
+    @Column(name = "profile_image_url", length = 255)
     private String profileImageUrl;
-    
-    private boolean enabled;
-    
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
+
+    // Relationships to be added if Department/Position entities are in the same module
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    // private Department department;
     
-    // Transient fields for display purposes (not stored in Redis)
-    private transient String departmentName;
-    private transient String positionName;
-    private transient String managerName;
-    private transient String fullName; // firstName + lastName
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "position_id", insertable = false, updatable = false)
+    // private Position position;
+
+    @Transient
+    private String departmentName;
+    @Transient
+    private String positionName;
+    @Transient
+    private String managerName;
+    @Transient
+    private String fullName;
 }
-```## Repos
+```
 itory Interface
 
 ### EmployeeRepository
@@ -4206,7 +4370,7 @@ import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.entity.EmployeeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -4214,7 +4378,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends CrudRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     
     /**
      * Find employee by employee number
@@ -4394,7 +4558,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
@@ -4714,215 +4878,203 @@ com.example.demo.payroll/
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 
-@Data
+@Entity
+@Table(name = "payroll_ledgers", indexes = {
+    @Index(name = "idx_payrollledger_employee_id", columnList = "employee_id"),
+    @Index(name = "idx_payrollledger_period_id", columnList = "payroll_period_id"),
+    @Index(name = "idx_payrollledger_status", columnList = "status")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_ledgers")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollLedger {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+
+    @Column(name = "employee_id", nullable = false)
     private Long employeeId;
-    
-    @Indexed
+
+    @Column(name = "payroll_period_id", nullable = false)
     private Long payrollPeriodId;
-    
-    private String employeeNumber; // Denormalized for quick access
-    
-    private String employeeName; // Denormalized for quick access
-    
-    @Indexed
+
+    @Column(name = "employee_number", length = 20)
+    private String employeeNumber;
+
+    @Column(name = "employee_name", length = 100)
+    private String employeeName;
+
+    @Column(name = "department_id")
     private Long departmentId;
-    
-    private String departmentName; // Denormalized for quick access
-    
-    @Indexed
+
+    @Column(name = "department_name", length = 100)
+    private String departmentName;
+
+    @Column(name = "position_id")
     private Long positionId;
-    
-    private String positionName; // Denormalized for quick access
-    
-    // Basic Salary Information
+
+    @Column(name = "position_name", length = 100)
+    private String positionName;
+
+    @Column(name = "base_salary", precision = 12, scale = 2)
     private BigDecimal baseSalary;
-    
+
+    @Column(name = "hourly_rate", precision = 12, scale = 2)
     private BigDecimal hourlyRate;
-    
+
+    @Column(name = "hours_worked", precision = 10, scale = 2)
     private BigDecimal hoursWorked;
-    
+
+    @Column(name = "overtime_hours", precision = 10, scale = 2)
     private BigDecimal overtimeHours;
-    
+
+    @Column(name = "overtime_rate", precision = 12, scale = 2)
     private BigDecimal overtimeRate;
-    
-    // Allowances
-    private BigDecimal housingAllowance;
-    
-    private BigDecimal transportAllowance;
-    
-    private BigDecimal mealAllowance;
-    
-    private BigDecimal performanceBonus;
-    
-    private BigDecimal otherAllowances;
-    
+
+    @Column(name = "total_allowances", precision = 12, scale = 2)
     private BigDecimal totalAllowances;
-    
-    // Deductions
-    private BigDecimal incomeTax;
-    
-    private BigDecimal socialSecurityTax;
-    
-    private BigDecimal healthInsurance;
-    
-    private BigDecimal pensionContribution;
-    
-    private BigDecimal loanDeduction;
-    
-    private BigDecimal advanceDeduction;
-    
-    private BigDecimal otherDeductions;
-    
+
+    @Column(name = "total_deductions", precision = 12, scale = 2)
     private BigDecimal totalDeductions;
-    
-    // Calculated Amounts
-    private BigDecimal grossSalary; // baseSalary + totalAllowances
-    
-    private BigDecimal netSalary; // grossSalary - totalDeductions
-    
-    private BigDecimal employerContributions; // Employer's social security, etc.
-    
-    private BigDecimal totalCost; // netSalary + employerContributions
-    
-    // Additional Information
+
+    @Column(name = "gross_salary", precision = 12, scale = 2)
+    private BigDecimal grossSalary;
+
+    @Column(name = "net_salary", precision = 12, scale = 2)
+    private BigDecimal netSalary;
+
+    @Column(name = "employer_contributions", precision = 12, scale = 2)
+    private BigDecimal employerContributions;
+
+    @Column(name = "total_cost", precision = 12, scale = 2)
+    private BigDecimal totalCost;
+
+    @Column(name = "currency", length = 10)
     private String currency;
-    
-    private String paymentMethod; // BANK_TRANSFER, CASH, CHECK
-    
-    private String bankAccount;
-    
-    private String bankName;
-    
-    @Indexed
-    private String status; // DRAFT, CALCULATED, APPROVED, PAID, CANCELLED
-    
+
+    @Column(name = "payment_method", length = 20)
+    private String paymentMethod;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "pay_date")
     private LocalDate payDate;
-    
-    private String paymentReference;
-    
+
+    @Lob
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
-    
-    // Audit Information
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    private LocalDateTime calculatedAt;
-    
-    private Long calculatedBy;
-    
-    private LocalDateTime approvedAt;
-    
-    private Long approvedBy;
-    
-    private LocalDateTime paidAt;
-    
-    private Long paidBy;
-    
-    // Additional salary components (stored as JSON)
-    private Map<String, BigDecimal> customAllowances;
-    
-    private Map<String, BigDecimal> customDeductions;
-    
-    // Transient fields for calculations
-    private transient BigDecimal taxableIncome;
-    private transient BigDecimal taxRate;
-    private transient Integer workingDays;
-    private transient Integer actualWorkingDays;
+
+    @Lob
+    @Column(name = "calculation_details", columnDefinition = "TEXT")
+    private String calculationDetails; // JSON string for all components
 }
 ```
-
 ### PayrollPeriod Entity
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Data
+@Entity
+@Table(name = "payroll_periods", indexes = {
+    @Index(name = "idx_payrollperiod_start_end", columnList = "start_date, end_date"),
+    @Index(name = "idx_payrollperiod_status", columnList = "status")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_periods")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollPeriod {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String name; // e.g., "January 2024", "Q1 2024"
-    
-    @Indexed
-    private String type; // MONTHLY, QUARTERLY, YEARLY, WEEKLY, BI_WEEKLY
-    
-    @Indexed
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "type", nullable = false, length = 20)
+    private String type;
+
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
-    
-    @Indexed
+
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
-    
-    private LocalDate payDate; // When salaries should be paid
-    
-    private Integer workingDays; // Number of working days in period
-    
-    @Indexed
-    private String status; // OPEN, PROCESSING, CALCULATED, APPROVED, PAID, CLOSED
-    
+
+    @Column(name = "pay_date", nullable = false)
+    private LocalDate payDate;
+
+    @Column(name = "working_days")
+    private Integer workingDays;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "description", length = 500)
     private String description;
-    
-    private boolean isActive;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    private LocalDateTime closedAt;
-    
-    private Long closedBy;
-    
-    // Statistics (calculated fields)
-    private transient Long totalEmployees;
-    private transient Long processedEmployees;
-    private transient java.math.BigDecimal totalGrossSalary;
-    private transient java.math.BigDecimal totalNetSalary;
-    private transient java.math.BigDecimal totalDeductions;
 }
 ```
 
@@ -4930,71 +5082,63 @@ public class PayrollPeriod {
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Data
+@Entity
+@Table(name = "salary_components", indexes = {
+    @Index(name = "idx_salarycomponent_code", columnList = "code", unique = true),
+    @Index(name = "idx_salarycomponent_type", columnList = "type")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("salary_components")
+@EntityListeners(AuditingEntityListener.class)
 public class SalaryComponent {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String code; // Unique component code
-    
-    @Indexed
-    private String name; // Component name
-    
-    @Indexed
-    private String type; // ALLOWANCE, DEDUCTION, TAX
-    
-    @Indexed
-    private String category; // BASIC, HOUSING, TRANSPORT, INCOME_TAX, etc.
-    
-    private String description;
-    
-    @Indexed
-    private String calculationType; // FIXED, PERCENTAGE, FORMULA
-    
-    private BigDecimal fixedAmount; // For FIXED calculation type
-    
-    private BigDecimal percentage; // For PERCENTAGE calculation type
-    
-    private String formula; // For FORMULA calculation type
-    
-    private BigDecimal minAmount; // Minimum amount for this component
-    
-    private BigDecimal maxAmount; // Maximum amount for this component
-    
-    private boolean isTaxable; // Whether this component is taxable
-    
-    private boolean isMandatory; // Whether this component is mandatory
-    
-    private boolean isActive;
-    
-    private Integer sortOrder; // Display order
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
-    private Long createdBy;
-    
-    private Long updatedBy;
-    
-    // Applicability rules (stored as JSON)
-    private String applicabilityRules; // JSON rules for when this component applies
+
+    @Column(name = "code", nullable = false, unique = true, length = 50)
+    private String code;
+
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
+
+    @Column(name = "type", nullable = false, length = 20)
+    private String type; // ALLOWANCE, DEDUCTION
+
+    @Column(name = "calculation_type", nullable = false, length = 20)
+    private String calculationType; // FIXED, PERCENTAGE
+
+    @Column(name = "value", precision = 12, scale = 2)
+    private BigDecimal value; // Amount for FIXED, percentage for PERCENTAGE
+
+    @Column(name = "is_taxable", nullable = false)
+    private boolean isTaxable = false;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = true;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }
 ```
 
@@ -5002,48 +5146,57 @@ public class SalaryComponent {
 ```java
 package com.example.demo.payroll.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Data
+@Entity
+@Table(name = "payroll_audits", indexes = {
+    @Index(name = "idx_payrollaudit_ledger_id", columnList = "payroll_ledger_id"),
+    @Index(name = "idx_payrollaudit_performed_by", columnList = "performed_by")
+})
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@RedisHash("payroll_audits")
+@EntityListeners(AuditingEntityListener.class)
 public class PayrollAudit {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
+
+    @Column(name = "payroll_ledger_id", nullable = false)
     private Long payrollLedgerId;
-    
-    @Indexed
-    private String action; // CREATE, UPDATE, CALCULATE, APPROVE, PAY, CANCEL
-    
-    private String oldValues; // JSON of old values
-    
-    private String newValues; // JSON of new values
-    
-    private String reason; // Reason for the change
-    
-    @Indexed
+
+    @Column(name = "action", nullable = false, length = 50)
+    private String action;
+
+    @Lob
+    @Column(name = "details", columnDefinition = "TEXT")
+    private String details; // JSON string of changes
+
+    @Column(name = "reason", length = 500)
+    private String reason;
+
+    @Column(name = "performed_by", nullable = false)
     private Long performedBy;
-    
-    private String performedByName; // Denormalized for quick access
-    
-    private LocalDateTime performedAt;
-    
+
+    @CreatedDate
+    @Column(name = "performed_at", nullable = false, updatable = false)
+    private Instant performedAt;
+
+    @Column(name = "ip_address", length = 45)
     private String ipAddress;
-    
-    private String userAgent;
 }
+```
 ```## Repos
 itory Interfaces
 
@@ -5054,7 +5207,7 @@ package com.example.demo.payroll.repository;
 import com.example.demo.payroll.entity.PayrollLedger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -5062,7 +5215,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PayrollLedgerRepository extends CrudRepository<PayrollLedger, Long> {
+public interface PayrollLedgerRepository extends JpaRepository<PayrollLedger, Long> {
     
     /**
      * Find payroll ledger by employee and payroll period
@@ -5173,7 +5326,7 @@ package com.example.demo.payroll.repository;
 import com.example.demo.payroll.entity.PayrollPeriod;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -5181,7 +5334,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PayrollPeriodRepository extends CrudRepository<PayrollPeriod, Long> {
+public interface PayrollPeriodRepository extends JpaRepository<PayrollPeriod, Long> {
     
     /**
      * Find payroll period by name
@@ -5483,91 +5636,182 @@ com.example.demo.position/
 
 ## Entity Class
 
+### Enums
+
+#### PositionCategory Enum
+```java
+package com.example.demo.position.enums;
+
+public enum PositionCategory {
+    TECHNICAL,
+    MANAGEMENT,
+    ADMINISTRATIVE,
+    SALES,
+    HR,
+    FINANCE,
+    MARKETING,
+    OPERATIONS,
+    SUPPORT,
+    OTHER
+}
+```
+
+#### PositionLevel Enum
+```java
+package com.example.demo.position.enums;
+
+public enum PositionLevel {
+    JUNIOR,
+    MID,
+    SENIOR,
+    LEAD,
+    MANAGER,
+    DIRECTOR,
+    VP,
+    EXECUTIVE
+}
+```
+
+#### EmploymentType Enum
+```java
+package com.example.demo.position.enums;
+
+public enum EmploymentType {
+    FULL_TIME,
+    PART_TIME,
+    CONTRACT,
+    INTERNSHIP,
+    TEMPORARY
+}
+```
 ### Position Entity
 ```java
 package com.example.demo.position.entity;
 
+import com.example.demo.department.entity.Department;
+import com.example.demo.employee.entity.Employee;
+import com.example.demo.position.enums.EmploymentType;
+import com.example.demo.position.enums.PositionCategory;
+import com.example.demo.position.enums.PositionLevel;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
+@Entity
+@Table(name = "positions", indexes = {
+    @Index(name = "idx_position_job_title", columnList = "job_title"),
+    @Index(name = "idx_position_code", columnList = "code"),
+    @Index(name = "idx_position_department_id", columnList = "department_id"),
+    @Index(name = "idx_position_level", columnList = "level"),
+    @Index(name = "idx_position_enabled", columnList = "enabled"),
+    @Index(name = "idx_position_category", columnList = "category")
+})
+@EntityListeners(AuditingEntityListener.class)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@RedisHash("positions")
 public class Position {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Indexed
-    private String jobTitle; // Job title (e.g., "Software Engineer")
-    
-    @Indexed
-    private String professionalTitle; // Professional title (e.g., "Senior", "Lead", "Manager")
-    
-    private String code; // Position code for identification
-    
+
+    @NotBlank(message = "Job title is required")
+    @Column(name = "job_title", nullable = false, length = 100)
+    private String jobTitle;
+
+    @Column(name = "professional_title", length = 100)
+    private String professionalTitle;
+
+    @NotBlank(message = "Position code is required")
+    @Column(name = "code", unique = true, nullable = false, length = 20)
+    private String code;
+
+    @Column(name = "description", length = 1000)
     private String description;
-    
-    @Indexed
-    private Long departmentId; // Department this position belongs to
-    
-    @Indexed
-    private String level; // Position level (ENTRY, JUNIOR, SENIOR, LEAD, MANAGER, DIRECTOR, VP, C_LEVEL)
-    
-    @Indexed
-    private String category; // Position category (TECHNICAL, MANAGEMENT, SALES, HR, FINANCE, etc.)
-    
-    private BigDecimal minSalary; // Minimum salary for this position
-    
-    private BigDecimal maxSalary; // Maximum salary for this position
-    
-    private String salaryGrade; // Salary grade/band
-    
-    private String requiredSkills; // Comma-separated required skills
-    
-    private String preferredSkills; // Comma-separated preferred skills
-    
-    private String requiredEducation; // Required education level
-    
-    private String requiredExperience; // Required years of experience
-    
-    private String responsibilities; // Job responsibilities
-    
-    private String requirements; // Job requirements
-    
-    private String benefits; // Position benefits
-    
-    private String workLocation; // OFFICE, REMOTE, HYBRID
-    
-    private String employmentType; // FULL_TIME, PART_TIME, CONTRACT, INTERN
-    
-    private boolean isManagerial; // Whether this is a managerial position
-    
-    private boolean isActive; // Whether position is currently active/available
-    
-    private boolean enabled;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
+
+    @Column(name = "requirements", length = 2000)
+    private String requirements;
+
+    @Column(name = "responsibilities", length = 2000)
+    private String responsibilities;
+
+    @NotNull(message = "Position category is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false, length = 20)
+    private PositionCategory category = PositionCategory.TECHNICAL;
+
+    @Column(name = "salary_grade", length = 10)
+    private String salaryGrade;
+
+    @NotNull(message = "Department is required")
+    @Column(name = "department_id", nullable = false)
+    private Long departmentId;
+
+    @NotNull(message = "Position level is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level", nullable = false, length = 20)
+    private PositionLevel level = PositionLevel.JUNIOR;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+
+    @Column(name = "min_salary", precision = 12, scale = 2)
+    private BigDecimal minSalary;
+
+    @Column(name = "max_salary", precision = 12, scale = 2)
+    private BigDecimal maxSalary;
+
+    @Column(name = "required_skills", length = 1000)
+    private String requiredSkills;
+
+    @Column(name = "required_education", length = 500)
+    private String requiredEducation;
+
+    @Column(name = "required_experience")
+    private Integer requiredExperience;
+
+    @Column(name = "benefits", length = 1000)
+    private String benefits;
+
+    @Column(name = "work_location", length = 255)
+    private String workLocation;
+
+    @NotNull(message = "Employment type is required")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "employment_type", nullable = false, length = 20)
+    private EmploymentType employmentType = EmploymentType.FULL_TIME;
+
+    @Column(name = "is_managerial", nullable = false)
+    private Boolean isManagerial = false;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Column(name = "created_by")
     private Long createdBy;
-    
+
+    @Column(name = "updated_by")
     private Long updatedBy;
-    
-    // Transient fields for display purposes (not stored in Redis)
-    private transient String departmentName;
-    private transient Long employeeCount; // Number of employees in this position
-    private transient String fullTitle; // jobTitle + professionalTitle
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_position_department"))
+    private Department department;
+
+    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
+    private Set<Employee> employees = new HashSet<>();
 }
 ```
 
@@ -5578,171 +5822,88 @@ public class Position {
 package com.example.demo.position.repository;
 
 import com.example.demo.position.entity.Position;
+import com.example.demo.position.enums.PositionCategory;
+import com.example.demo.position.enums.PositionLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PositionRepository extends CrudRepository<Position, Long> {
-    
+public interface PositionRepository extends JpaRepository<Position, Long>, JpaSpecificationExecutor<Position> {
+
     /**
-     * Find position by job title and professional title
-     * @param jobTitle Job title
-     * @param professionalTitle Professional title
-     * @return Optional position
-     */
-    Optional<Position> findByJobTitleAndProfessionalTitle(String jobTitle, String professionalTitle);
-    
-    /**
-     * Find position by code
-     * @param code Position code
-     * @return Optional position
+     * Find a position by its unique code.
+     *
+     * @param code The position code.
+     * @return An Optional containing the found position or empty if not found.
      */
     Optional<Position> findByCode(String code);
-    
+
     /**
-     * Find positions by department ID
-     * @param departmentId Department ID
-     * @return List of positions
-     */
-    List<Position> findByDepartmentIdOrderByJobTitle(Long departmentId);
-    
-    /**
-     * Find positions by department ID with pagination
-     * @param departmentId Department ID
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByDepartmentId(Long departmentId, Pageable pageable);
-    
-    /**
-     * Find positions by level
-     * @param level Position level
-     * @return List of positions
-     */
-    List<Position> findByLevelOrderByJobTitle(String level);
-    
-    /**
-     * Find positions by category
-     * @param category Position category
-     * @return List of positions
-     */
-    List<Position> findByCategoryOrderByJobTitle(String category);
-    
-    /**
-     * Find positions by job title containing (case insensitive)
-     * @param jobTitle Job title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByJobTitleContainingIgnoreCase(String jobTitle, Pageable pageable);
-    
-    /**
-     * Find positions by professional title containing (case insensitive)
-     * @param professionalTitle Professional title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByProfessionalTitleContainingIgnoreCase(String professionalTitle, Pageable pageable);
-    
-    /**
-     * Find positions by job title or professional title containing (case insensitive)
-     * @param jobTitle Job title search term
-     * @param professionalTitle Professional title search term
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByJobTitleContainingIgnoreCaseOrProfessionalTitleContainingIgnoreCase(
-        String jobTitle, String professionalTitle, Pageable pageable);
-    
-    /**
-     * Find enabled positions
-     * @param pageable Pagination parameters
-     * @return Page of enabled positions
-     */
-    Page<Position> findByEnabledTrue(Pageable pageable);
-    
-    /**
-     * Find active positions
-     * @param pageable Pagination parameters
-     * @return Page of active positions
-     */
-    Page<Position> findByIsActiveTrue(Pageable pageable);
-    
-    /**
-     * Find managerial positions
-     * @param pageable Pagination parameters
-     * @return Page of managerial positions
-     */
-    Page<Position> findByIsManagerialTrue(Pageable pageable);
-    
-    /**
-     * Find positions by employment type
-     * @param employmentType Employment type
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByEmploymentType(String employmentType, Pageable pageable);
-    
-    /**
-     * Find positions by work location
-     * @param workLocation Work location
-     * @param pageable Pagination parameters
-     * @return Page of positions
-     */
-    Page<Position> findByWorkLocation(String workLocation, Pageable pageable);
-    
-    /**
-     * Check if position exists by job title and professional title
-     * @param jobTitle Job title
-     * @param professionalTitle Professional title
-     * @return true if exists
-     */
-    boolean existsByJobTitleAndProfessionalTitle(String jobTitle, String professionalTitle);
-    
-    /**
-     * Check if position code exists
-     * @param code Position code
-     * @return true if exists
+     * Check if a position with the given code exists.
+     *
+     * @param code The position code.
+     * @return true if a position with the code exists, false otherwise.
      */
     boolean existsByCode(String code);
-    
+
     /**
-     * Count positions by department ID
-     * @param departmentId Department ID
-     * @return Count of positions
+     * Find all positions within a specific department.
+     *
+     * @param departmentId The ID of the department.
+     * @return A list of positions in the specified department.
      */
-    long countByDepartmentId(Long departmentId);
-    
+    List<Position> findByDepartmentId(Long departmentId);
+
     /**
-     * Count positions by level
-     * @param level Position level
-     * @return Count of positions
+     * Find all positions matching a specific level.
+     *
+     * @param level The position level.
+     * @return A list of positions with the specified level.
      */
-    long countByLevel(String level);
-    
+    List<Position> findByLevel(PositionLevel level);
+
     /**
-     * Count positions by category
-     * @param category Position category
-     * @return Count of positions
+     * Find all positions belonging to a specific category.
+     *
+     * @param category The position category.
+     * @return A list of positions in the specified category.
      */
-    long countByCategory(String category);
-    
+    List<Position> findByCategory(PositionCategory category);
+
     /**
-     * Find positions by multiple criteria (for advanced search)
-     * @param departmentId Department ID (optional)
-     * @param level Position level (optional)
-     * @param category Position category (optional)
-     * @param isManagerial Managerial flag (optional)
-     * @param pageable Pagination parameters
-     * @return Page of positions matching criteria
+     * Find all enabled positions with pagination.
+     *
+     * @param pageable Pagination information.
+     * @return A Page of enabled positions.
      */
-    Page<Position> findByDepartmentIdAndLevelAndCategoryAndIsManagerial(
-        Long departmentId, String level, String category, Boolean isManagerial, Pageable pageable);
+    Page<Position> findByEnabledTrue(Pageable pageable);
+
+    /**
+     * Search for positions by job title.
+     *
+     * @param jobTitle The job title to search for (case-insensitive).
+     * @param pageable Pagination information.
+     * @return A Page of positions matching the job title.
+     */
+    Page<Position> findByJobTitleContainingIgnoreCase(String jobTitle, Pageable pageable);
+
+    /**
+     * Custom query to find positions by department and filter by job title.
+     *
+     * @param departmentId The ID of the department.
+     * @param jobTitle     A part of the job title to search for.
+     * @return A list of matching positions.
+     */
+    @Query("SELECT p FROM Position p WHERE p.departmentId = :departmentId AND lower(p.jobTitle) LIKE lower(concat('%', :jobTitle, '%'))")
+    List<Position> findByDepartmentAndJobTitle(@Param("departmentId") Long departmentId, @Param("jobTitle") String jobTitle);
 }
 ```
 </file>
@@ -5941,15 +6102,11 @@ com.example.demo.security/
 ├── entity/
 │   ├── User.java
 │   ├── Role.java
-│   ├── Resource.java
-│   ├── UserRole.java
-│   └── RoleResource.java
+│   └── Resource.java
 ├── repository/
 │   ├── UserRepository.java
 │   ├── RoleRepository.java
-│   ├── ResourceRepository.java
-│   ├── UserRoleRepository.java
-│   └── RoleResourceRepository.java
+│   └── ResourceRepository.java
 ├── service/
 │   ├── UserService.java
 │   ├── RoleService.java
@@ -5984,89 +6141,202 @@ com.example.demo.security/
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-import java.util.Set;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("users")
-public class User {
-    @Id
-    private Long id;
-    
-    @Indexed
-    private String username;
-    
-    private String password;
-    
-    @Indexed
-    private String email;
-    
-    private String firstName;
-    
-    private String lastName;
-    
-    private boolean enabled;
-    
-    private boolean accountNonExpired;
-    
-    private boolean accountNonLocked;
-    
-    private boolean credentialsNonExpired;
-    
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
-    
-    private LocalDateTime lastLoginAt;
-    
-    // Relationships handled separately in Redis
-    private Set<Long> roleIds;
-}
-```### Rol
-e Entity
+### User Entity
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("roles")
-public class Role {
+@Entity
+@Table(name = "users",
+    indexes = {
+        @Index(name = "idx_user_username", columnList = "username"),
+        @Index(name = "idx_user_email", columnList = "email"),
+        @Index(name = "idx_user_enabled", columnList = "enabled"),
+        @Index(name = "idx_user_account_locked", columnList = "account_locked")
+    },
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_user_username", columnNames = "username"),
+        @UniqueConstraint(name = "uk_user_email", columnNames = "email")
+    }
+)
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "username", nullable = false, length = 50)
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password is required")
+    private String password;
+    
+    @Column(name = "email", nullable = false, length = 100)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+    
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+    
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+    
+    @Column(name = "enabled", nullable = false)
+    private Boolean enabled = true;
+    
+    @Column(name = "last_login")
+    private Instant lastLogin;
+    
+    @Column(name = "login_attempts", nullable = false)
+    private Integer loginAttempts = 0;
+    
+    @Column(name = "account_locked", nullable = false)
+    private Boolean accountLocked = false;
+    
+    @Column(name = "account_locked_until")
+    private Instant accountLockedUntil;
+    
+    @Column(name = "password_expired", nullable = false)
+    private Boolean passwordExpired = false;
+    
+    @Column(name = "password_change_required", nullable = false)
+    private Boolean passwordChangeRequired = false;
+    
+    @Column(name = "password_changed_at")
+    private Instant passwordChangedAt;
+    
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+    
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+    
+    @Column(name = "created_by")
+    private Long createdBy;
+    
+    @Column(name = "updated_by")
+    private Long updatedBy;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"),
+        foreignKey = @ForeignKey(name = "fk_user_roles_user"),
+        inverseForeignKey = @ForeignKey(name = "fk_user_roles_role")
+    )
+    private Set<Role> roles = new HashSet<>();
+    
+    public boolean isAccountNonLocked() {
+        if (!accountLocked) return true;
+        if (accountLockedUntil != null && Instant.now().isAfter(accountLockedUntil)) {
+            accountLocked = false;
+            accountLockedUntil = null;
+            return true;
+        }
+        return false;
+    }
+    
+    public void incrementLoginAttempts() {
+        this.loginAttempts++;
+        if (this.loginAttempts >= 5) {
+            this.accountLocked = true;
+            this.accountLockedUntil = Instant.now().plus(Duration.ofMinutes(30));
+        }
+    }
+    
+    public void resetLoginAttempts() {
+        this.loginAttempts = 0;
+        this.accountLocked = false;
+        this.accountLockedUntil = null;
+        this.lastLogin = Instant.now();
+    }
+}
+```
+
+### Role Entity
+```java
+package com.example.demo.security.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "roles", indexes = {
+    @Index(name = "idx_role_name", columnList = "name"),
+    @Index(name = "idx_role_active", columnList = "active")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(name = "name", unique = true, nullable = false, length = 50)
     private String name;
     
+    @Column(name = "description", length = 255)
     private String description;
     
-    private boolean enabled;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Relationships handled separately in Redis
-    private Set<Long> resourceIds;
+    @Column(name = "created_by")
+    private Long createdBy;
+    
+    @Column(name = "updated_by")
+    private Long updatedBy;
+    
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "role_resources",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "resource_id")
+    )
+    private Set<Resource> resources = new HashSet<>();
 }
 ```
 
@@ -6074,107 +6344,66 @@ public class Role {
 ```java
 package com.example.demo.security.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("resources")
+@Entity
+@Table(name = "resources", indexes = {
+    @Index(name = "idx_resource_url", columnList = "url"),
+    @Index(name = "idx_resource_method", columnList = "method"),
+    @Index(name = "idx_resource_category", columnList = "category"),
+    @Index(name = "idx_resource_active", columnList = "active")
+})
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
 public class Resource {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Indexed
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     
+    @Column(name = "url", nullable = false, length = 255)
     private String url;
     
-    private String method; // GET, POST, PUT, DELETE
+    @Column(name = "method", nullable = false, length = 10)
+    private String method;
     
+    @Column(name = "description", length = 255)
     private String description;
     
-    private String category; // EMPLOYEE, DEPARTMENT, PAYROLL, etc.
+    @Column(name = "category", nullable = false, length = 50)
+    private String category;
     
-    private boolean enabled;
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
     
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-}
-```
-
-### UserRole Entity (Junction Table)
-```java
-package com.example.demo.security.entity;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("user_roles")
-public class UserRole {
-    @Id
-    private String id; // Composite key: userId:roleId
     
-    @Indexed
-    private Long userId;
+    @Column(name = "created_by")
+    private Long createdBy;
     
-    @Indexed
-    private Long roleId;
+    @Column(name = "updated_by")
+    private Long updatedBy;
     
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;
-}
-```
-
-### RoleResource Entity (Junction Table)
-```java
-package com.example.demo.security.entity;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
-
-import java.time.LocalDateTime;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@RedisHash("role_resources")
-public class RoleResource {
-    @Id
-    private String id; // Composite key: roleId:resourceId
-    
-    @Indexed
-    private Long roleId;
-    
-    @Indexed
-    private Long resourceId;
-    
-    private LocalDateTime assignedAt;
-    
-    private Long assignedBy;
-}
-```## Reposi
+    @ManyToMany(mappedBy = "resources", fetch = FetchType.LAZY)
+    private Set<Role> roles = new HashSet<>();
 tory Interfaces
 
 ### UserRepository
@@ -6184,14 +6413,14 @@ package com.example.demo.security.repository;
 import com.example.demo.security.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
     
     Optional<User> findByUsername(String username);
     
@@ -6217,14 +6446,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
 package com.example.demo.security.repository;
 
 import com.example.demo.security.entity.Role;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface RoleRepository extends CrudRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     
     Optional<Role> findByName(String name);
     
@@ -6241,14 +6470,14 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
 package com.example.demo.security.repository;
 
 import com.example.demo.security.entity.Resource;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ResourceRepository extends CrudRepository<Resource, Long> {
+public interface ResourceRepository extends JpaRepository<Resource, Long> {
     
     Optional<Resource> findByNameAndMethod(String name, String method);
     
@@ -6261,62 +6490,6 @@ public interface ResourceRepository extends CrudRepository<Resource, Long> {
     boolean existsByNameAndMethod(String name, String method);
 }
 ```
-
-### UserRoleRepository
-```java
-package com.example.demo.security.repository;
-
-import com.example.demo.security.entity.UserRole;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-@Repository
-public interface UserRoleRepository extends CrudRepository<UserRole, String> {
-    
-    List<UserRole> findByUserId(Long userId);
-    
-    List<UserRole> findByRoleId(Long roleId);
-    
-    boolean existsByUserIdAndRoleId(Long userId, Long roleId);
-    
-    void deleteByUserIdAndRoleId(Long userId, Long roleId);
-    
-    void deleteByUserId(Long userId);
-    
-    void deleteByRoleId(Long roleId);
-}
-```
-
-### RoleResourceRepository
-```java
-package com.example.demo.security.repository;
-
-import com.example.demo.security.entity.RoleResource;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
-@Repository
-public interface RoleResourceRepository extends CrudRepository<RoleResource, String> {
-    
-    List<RoleResource> findByRoleId(Long roleId);
-    
-    List<RoleResource> findByResourceId(Long resourceId);
-    
-    boolean existsByRoleIdAndResourceId(Long roleId, Long resourceId);
-    
-    void deleteByRoleIdAndResourceId(Long roleId, Long resourceId);
-    
-    void deleteByRoleId(Long roleId);
-    
-    void deleteByResourceId(Long resourceId);
-}
-```## DTO Cl
-asses
-
 ### LoginRequest
 ```java
 package com.example.demo.security.dto;
@@ -6325,8 +6498,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -6386,9 +6559,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -6849,29 +7022,36 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 3: Core Security Entities and Database Schema
 
-- [ ] 3.1 Implement User entity with Redis annotations
-  - Create User.java with @RedisHash annotation
+- [ ] 3.1 Implement User entity with JPA annotations for PostgreSQL
+  - Create User.java with @Entity annotation for PostgreSQL.
   - Define fields: id, username, password, enabled, roles
   - Add validation annotations (@NotNull, @Size, @Email)
   - Implement audit fields with @CreatedDate, @LastModifiedDate
   - Add password encoding support with BCrypt
+  - Create proper JPA relationships with Role entities.
   - _Requirements: 1.1, 2.1, 2.2_
 
 - [ ] 3.2 Implement Role entity with resource relationships
-  - Create Role.java with @RedisHash annotation
+  - Create Role.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, description, resources
   - Implement many-to-many relationship with Resource entities
   - Add validation for role name uniqueness
+  - Create proper database constraints and indexes.
   - _Requirements: 1.1, 1.2_
 
 - [ ] 3.3 Implement Resource entity for permission management
-  - Create Resource.java with @RedisHash annotation
+  - Create Resource.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, url, method, description
   - Add validation for URL patterns and HTTP methods
   - Implement resource hierarchy support
   - _Requirements: 1.1, 1.4_
+  - Create composite unique constraints on (url, method).
 
 - [ ] 3.4 Create junction entities for many-to-many relationships
+  - Create V1__Create_security_tables.sql migration script.
+  - Define users, roles, resources tables with proper constraints.
+  - Create user_roles and role_resources junction tables.
+  - Add indexes for performance optimization.
   - Implement UserRole.java for user-role associations
   - Implement RoleResource.java for role-resource associations
   - Add composite keys and validation
@@ -6880,22 +7060,24 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 4: Security Repository Layer
 
 - [ ] 4.1 Create UserRepository with custom query methods
-  - Extend CrudRepository<User, Long>
+  - Extend JpaRepository<User, Long>
+  - Add findByUsername method using JPQL.
   - Add findByUsername method with @Query annotation
   - Implement findByEnabledTrue for active users
   - Add existsByUsername for validation
-  - Create findUsersWithRoles method using Redis queries
+  - Create findUsersWithRoles method using JOIN FETCH for performance.
   - _Requirements: 1.2, 2.2_
 
 - [ ] 4.2 Create RoleRepository with permission queries
-  - Extend CrudRepository<Role, Long>
+  - Extend JpaRepository<Role, Long>
   - Add findByName method for role lookup
-  - Implement findRolesWithResources method
+  - Implement findRolesWithResources method using JOIN FETCH.
+  - Add caching annotations for frequently accessed roles.
   - Create custom query for role hierarchy
   - _Requirements: 1.2, 1.3_
 
 - [ ] 4.3 Create ResourceRepository with URL pattern matching
-  - Extend CrudRepository<Resource, Long>
+  - Extend JpaRepository<Resource, Long>
   - Add findByUrlAndMethod for permission checking
   - Implement findResourcesByRoleId method
   - Create pattern matching queries for URL authorization
@@ -6912,7 +7094,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 - [ ] 5.1 Implement UserDetailsService for Spring Security
   - Create CustomUserDetailsService implementing UserDetailsService
-  - Override loadUserByUsername method with Redis queries
+  - Override loadUserByUsername method with database queries from UserRepository.
   - Map User entity to UserDetails with authorities
   - Handle user not found and disabled user scenarios
   - Cache user details in Redis for performance
@@ -6923,7 +7105,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Generate JWT tokens upon successful authentication
   - Handle authentication failures with custom exceptions
   - Implement logout functionality with token invalidation
-  - Add session management with Redis storage
+  - Implement secure logout functionality by adding the JWT token to a blacklist in Redis until it expires.
   - _Requirements: 2.1, 2.2, 2.5_
 
 - [ ] 5.3 Implement UserService for user management
@@ -7010,7 +7192,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 9: Department Entity and Repository
 
 - [ ] 9.1 Implement Department entity with hierarchical structure
-  - Create Department.java with @RedisHash annotation
+  - Create Department.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, depPath, parentId, isParent
   - Implement self-referencing relationship for hierarchy
   - Add validation for department name and path
@@ -7018,12 +7200,21 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - _Requirements: 3.1, 3.4, 3.5_
 
 - [ ] 9.2 Create DepartmentRepository with tree queries
-  - Extend CrudRepository<Department, Long>
+  - Extend JpaRepository<Department, Long>
   - Add findByParentId method for child departments
   - Implement findRootDepartments for top-level departments
   - Create recursive query methods for department tree
   - Add findByDepPathStartingWith for path-based queries
   - _Requirements: 3.1, 3.3_
+
+- [ ] 9.3 Create Flyway migration for departments table
+  - Create a new migration script, e.g., V2__Create_departments_table.sql.
+  - Define the departments table schema including hierarchical fields (parent_id, dep_path, is_parent, level) and manager_id.
+  - Add a self-referencing foreign key on parent_id to the departments(id) to enforce the hierarchy.
+  - Create a unique constraint on the department code column to prevent duplicate codes.
+  - Add indexes on parent_id and dep_path to optimize hierarchical queries, and on manager_id for quick lookups.
+  - _Requirements: 3.1, 10.4_
+
 
 ### Task 10: Department Service Implementation
 
@@ -7065,7 +7256,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 12: Employee Entity and Status Management
 
 - [ ] 12.1 Implement Employee entity with comprehensive fields
-  - Create Employee.java with @RedisHash annotation
+  - Create Employee.java with @Entity annotation for PostgreSQL.
   - Define fields: id, employeeNumber, name, email, phone
   - Add department and position relationships
   - Include hireDate, status, and audit fields
@@ -7079,10 +7270,18 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create status history tracking
   - _Requirements: 5.1_
 
+- [ ] 12.3 Create Flyway migration for employees table
+  - Create a new migration script, e.g., V4__Create_employees_table.sql.
+  - Define the employees table schema with all comprehensive fields, including encrypted columns for sensitive data (e.g., bank_account_encrypted).
+  - Add foreign key constraints for department_id, position_id, and a self-referencing key for manager_id.
+  - Create unique constraints on employee_number and email to ensure data integrity.
+  - Add indexes on frequently queried fields like last_name, status, department_id, and position_id to boost search performance.
+  - _Requirements: 5.1, 10.4_
+
 ### Task 13: Employee Repository with Search Capabilities
 
 - [ ] 13.1 Create EmployeeRepository with advanced queries
-  - Extend CrudRepository<Employee, Long>
+  - Extend JpaRepository<Employee, Long>
   - Add findByDepartmentId for department filtering
   - Implement findByStatus for status-based queries
   - Create findByEmployeeNumberContaining for search
@@ -7145,7 +7344,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 16: Position Entity and Repository
 
 - [ ] 16.1 Implement Position entity with job classifications
-  - Create Position.java with @RedisHash annotation
+  - Create Position.java with @Entity annotation for PostgreSQL.
   - Define fields: id, jobTitle, professionalTitle, description
   - Add department relationship and validation
   - Implement position hierarchy if needed
@@ -7153,12 +7352,20 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - _Requirements: 4.1, 4.4_
 
 - [ ] 16.2 Create PositionRepository with search capabilities
-  - Extend CrudRepository<Position, Long>
+  - Extend JpaRepository<Position, Long> to leverage JPA-specific features.
   - Add findByDepartmentId for department filtering
   - Implement findByJobTitleContaining for search
   - Create position availability queries
   - Add sorting and pagination support
   - _Requirements: 4.1, 4.2, 4.3_
+
+- [ ] 16.3 Create Flyway migration for positions table
+  - Create a new migration script, e.g., V3__Create_positions_table.sql.
+  - Define the positions table schema with all required columns (job_title, code, department_id, min_salary, max_salary, etc.).
+  - Add a foreign key constraint linking department_id to the departments table.
+  - Create indexes on frequently queried columns like department_id, job_title, and category for performance.
+  - Add a unique constraint on the position code column to ensure data integrity.
+  - _Requirements: 4.1, 10.4_
 
 ### Task 17: Position Service and Controller
 
@@ -7209,8 +7416,8 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 19: Chat System Implementation
 
-- [ ] 19.1 Implement chat entities and relationships
-  - Create ChatMessage.java with message content
+- [ ] 19.1 Implement chat entities **for Redis storage**
+  - Create `ChatMessage.java` with the **@RedisHash** annotation for real-time message storage.
   - Implement ChatRoom.java for conversation management
   - Add ChatParticipant.java for user participation
   - Create message threading and reply support
@@ -7235,7 +7442,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   
 ### Task 20: Notification System Implementation
 
-- [ ] 20.1 Create notification entities and management
+- [ ] 20.1 Create notification entities **for persistent storage in PostgreSQL**
   - Implement MessageContent.java for notification content
   - Create SystemMessage.java for user-notification relationships
   - Add notification types and priority levels
@@ -7243,13 +7450,19 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create notification history and archiving
   - _Requirements: 8.2, 8.3, 8.5_
 
-- [ ] 20.2 Implement NotificationService with real-time delivery
+- [ ] 20.2 Implement NotificationService with **hybrid delivery mechanism**
   - Create createNotification method for system notifications
   - Add getUserNotifications with pagination
   - Implement markAsRead functionality
   - Create notification broadcasting with WebSocket
   - Add notification preferences and filtering
   - _Requirements: 8.2, 8.4, 8.5_
+
+  **note**
+  - When a notification is created, the service **must first save it to the PostgreSQL `notifications` table**.
+  - **After successful persistence**, the service will then **publish the notification message to a Redis Pub/Sub channel** (e.g., `notifications:{userId}`).
+  - WebSocket handlers will subscribe to these Redis channels to push real-time updates to connected clients.
+  - Implement `getUserNotifications` to fetch the history from PostgreSQL with pagination.
 
 - [ ] 20.3 Create NotificationController and WebSocket handlers
   - Implement GET /api/notifications for user notifications
@@ -8002,7 +8215,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 ### Task 20: Notification System Implementation
 
 - [ ] 20.1 Create notification entities and management
-  - Implement MessageContent.java for notification content (PostgreSQL)
+  - Implement `Notification.java` entity for the `notifications` table (as defined in `design.md`), to be stored persistently in PostgreSQL. This entity should include fields like `user_id`, `title`, `content`, `type`, `is_read`, `read_at`, etc.
   - Create SystemMessage.java for user-notification relationships (PostgreSQL)
   - Add notification types and priority levels
   - Implement notification templates and formatting
@@ -8173,6 +8386,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 - [ ] 26.2 Implement repository layer tests
   - Create @DataJpaTest classes for repositories
+  - Create separate @DataRedisTest classes for Redis-specific repositories
   - Add test cases for custom query methods
   - Implement pagination and sorting tests
   - Create transaction rollback tests

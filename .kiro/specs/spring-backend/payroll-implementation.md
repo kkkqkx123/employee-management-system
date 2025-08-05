@@ -53,6 +53,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
+import com.example.demo.employee.entity.Employee;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -81,8 +82,9 @@ public class PayrollLedger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "employee_id", nullable = false)
-    private Long employeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @Column(name = "payroll_period_id", nullable = false)
     private Long payrollPeriodId;

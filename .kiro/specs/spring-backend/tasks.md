@@ -83,29 +83,36 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 3: Core Security Entities and Database Schema
 
-- [ ] 3.1 Implement User entity with Redis annotations
-  - Create User.java with @RedisHash annotation
+- [ ] 3.1 Implement User entity with JPA annotations for PostgreSQL
+  - Create User.java with @Entity annotation for PostgreSQL.
   - Define fields: id, username, password, enabled, roles
   - Add validation annotations (@NotNull, @Size, @Email)
   - Implement audit fields with @CreatedDate, @LastModifiedDate
   - Add password encoding support with BCrypt
+  - Create proper JPA relationships with Role entities.
   - _Requirements: 1.1, 2.1, 2.2_
 
 - [ ] 3.2 Implement Role entity with resource relationships
-  - Create Role.java with @RedisHash annotation
+  - Create Role.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, description, resources
   - Implement many-to-many relationship with Resource entities
   - Add validation for role name uniqueness
+  - Create proper database constraints and indexes.
   - _Requirements: 1.1, 1.2_
 
 - [ ] 3.3 Implement Resource entity for permission management
-  - Create Resource.java with @RedisHash annotation
+  - Create Resource.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, url, method, description
   - Add validation for URL patterns and HTTP methods
   - Implement resource hierarchy support
   - _Requirements: 1.1, 1.4_
+  - Create composite unique constraints on (url, method).
 
 - [ ] 3.4 Create junction entities for many-to-many relationships
+  - Create V1__Create_security_tables.sql migration script.
+  - Define users, roles, resources tables with proper constraints.
+  - Create user_roles and role_resources junction tables.
+  - Add indexes for performance optimization.
   - Implement UserRole.java for user-role associations
   - Implement RoleResource.java for role-resource associations
   - Add composite keys and validation
@@ -114,22 +121,24 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 4: Security Repository Layer
 
 - [ ] 4.1 Create UserRepository with custom query methods
-  - Extend CrudRepository<User, Long>
+  - Extend JpaRepository<User, Long>
+  - Add findByUsername method using JPQL.
   - Add findByUsername method with @Query annotation
   - Implement findByEnabledTrue for active users
   - Add existsByUsername for validation
-  - Create findUsersWithRoles method using Redis queries
+  - Create findUsersWithRoles method using JOIN FETCH for performance.
   - _Requirements: 1.2, 2.2_
 
 - [ ] 4.2 Create RoleRepository with permission queries
-  - Extend CrudRepository<Role, Long>
+  - Extend JpaRepository<Role, Long>
   - Add findByName method for role lookup
-  - Implement findRolesWithResources method
+  - Implement findRolesWithResources method using JOIN FETCH.
+  - Add caching annotations for frequently accessed roles.
   - Create custom query for role hierarchy
   - _Requirements: 1.2, 1.3_
 
 - [ ] 4.3 Create ResourceRepository with URL pattern matching
-  - Extend CrudRepository<Resource, Long>
+  - Extend JpaRepository<Resource, Long>
   - Add findByUrlAndMethod for permission checking
   - Implement findResourcesByRoleId method
   - Create pattern matching queries for URL authorization
@@ -146,7 +155,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 - [ ] 5.1 Implement UserDetailsService for Spring Security
   - Create CustomUserDetailsService implementing UserDetailsService
-  - Override loadUserByUsername method with Redis queries
+  - Override loadUserByUsername method with database queries from UserRepository.
   - Map User entity to UserDetails with authorities
   - Handle user not found and disabled user scenarios
   - Cache user details in Redis for performance
@@ -157,7 +166,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Generate JWT tokens upon successful authentication
   - Handle authentication failures with custom exceptions
   - Implement logout functionality with token invalidation
-  - Add session management with Redis storage
+  - Implement secure logout functionality by adding the JWT token to a blacklist in Redis until it expires.
   - _Requirements: 2.1, 2.2, 2.5_
 
 - [ ] 5.3 Implement UserService for user management
@@ -244,7 +253,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 9: Department Entity and Repository
 
 - [ ] 9.1 Implement Department entity with hierarchical structure
-  - Create Department.java with @RedisHash annotation
+  - Create Department.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, depPath, parentId, isParent
   - Implement self-referencing relationship for hierarchy
   - Add validation for department name and path
@@ -252,12 +261,21 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - _Requirements: 3.1, 3.4, 3.5_
 
 - [ ] 9.2 Create DepartmentRepository with tree queries
-  - Extend CrudRepository<Department, Long>
+  - Extend JpaRepository<Department, Long>
   - Add findByParentId method for child departments
   - Implement findRootDepartments for top-level departments
   - Create recursive query methods for department tree
   - Add findByDepPathStartingWith for path-based queries
   - _Requirements: 3.1, 3.3_
+
+- [ ] 9.3 Create Flyway migration for departments table
+  - Create a new migration script, e.g., V2__Create_departments_table.sql.
+  - Define the departments table schema including hierarchical fields (parent_id, dep_path, is_parent, level) and manager_id.
+  - Add a self-referencing foreign key on parent_id to the departments(id) to enforce the hierarchy.
+  - Create a unique constraint on the department code column to prevent duplicate codes.
+  - Add indexes on parent_id and dep_path to optimize hierarchical queries, and on manager_id for quick lookups.
+  - _Requirements: 3.1, 10.4_
+
 
 ### Task 10: Department Service Implementation
 
@@ -299,7 +317,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 12: Employee Entity and Status Management
 
 - [ ] 12.1 Implement Employee entity with comprehensive fields
-  - Create Employee.java with @RedisHash annotation
+  - Create Employee.java with @Entity annotation for PostgreSQL.
   - Define fields: id, employeeNumber, name, email, phone
   - Add department and position relationships
   - Include hireDate, status, and audit fields
@@ -313,10 +331,18 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create status history tracking
   - _Requirements: 5.1_
 
+- [ ] 12.3 Create Flyway migration for employees table
+  - Create a new migration script, e.g., V4__Create_employees_table.sql.
+  - Define the employees table schema with all comprehensive fields, including encrypted columns for sensitive data (e.g., bank_account_encrypted).
+  - Add foreign key constraints for department_id, position_id, and a self-referencing key for manager_id.
+  - Create unique constraints on employee_number and email to ensure data integrity.
+  - Add indexes on frequently queried fields like last_name, status, department_id, and position_id to boost search performance.
+  - _Requirements: 5.1, 10.4_
+
 ### Task 13: Employee Repository with Search Capabilities
 
 - [ ] 13.1 Create EmployeeRepository with advanced queries
-  - Extend CrudRepository<Employee, Long>
+  - Extend JpaRepository<Employee, Long>
   - Add findByDepartmentId for department filtering
   - Implement findByStatus for status-based queries
   - Create findByEmployeeNumberContaining for search
@@ -379,7 +405,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 ### Task 16: Position Entity and Repository
 
 - [ ] 16.1 Implement Position entity with job classifications
-  - Create Position.java with @RedisHash annotation
+  - Create Position.java with @Entity annotation for PostgreSQL.
   - Define fields: id, jobTitle, professionalTitle, description
   - Add department relationship and validation
   - Implement position hierarchy if needed
@@ -387,12 +413,20 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - _Requirements: 4.1, 4.4_
 
 - [ ] 16.2 Create PositionRepository with search capabilities
-  - Extend CrudRepository<Position, Long>
+  - Extend JpaRepository<Position, Long> to leverage JPA-specific features.
   - Add findByDepartmentId for department filtering
   - Implement findByJobTitleContaining for search
   - Create position availability queries
   - Add sorting and pagination support
   - _Requirements: 4.1, 4.2, 4.3_
+
+- [ ] 16.3 Create Flyway migration for positions table
+  - Create a new migration script, e.g., V3__Create_positions_table.sql.
+  - Define the positions table schema with all required columns (job_title, code, department_id, min_salary, max_salary, etc.).
+  - Add a foreign key constraint linking department_id to the departments table.
+  - Create indexes on frequently queried columns like department_id, job_title, and category for performance.
+  - Add a unique constraint on the position code column to ensure data integrity.
+  - _Requirements: 4.1, 10.4_
 
 ### Task 17: Position Service and Controller
 
@@ -443,8 +477,8 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 19: Chat System Implementation
 
-- [ ] 19.1 Implement chat entities and relationships
-  - Create ChatMessage.java with message content
+- [ ] 19.1 Implement chat entities **for Redis storage**
+  - Create `ChatMessage.java` with the **@RedisHash** annotation for real-time message storage.
   - Implement ChatRoom.java for conversation management
   - Add ChatParticipant.java for user participation
   - Create message threading and reply support
@@ -469,7 +503,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   
 ### Task 20: Notification System Implementation
 
-- [ ] 20.1 Create notification entities and management
+- [ ] 20.1 Create notification entities **for persistent storage in PostgreSQL**
   - Implement MessageContent.java for notification content
   - Create SystemMessage.java for user-notification relationships
   - Add notification types and priority levels
@@ -477,13 +511,19 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create notification history and archiving
   - _Requirements: 8.2, 8.3, 8.5_
 
-- [ ] 20.2 Implement NotificationService with real-time delivery
+- [ ] 20.2 Implement NotificationService with **hybrid delivery mechanism**
   - Create createNotification method for system notifications
   - Add getUserNotifications with pagination
   - Implement markAsRead functionality
   - Create notification broadcasting with WebSocket
   - Add notification preferences and filtering
   - _Requirements: 8.2, 8.4, 8.5_
+
+  **note**
+  - When a notification is created, the service **must first save it to the PostgreSQL `notifications` table**.
+  - **After successful persistence**, the service will then **publish the notification message to a Redis Pub/Sub channel** (e.g., `notifications:{userId}`).
+  - WebSocket handlers will subscribe to these Redis channels to push real-time updates to connected clients.
+  - Implement `getUserNotifications` to fetch the history from PostgreSQL with pagination.
 
 - [ ] 20.3 Create NotificationController and WebSocket handlers
   - Implement GET /api/notifications for user notifications
@@ -1236,7 +1276,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 ### Task 20: Notification System Implementation
 
 - [ ] 20.1 Create notification entities and management
-  - Implement MessageContent.java for notification content (PostgreSQL)
+  - Implement `Notification.java` entity for the `notifications` table (as defined in `design.md`), to be stored persistently in PostgreSQL. This entity should include fields like `user_id`, `title`, `content`, `type`, `is_read`, `read_at`, etc.
   - Create SystemMessage.java for user-notification relationships (PostgreSQL)
   - Add notification types and priority levels
   - Implement notification templates and formatting
@@ -1407,6 +1447,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 - [ ] 26.2 Implement repository layer tests
   - Create @DataJpaTest classes for repositories
+  - Create separate @DataRedisTest classes for Redis-specific repositories
   - Add test cases for custom query methods
   - Implement pagination and sorting tests
   - Create transaction rollback tests
