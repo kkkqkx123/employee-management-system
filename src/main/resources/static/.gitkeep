@@ -1,0 +1,2 @@
+# This file ensures the static directory is tracked by Git
+# Static web assets (for React build) will be placed in this directory

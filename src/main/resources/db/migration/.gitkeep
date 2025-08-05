@@ -1,0 +1,2 @@
+# This file ensures the db/migration directory is tracked by Git
+# Flyway migration scripts will be placed in this directory
