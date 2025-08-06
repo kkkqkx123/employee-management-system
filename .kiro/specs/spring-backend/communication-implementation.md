@@ -58,11 +58,31 @@ com.example.demo.communication/
 │   │   └── NotificationMarkReadRequest.java
 │   └── websocket/
 │       └── NotificationWebSocketHandler.java
+├── announcement/
+│   ├── controller/
+│   │   └── AnnouncementController.java
+│   ├── dto/
+│   │   ├── AnnouncementCreateRequest.java
+│   │   ├── AnnouncementDto.java
+│   │   ├── AnnouncementStatisticsDto.java
+│   │   └── AnnouncementUpdateRequest.java
+│   ├── entity/
+│   │   ├── Announcement.java
+│   │   └── AnnouncementTarget.java
+│   ├── repository/
+│   │   └── AnnouncementRepository.java
+│   └── service/
+│       ├── AnnouncementScheduledService.java
+│       ├── AnnouncementService.java
+│       ├── AnnouncementValidationService.java
+│       └── impl/
+│           └── AnnouncementServiceImpl.java
 └── exception/
     ├── EmailSendingException.java
     ├── TemplateNotFoundException.java
     ├── ChatRoomNotFoundException.java
     └── NotificationException.java
+
 ```
 
 ## Email Management

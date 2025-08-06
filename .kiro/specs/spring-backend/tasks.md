@@ -405,7 +405,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 16: Position Entity and Repository
 
-- [ ] 16.1 Implement Position entity with job classifications
+- [x] 16.1 Implement Position entity with job classifications
   - Create Position.java with @Entity annotation for PostgreSQL.
   - Define fields: id, jobTitle, professionalTitle, description
   - Add department relationship and validation
@@ -413,7 +413,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create audit fields and validation rules
   - _Requirements: 4.1, 4.4_
 
-- [ ] 16.2 Create PositionRepository with search capabilities
+- [x] 16.2 Create PositionRepository with search capabilities
   - Extend JpaRepository<Position, Long> to leverage JPA-specific features.
   - Add findByDepartmentId for department filtering
   - Implement findByJobTitleContaining for search
@@ -421,7 +421,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add sorting and pagination support
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 16.3 Create Flyway migration for positions table
+- [x] 16.3 Create Flyway migration for positions table
   - Create a new migration script, e.g., V3__Create_positions_table.sql.
   - Define the positions table schema with all required columns (job_title, code, department_id, min_salary, max_salary, etc.).
   - Add a foreign key constraint linking department_id to the departments table.
@@ -431,7 +431,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 17: Position Service and Controller
 
-- [ ] 17.1 Implement PositionService with business logic
+- [x] 17.1 Implement PositionService with business logic
   - Create CRUD operations for position management
   - Add position validation and dependency checking
   - Implement position search and filtering
@@ -439,7 +439,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add position statistics and reporting
   - _Requirements: 4.1, 4.2, 4.4, 4.5_
 
-- [ ] 17.2 Create PositionController with REST endpoints
+- [x] 17.2 Create PositionController with REST endpoints
   - Implement GET /api/positions with filtering
   - Add POST /api/positions for creation
   - Create PUT /api/positions/{id} for updates
@@ -452,7 +452,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 18: Email Management Implementation
 
-- [ ] 18.1 Create email entities and templates
+- [x] 18.1 Create email entities and templates
   - Implement EmailTemplate.java with template management
   - Create EmailLog.java for tracking sent emails
   - Add template variable support with Freemarker
@@ -460,7 +460,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create email template repository
   - _Requirements: 6.1, 6.4_
 
-- [ ] 18.2 Implement EmailService with async processing
+- [x] 18.2 Implement EmailService with async processing
   - Create sendTemplatedEmail method with @Async
   - Add sendBulkEmails for mass communication
   - Implement email queue management
@@ -468,7 +468,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add email tracking and status updates
   - _Requirements: 6.1, 6.2, 6.3, 6.5_
 
-- [ ] 18.3 Create EmailController and template management
+- [x] 18.3 Create EmailController and template management
   - Implement POST /api/emails/send for single emails
   - Add POST /api/emails/bulk for mass emails
   - Create GET /api/email-templates for template management
@@ -478,61 +478,69 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 19: Chat System Implementation
 
-- [ ] 19.1 Implement chat entities **for Redis storage**
-  - Create `ChatMessage.java` with the **@RedisHash** annotation for real-time message storage.
+- [x] 19.1 Implement chat entities for PostgreSQL storage
+  - Create `ChatMessage.java` with @Entity annotation for persistent message storage
   - Implement ChatRoom.java for conversation management
   - Add ChatParticipant.java for user participation
   - Create message threading and reply support
   - Implement message status tracking
+  - Create enum classes (ChatRoomType, ChatParticipantRole, ChatMessageType)
   - _Requirements: 8.1, 8.6_
 
-- [ ] 19.2 Create ChatService with real-time features
+- [x] 19.2 Create ChatService with real-time features
   - Implement message sending and receiving
   - Add chat room management functionality
   - Create message history with pagination
   - Implement message search and filtering
   - Add typing indicators and presence
+  - Create repository interfaces and DTOs
+  - Create ChatController with REST endpoints
   - _Requirements: 8.1, 8.6_
 
-- [ ] 19.3 Implement WebSocket configuration for real-time chat
+- [x] 19.3 Implement WebSocket configuration for real-time chat
   - Create WebSocketConfig with message broker
   - Add ChatWebSocketHandler for connection management
   - Implement message routing and broadcasting
   - Create user session management
   - Add connection authentication and authorization
+  - Create database migration V6__Create_chat_tables.sql
   - _Requirements: 8.1, 8.6_
   
 ### Task 20: Notification System Implementation
 
-- [ ] 20.1 Create notification entities **for persistent storage in PostgreSQL**
-  - Implement MessageContent.java for notification content
-  - Create SystemMessage.java for user-notification relationships
-  - Add notification types and priority levels
+- [x] 20.1 Create notification entities for persistent storage in PostgreSQL
+  - Implement Notification.java entity (single-table model as per database-design.md)
+  - Create Announcement.java entity for announcements
+  - Add notification types and priority levels (enums)
   - Implement notification templates and formatting
   - Create notification history and archiving
+  - Create repository interfaces (NotificationRepository, AnnouncementRepository)
   - _Requirements: 8.2, 8.3, 8.5_
 
-- [ ] 20.2 Implement NotificationService with **hybrid delivery mechanism**
+- [x] 20.2 Implement NotificationService with m nrid delivery mechanism
   - Create createNotification method for system notifications
   - Add getUserNotifications with pagination
   - Implement markAsRead functionality
   - Create notification broadcasting with WebSocket
   - Add notification preferences and filtering
+  - Implement async notification sending with real-time delivery
+  - Create bulk notification functionality
   - _Requirements: 8.2, 8.4, 8.5_
 
-  **note**
-  - When a notification is created, the service **must first save it to the PostgreSQL `notifications` table**.
-  - **After successful persistence**, the service will then **publish the notification message to a Redis Pub/Sub channel** (e.g., `notifications:{userId}`).
-  - WebSocket handlers will subscribe to these Redis channels to push real-time updates to connected clients.
-  - Implement `getUserNotifications` to fetch the history from PostgreSQL with pagination.
+  **Implementation Notes:**
+  - Notifications are saved to PostgreSQL `notifications` table for persistence
+  - Real-time delivery via WebSocket using SimpMessagingTemplate
+  - Redis caching for unread counts and performance optimization
+  - Comprehensive notification management with cleanup and archiving
 
-- [ ] 20.3 Create NotificationController and WebSocket handlers
+- [x] 20.3 Create NotificationController and WebSocket handlers
   - Implement GET /api/notifications for user notifications
   - Add PUT /api/notifications/{id}/read for marking read
   - Create NotificationWebSocketHandler for real-time updates
   - Implement notification subscription management
   - Add notification statistics and reporting
-  - _Requirements: 8.4, 8.5_
+  - Create database migration V7__Create_notification_tables.sql
+  - Include proper security
 
 ## Payroll Management Module
 
@@ -1478,7 +1486,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ### Task 28: Controller and API Testing
 
-- [ ] 28.1 Implement controller unit tests
+- [ ] 29.1 Implement controller unit tests
   - Create @WebMvcTest configurations for controllers
   - Add MockMvc setup for HTTP testing
   - Implement request/response validation tests
@@ -1487,7 +1495,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Test permission-based access control
   - _Requirements: 10.1_
 
-- [ ] 28.2 Create API integration tests
+- [ ] 29.2 Create API integration tests
   - Implement full @SpringBootTest with web environment
   - Add TestRestTemplate for API testing
   - Create end-to-end workflow tests
@@ -1496,9 +1504,9 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Test real-time features (WebSocket)
   - _Requirements: 10.1_
 
-### Task 29: Performance and Load Testing
+### Task 30: Performance and Load Testing
 
-- [ ] 29.1 Create performance test suite
+- [ ] 30.1 Create performance test suite
   - Implement JMeter test plans for API endpoints
   - Add database performance tests
   - Create concurrent user simulation tests
@@ -1507,7 +1515,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Test encryption/decryption performance
   - _Requirements: 10.1, 10.2_
 
-- [ ] 29.2 Set up monitoring and metrics
+- [ ] 30.2 Set up monitoring and metrics
   - Configure Spring Boot Actuator endpoints
   - Add custom metrics for business operations
   - Implement health checks for dependencies
@@ -1518,9 +1526,9 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ## Phase 10: Documentation and Deployment
 
-### Task 30: API Documentation
+### Task 31: API Documentation
 
-- [ ] 30.1 Implement OpenAPI/Swagger documentation
+- [ ] 31.1 Implement OpenAPI/Swagger documentation
   - Add Springdoc OpenAPI dependency
   - Create API documentation annotations
   - Implement request/response schema documentation
@@ -1529,7 +1537,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Document security requirements and permissions
   - _Requirements: 11.1, 11.2_
 
-- [ ] 30.2 Create developer documentation
+- [ ] 31.2 Create developer documentation
   - Write setup and installation guides
   - Create API integration examples
   - Document configuration options
@@ -1538,9 +1546,9 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Document security and encryption procedures
   - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-### Task 31: Production Deployment Preparation
+### Task 32: Production Deployment Preparation
 
-- [ ] 31.1 Configure production settings
+- [ ] 32.1 Configure production settings
   - Create production application properties
   - Add environment-specific configurations
   - Implement security hardening measures
@@ -1549,7 +1557,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Configure database connection pooling
   - _Requirements: 2.1, 10.2, 10.7_
 
-- [ ] 31.2 Create deployment artifacts
+- [ ] 32.2 Create deployment artifacts
   - Build executable JAR file for deployment
   - Create Docker containerization (optional)
   - Add database migration scripts
@@ -1560,9 +1568,9 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ## Phase 11: Final Integration and Testing
 
-### Task 32: System Integration Testing
+### Task 33: System Integration Testing
 
-- [ ] 32.1 End-to-end system testing
+- [ ] 33.1 End-to-end system testing
   - Test complete user workflows
   - Validate security across all modules
   - Test real-time features (chat, notifications)
@@ -1571,7 +1579,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Validate encryption and audit trails
   - _Requirements: All requirements_
 
-- [ ] 32.2 Performance optimization and tuning
+- [ ] 33.2 Performance optimization and tuning
   - Optimize database queries and indexing
   - Tune Redis cache configurations
   - Optimize async processing performance
