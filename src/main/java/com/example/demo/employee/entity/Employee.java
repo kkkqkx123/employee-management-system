@@ -1,6 +1,6 @@
 package com.example.demo.employee.entity;
 
-import com.example.demo.config.security.EncryptedStringConverter;
+import com.example.demo.security.security.EncryptedStringConverter;
 import com.example.demo.department.entity.Department;
 import jakarta.persistence.*;
 import lombok.Getter;
