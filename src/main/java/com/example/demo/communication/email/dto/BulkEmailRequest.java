@@ -37,13 +37,17 @@ public class BulkEmailRequest {
     
     private Map<String, Object> templateVariables; // Variables for template processing
     
+    @Builder.Default
     private EmailPriority priority = EmailPriority.NORMAL;
     
     private Long sentBy; // User ID of sender
     
+    @Builder.Default
     private boolean isHtml = true; // Whether content is HTML
     
+    @Builder.Default
     private int batchSize = 50; // Number of emails to send in each batch
     
+    @Builder.Default
     private long delayBetweenBatches = 1000; // Delay in milliseconds between batches
 }

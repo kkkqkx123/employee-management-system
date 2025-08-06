@@ -55,6 +55,7 @@ public class EmailLog {
     @Column(name = "error_message", length = 2000)
     private String errorMessage; // Error details if failed
     
+    @Builder.Default
     @Column(name = "retry_count", nullable = false)
     private Integer retryCount = 0;
     

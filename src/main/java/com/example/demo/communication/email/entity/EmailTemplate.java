@@ -56,9 +56,11 @@ public class EmailTemplate {
     @Column(name = "variables", columnDefinition = "TEXT")
     private String variables; // JSON string of available template variables
     
+    @Builder.Default
     @Column(name = "is_default", nullable = false)
     private boolean isDefault = false;
     
+    @Builder.Default
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
     

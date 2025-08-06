@@ -45,6 +45,21 @@ public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Lo
     List<EmailTemplate> findByCategoryAndEnabled(TemplateCategory category, boolean enabled);
     
     /**
+     * Find enabled templates
+     * @return List of enabled templates
+     */
+    List<EmailTemplate> findByEnabledTrue();
+    
+    /**
+     * Search templates by name or description
+     * @param name Name search term
+     * @param description Description search term
+     * @param pageable Pagination parameters
+     * @return Page of matching templates
+     */
+    Page<EmailTemplate> findByNameContainingOrDescriptionContaining(String name, String description, Pageable pageable);
+    
+    /**
      * Find default template for a category
      * @param category Template category
      * @return Optional default template

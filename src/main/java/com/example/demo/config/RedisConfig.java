@@ -186,7 +186,11 @@ public class RedisConfig {
 
         public boolean isRedisAvailable() {
             try {
-                redisTemplate.getConnectionFactory().getConnection().ping();
+                RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+                if (connectionFactory == null) {
+                    return false;
+                }
+                connectionFactory.getConnection().ping();
                 return true;
             } catch (Exception e) {
                 return false;
@@ -195,7 +199,11 @@ public class RedisConfig {
 
         public String getRedisInfo() {
             try {
-                return redisTemplate.getConnectionFactory().getConnection().info().getProperty("redis_version");
+                RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+                if (connectionFactory == null) {
+                    return "Unable to retrieve Redis info";
+                }
+                return connectionFactory.getConnection().info().getProperty("redis_version");
             } catch (Exception e) {
                 return "Unable to retrieve Redis info";
             }

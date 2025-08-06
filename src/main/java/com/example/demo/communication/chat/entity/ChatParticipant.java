@@ -44,9 +44,11 @@ public class ChatParticipant {
     private Long lastReadMessageId; // Stored in Redis, synced periodically
     
     @Column(name = "is_muted", nullable = false)
+    @Builder.Default
     private boolean isMuted = false;
     
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private boolean isActive = true;
     
     @Column(name = "left_at")

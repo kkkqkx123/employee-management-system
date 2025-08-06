@@ -3,6 +3,7 @@ package com.example.demo.communication.email.service.impl;
 import com.example.demo.communication.email.dto.EmailTemplateDto;
 import com.example.demo.communication.email.entity.EmailTemplate;
 import com.example.demo.communication.email.repository.EmailTemplateRepository;
+import com.example.demo.communication.email.service.impl.EmailTemplateServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

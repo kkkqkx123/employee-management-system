@@ -47,9 +47,11 @@ public class ChatRoom {
     private Long createdBy; // User who created the room
     
     @Column(name = "is_private", nullable = false)
+    @Builder.Default
     private boolean isPrivate = false;
     
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private boolean isActive = true;
     
     @CreatedDate
@@ -67,6 +69,7 @@ public class ChatRoom {
     private Long lastMessageId; // Stored in Redis, synced periodically
     
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<ChatParticipant> participants = new HashSet<>();
 
     // Transient fields for DTO mapping

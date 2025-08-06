@@ -43,10 +43,12 @@ public class Notification {
     @Column(name = "type", nullable = false, length = 50)
     private NotificationType type;
     
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false, length = 20)
     private NotificationPriority priority = NotificationPriority.NORMAL;
     
+    @Builder.Default
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false;
     

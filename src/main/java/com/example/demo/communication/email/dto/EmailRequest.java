@@ -37,9 +37,11 @@ public class EmailRequest {
     
     private Map<String, Object> templateVariables; // Variables for template processing
     
+    @Builder.Default
     private EmailPriority priority = EmailPriority.NORMAL;
     
     private Long sentBy; // User ID of sender
     
+    @Builder.Default
     private boolean isHtml = true; // Whether content is HTML
 }

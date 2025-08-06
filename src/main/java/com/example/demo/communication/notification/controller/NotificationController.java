@@ -61,8 +61,9 @@ public class NotificationController {
         Page<NotificationDto> notifications = notificationService.getUserNotifications(userId, pageable);
         
         return ResponseEntity.ok(ApiResponse.success(notifications));
-    }    @GetMap
-ping("/unread")
+    }
+    
+    @GetMapping("/unread")
     @PreAuthorize("hasAuthority('NOTIFICATION_READ')")
     public ResponseEntity<ApiResponse<Page<NotificationDto>>> getUnreadNotifications(
             Pageable pageable,

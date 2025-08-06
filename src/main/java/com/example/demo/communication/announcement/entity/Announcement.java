@@ -59,10 +59,12 @@ public class Announcement {
     private LocalDate expiryDate;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean published = false;
 
     @Column(name = "priority", length = 20)
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private AnnouncementPriority priority = AnnouncementPriority.NORMAL;
 
     @CreatedDate

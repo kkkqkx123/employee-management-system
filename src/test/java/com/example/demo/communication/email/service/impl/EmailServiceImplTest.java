@@ -1,6 +1,7 @@
 package com.example.demo.communication.email.service.impl;
 
 import com.example.demo.communication.email.dto.EmailRequest;
+import com.example.demo.communication.email.dto.EmailTemplateDto;
 import com.example.demo.communication.email.entity.EmailTemplate;
 import com.example.demo.communication.email.repository.EmailLogRepository;
 import com.example.demo.communication.email.repository.EmailTemplateRepository;
@@ -45,7 +46,7 @@ public class EmailServiceImplTest {
     @Test
     void sendEmail_shouldSendEmailAndLogIt() {
         EmailRequest emailRequest = new EmailRequest();
-        emailRequest.setTo("test@example.com");
+        emailRequest.setToEmail("test@example.com");
         emailRequest.setSubject("Test Subject");
         emailRequest.setContent("Test Content");
 
@@ -60,7 +61,7 @@ public class EmailServiceImplTest {
         String to = "test@example.com";
         String templateCode = "test-template";
         
-        EmailTemplate template = new EmailTemplate();
+        EmailTemplateDto template = new EmailTemplateDto();
         template.setSubject("Subject: {{title}}");
         template.setContent("Hello, {{name}}");
 
