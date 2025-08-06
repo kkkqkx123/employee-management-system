@@ -2,6 +2,8 @@ package com.example.demo.security.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -14,6 +16,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
+@Getter
 public class RoleDto {
     
     private Long id;
@@ -25,11 +29,12 @@ public class RoleDto {
     @Size(max = 255, message = "Description must not exceed 255 characters")
     private String description;
     
-    private boolean active;
+    private Boolean active;
     
     private Instant createdAt;
     
     private Instant updatedAt;
     
     private Set<ResourceDto> resources;
+
 }

@@ -57,4 +57,5 @@ public class Role {
         inverseJoinColumns = @JoinColumn(name = "resource_id")
     )
     private Set<Resource> resources = new HashSet<>();
+
 }

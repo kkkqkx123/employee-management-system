@@ -206,7 +206,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 7: Security Configuration
 
-- [ ] 7.1 Implement SecurityConfig with filter chain
+- [x] 7.1 Implement SecurityConfig with filter chain
   - Create SecurityFilterChain bean with HTTP security
   - Configure JWT authentication filter in security chain
   - Set up CORS configuration for frontend integration
@@ -214,7 +214,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Configure session management as stateless
   - _Requirements: 2.1, 2.3_
 
-- [ ] 7.2 Configure method-level security
+- [x] 7.2 Configure method-level security
   - Enable @PreAuthorize and @PostAuthorize annotations
   - Create custom security expressions for permission checking
   - Implement role-based method security
@@ -223,7 +223,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 8: Security Controllers and DTOs
 
-- [ ] 8.1 Create AuthController for authentication endpoints
+- [x] 8.1 Create AuthController for authentication endpoints
   - Implement POST /api/auth/login endpoint
   - Add POST /api/auth/logout endpoint
   - Create POST /api/auth/refresh-token endpoint
@@ -232,7 +232,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Include OpenAPI/Swagger documentation
   - _Requirements: 2.1, 2.2_
 
-- [ ] 8.2 Implement UserController for user management
+- [x] 8.2 Implement UserController for user management
   - Create GET /api/users endpoint with pagination
   - Add POST /api/users for user creation
   - Implement PUT /api/users/{id} for user updates
@@ -241,7 +241,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Include @PreAuthorize annotations for security
   - _Requirements: 1.2, 1.3_
 
-- [ ] 8.3 Create security-related DTOs
+- [x] 8.3 Create security-related DTOs
   - Implement LoginRequest with validation annotations
   - Create LoginResponse with token and user info
   - Add UserDto for user data transfer
