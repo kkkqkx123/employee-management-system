@@ -9,6 +9,7 @@ import com.example.demo.employee.entity.MaritalStatus;
 import com.example.demo.employee.entity.PayType;
 import com.example.demo.employee.exception.EmployeeImportException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
@@ -196,7 +197,6 @@ public class EmployeeExcelUtil {
             // Process data rows
             int totalRows = sheet.getLastRowNum();
             result.setTotalRecords(totalRows);
-            
             for (int i = 1; i <= totalRows; i++) {
                 Row row = sheet.getRow(i);
                 if (row == null || isEmptyRow(row)) {
@@ -204,10 +204,11 @@ public class EmployeeExcelUtil {
                     continue;
                 }
                 
+                final int currentRowNumber = i + 1;
                 try {
-                    Map<String, Object> employeeData = parseEmployeeRow(row, headerMap, i + 1, result);
+                    Map<String, Object> employeeData = parseEmployeeRow(row, headerMap, currentRowNumber, result);
                     if (employeeData != null && result.getErrors().stream()
-                            .noneMatch(error -> error.getRowNumber() == i + 1)) {
+                            .noneMatch(error -> error.getRowNumber() == currentRowNumber)) {
                         // Convert to EmployeeDto and add to result
                         // This would be handled by the service layer
                         result.setSuccessfulImports(result.getSuccessfulImports() + 1);
@@ -215,7 +216,7 @@ public class EmployeeExcelUtil {
                         result.setFailedImports(result.getFailedImports() + 1);
                     }
                 } catch (Exception e) {
-                    result.addError(i + 1, "Row", "", "Error processing row: " + e.getMessage());
+                    result.addError(currentRowNumber, "Row", "", "Error processing row: " + e.getMessage());
                     result.setFailedImports(result.getFailedImports() + 1);
                 }
             }
@@ -685,10 +686,14 @@ public class EmployeeExcelUtil {
                 cell.setCellValue(employee.getDateOfBirth());
                 break;
             case "Gender":
-                cell.setCellValue(employee.getGender());
+                if (employee.getGender() != null) {
+                    cell.setCellValue(employee.getGender().name());
+                }
                 break;
             case "Marital Status":
-                cell.setCellValue(employee.getMaritalStatus());
+                if (employee.getMaritalStatus() != null) {
+                    cell.setCellValue(employee.getMaritalStatus().name());
+                }
                 break;
             case "Nationality":
                 cell.setCellValue(employee.getNationality());
@@ -720,10 +725,14 @@ public class EmployeeExcelUtil {
                 }
                 break;
             case "Employment Type":
-                cell.setCellValue(employee.getEmploymentType());
+                if (employee.getEmploymentType() != null) {
+                    cell.setCellValue(employee.getEmploymentType().name());
+                }
                 break;
             case "Pay Type":
-                cell.setCellValue(employee.getPayType());
+                if (employee.getPayType() != null) {
+                    cell.setCellValue(employee.getPayType().name());
+                }
                 break;
             case "Salary":
                 if (employee.getSalary() != null) {

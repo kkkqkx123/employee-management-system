@@ -21,6 +21,7 @@ import java.util.Set;
 public class EmployeeExportRequest {
     
     // Export format
+    @Builder.Default
     private ExportFormat format = ExportFormat.EXCEL;
     
     // File name (without extension)
@@ -43,23 +44,31 @@ public class EmployeeExportRequest {
     private LocalDate hireDateTo;
     
     // Include sensitive data (requires special permission)
+    @Builder.Default
     private boolean includeSensitiveData = false;
     
     // Include terminated employees
+    @Builder.Default
     private boolean includeTerminated = false;
     
     // Include disabled employees
+    @Builder.Default
     private boolean includeDisabled = false;
     
     // Sort options
+    @Builder.Default
     private String sortBy = "lastName";
+    @Builder.Default
     private String sortDirection = "ASC";
     
     // Template options
+    @Builder.Default
     private boolean includeHeaders = true;
+    @Builder.Default
     private boolean includeMetadata = true;
     
     // Localization
+    @Builder.Default
     private String locale = "en_US";
     
     public enum ExportFormat {
