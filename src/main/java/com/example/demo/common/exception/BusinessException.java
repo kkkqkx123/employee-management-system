@@ -31,6 +31,15 @@ public class BusinessException extends RuntimeException {
     }
     
     /**
+     * Creates a business exception with message and cause
+     */
+    public BusinessException(String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = "BUSINESS_ERROR";
+        this.context = null;
+    }
+    
+    /**
      * Creates a business exception with error code and message
      */
     public BusinessException(String errorCode, String message) {

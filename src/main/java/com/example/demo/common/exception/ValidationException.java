@@ -27,6 +27,14 @@ public class ValidationException extends BusinessException {
     }
     
     /**
+     * Creates a validation exception with message and cause
+     */
+    public ValidationException(String message, Throwable cause) {
+        super("VALIDATION_ERROR", message, cause);
+        this.validationErrors = null;
+    }
+    
+    /**
      * Creates a validation exception with field-specific errors
      */
     public ValidationException(String message, Map<String, String> validationErrors) {
