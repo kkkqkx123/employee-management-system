@@ -24,6 +24,7 @@ import java.util.List;
 public class DepartmentController {
     
     private final DepartmentService departmentService;
+    private final com.example.demo.employee.service.EmployeeService employeeService;
     
     @PostMapping
     @PreAuthorize("hasAuthority('DEPARTMENT_CREATE')")
@@ -266,6 +267,18 @@ public class DepartmentController {
         DepartmentStatisticsDto statistics = departmentService.getDepartmentStatistics(id);
         
         return ResponseEntity.ok(ApiResponse.success(statistics));
+    }
+    
+    @GetMapping("/{id}/employees")
+    @PreAuthorize("hasAuthority('DEPARTMENT_READ')")
+    @Operation(summary = "Get department employees", description = "Retrieves all employees in the specified department")
+    public ResponseEntity<ApiResponse<List<com.example.demo.employee.dto.EmployeeDto>>> getDepartmentEmployees(
+            @Parameter(description = "Department ID") @PathVariable Long id) {
+        log.info("Getting employees for department: {}", id);
+        
+        List<com.example.demo.employee.dto.EmployeeDto> employees = employeeService.getEmployeesByDepartmentId(id);
+        
+        return ResponseEntity.ok(ApiResponse.success(employees));
     }
     
     @PostMapping("/rebuild-paths")

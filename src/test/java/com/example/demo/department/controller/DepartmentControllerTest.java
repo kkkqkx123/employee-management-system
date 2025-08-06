@@ -33,6 +33,9 @@ class DepartmentControllerTest {
     @MockBean
     private DepartmentService departmentService;
     
+    @MockBean
+    private com.example.demo.employee.service.EmployeeService employeeService;
+    
     @Autowired
     private ObjectMapper objectMapper;
     
@@ -185,5 +188,20 @@ class DepartmentControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.success").value(true))
             .andExpect(jsonPath("$.message").value("Department disabled successfully"));
+    }
+    
+    @Test
+    @WithMockUser(authorities = {"DEPARTMENT_READ"})
+    void getDepartmentEmployees_Success() throws Exception {
+        // Given
+        List<com.example.demo.employee.dto.EmployeeDto> employees = List.of();
+        when(employeeService.getEmployeesByDepartmentId(1L)).thenReturn(employees);
+        
+        // When & Then
+        mockMvc.perform(get("/api/departments/1/employees"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.data").isArray())
+            .andExpect(jsonPath("$.data").isEmpty());
     }
 }

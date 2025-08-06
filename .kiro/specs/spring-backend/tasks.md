@@ -253,7 +253,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 9: Department Entity and Repository
 
-- [ ] 9.1 Implement Department entity with hierarchical structure
+- [x] 9.1 Implement Department entity with hierarchical structure
   - Create Department.java with @Entity annotation for PostgreSQL.
   - Define fields: id, name, depPath, parentId, isParent
   - Implement self-referencing relationship for hierarchy
@@ -261,7 +261,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create audit fields for tracking changes
   - _Requirements: 3.1, 3.4, 3.5_
 
-- [ ] 9.2 Create DepartmentRepository with tree queries
+- [x] 9.2 Create DepartmentRepository with tree queries
   - Extend JpaRepository<Department, Long>
   - Add findByParentId method for child departments
   - Implement findRootDepartments for top-level departments
@@ -269,7 +269,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add findByDepPathStartingWith for path-based queries
   - _Requirements: 3.1, 3.3_
 
-- [ ] 9.3 Create Flyway migration for departments table
+- [x] 9.3 Create Flyway migration for departments table
   - Create a new migration script, e.g., V2__Create_departments_table.sql.
   - Define the departments table schema including hierarchical fields (parent_id, dep_path, is_parent, level) and manager_id.
   - Add a self-referencing foreign key on parent_id to the departments(id) to enforce the hierarchy.
@@ -280,7 +280,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 10: Department Service Implementation
 
-- [ ] 10.1 Implement DepartmentService with tree operations
+- [x] 10.1 Implement DepartmentService with tree operations
   - Create getDepartmentTree method with recursive loading
   - Implement createDepartment with path generation
   - Add updateDepartment with hierarchy validation
@@ -288,7 +288,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Implement department move operations
   - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-- [ ] 10.2 Add department validation and business logic
+- [x] 10.2 Add department validation and business logic
   - Validate department hierarchy constraints
   - Prevent circular references in department tree
   - Check for existing employees before deletion
@@ -298,7 +298,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 11: Department Controller and DTOs
 
-- [ ] 11.1 Create DepartmentController with REST endpoints
+- [x] 11.1 Create DepartmentController with REST endpoints
   - Implement GET /api/departments/tree for hierarchy
   - Add POST /api/departments for creation
   - Create PUT /api/departments/{id} for updates
@@ -307,7 +307,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Include proper security annotations
   - _Requirements: 3.1, 3.2_
 
-- [ ] 11.2 Implement department DTOs and validation
+- [x] 11.2 Implement department DTOs and validation
   - Create DepartmentDto for data transfer
   - Add DepartmentTreeDto for hierarchical display
   - Implement DepartmentCreateRequest with validation
@@ -317,7 +317,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 12: Employee Entity and Status Management
 
-- [ ] 12.1 Implement Employee entity with comprehensive fields
+- [x] 12.1 Implement Employee entity with comprehensive fields
   - Create Employee.java with @Entity annotation for PostgreSQL.
   - Define fields: id, employeeNumber, name, email, phone
   - Add department and position relationships
@@ -325,14 +325,14 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Implement validation annotations for all fields
   - _Requirements: 5.1, 5.7_
 
-- [ ] 12.2 Create EmployeeStatus enum and validation
+- [x] 12.2 Create EmployeeStatus enum and validation
   - Define status values: ACTIVE, INACTIVE, TERMINATED
   - Add status transition validation logic
   - Implement status-based business rules
   - Create status history tracking
   - _Requirements: 5.1_
 
-- [ ] 12.3 Create Flyway migration for employees table
+- [x] 12.3 Create Flyway migration for employees table
   - Create a new migration script, e.g., V4__Create_employees_table.sql.
   - Define the employees table schema with all comprehensive fields, including encrypted columns for sensitive data (e.g., bank_account_encrypted).
   - Add foreign key constraints for department_id, position_id, and a self-referencing key for manager_id.
