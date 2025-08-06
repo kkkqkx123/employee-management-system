@@ -64,11 +64,10 @@ public class PayrollServiceImpl implements PayrollService {
             .orElseThrow(() -> new PayrollNotFoundException("Payroll ledger not found with id: " + id));
         
         // Update fields
-        existingLedger.setBasicSalary(payrollLedgerDto.getBasicSalary());
+        existingLedger.setBaseSalary(payrollLedgerDto.getBaseSalary());
         existingLedger.setOvertimePay(payrollLedgerDto.getOvertimePay());
-        existingLedger.setAllowances(payrollLedgerDto.getAllowances());
-        existingLedger.setDeductions(payrollLedgerDto.getDeductions());
-        existingLedger.setTaxAmount(payrollLedgerDto.getTaxAmount());
+        existingLedger.setTotalDeductions(payrollLedgerDto.getTotalDeductions());
+        existingLedger.setTotalTaxes(payrollLedgerDto.getTotalTaxes());
         existingLedger.setNetPay(payrollLedgerDto.getNetPay());
         existingLedger.setUpdatedAt(LocalDateTime.now());
         
@@ -116,7 +115,7 @@ public class PayrollServiceImpl implements PayrollService {
             .map(this::convertToDto)
             .collect(Collectors.toList());
         
-        return new PageResponse<>(
+        return PageResponse.of(
             ledgerDtos,
             ledgerPage.getNumber(),
             ledgerPage.getSize(),
@@ -129,7 +128,7 @@ public class PayrollServiceImpl implements PayrollService {
     public List<PayrollLedgerDto> getPayrollLedgersByEmployee(Long employeeId) {
         log.info("Fetching payroll ledgers for employee: {}", employeeId);
         
-        List<PayrollLedger> ledgers = payrollLedgerRepository.findByEmployeeIdOrderByCreatedAtDesc(employeeId);
+        List<PayrollLedger> ledgers = payrollLedgerRepository.findByEmployeeId(employeeId);
         return ledgers.stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
@@ -159,12 +158,12 @@ public class PayrollServiceImpl implements PayrollService {
     public PageResponse<PayrollLedgerDto> getPayrollLedgersByEmployeeWithPaging(Long employeeId, Pageable pageable) {
         log.info("Fetching payroll ledgers for employee: {} with pagination", employeeId);
         
-        Page<PayrollLedger> ledgerPage = payrollLedgerRepository.findByEmployeeId(employeeId, pageable);
+        Page<PayrollLedger> ledgerPage = payrollLedgerRepository.findByEmployeeIdOrderByCreatedAtDesc(employeeId, pageable);
         List<PayrollLedgerDto> ledgerDtos = ledgerPage.getContent().stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
         
-        return new PageResponse<>(
+        return PageResponse.of(
             ledgerDtos,
             ledgerPage.getNumber(),
             ledgerPage.getSize(),
@@ -267,7 +266,7 @@ public class PayrollServiceImpl implements PayrollService {
     // Payroll Period Operations
     @Override
     public PayrollPeriodDto createPayrollPeriod(PayrollPeriodDto payrollPeriodDto) {
-        log.info("Creating payroll period: {}", payrollPeriodDto.getName());
+        log.info("Creating payroll period: {}", payrollPeriodDto.getPeriodName());
         
         PayrollPeriod period = convertToEntity(payrollPeriodDto);
         period.setCreatedAt(LocalDateTime.now());
@@ -284,10 +283,10 @@ public class PayrollServiceImpl implements PayrollService {
         PayrollPeriod existingPeriod = payrollPeriodRepository.findById(id)
             .orElseThrow(() -> new PayrollPeriodException("Payroll period not found with id: " + id));
         
-        existingPeriod.setName(payrollPeriodDto.getName());
+        existingPeriod.setPeriodName(payrollPeriodDto.getPeriodName());
         existingPeriod.setStartDate(payrollPeriodDto.getStartDate());
         existingPeriod.setEndDate(payrollPeriodDto.getEndDate());
-        existingPeriod.setStatus(PayrollPeriodStatus.valueOf(payrollPeriodDto.getStatus()));
+        existingPeriod.setStatus(payrollPeriodDto.getStatus());
         existingPeriod.setUpdatedAt(LocalDateTime.now());
         
         PayrollPeriod savedPeriod = payrollPeriodRepository.save(existingPeriod);
@@ -324,7 +323,7 @@ public class PayrollServiceImpl implements PayrollService {
             .map(this::convertToDto)
             .collect(Collectors.toList());
         
-        return new PageResponse<>(
+        return PageResponse.of(
             periodDtos,
             periodPage.getNumber(),
             periodPage.getSize(),
@@ -337,7 +336,7 @@ public class PayrollServiceImpl implements PayrollService {
     public List<PayrollPeriodDto> getActivePayrollPeriods() {
         log.info("Fetching active payroll periods");
         
-        List<PayrollPeriod> periods = payrollPeriodRepository.findByStatus(PayrollPeriodStatus.ACTIVE);
+        List<PayrollPeriod> periods = payrollPeriodRepository.findByStatus(PayrollPeriodStatus.OPEN);
         return periods.stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
@@ -348,7 +347,7 @@ public class PayrollServiceImpl implements PayrollService {
         log.info("Fetching current payroll period");
         
         LocalDate today = LocalDate.now();
-        PayrollPeriod period = payrollPeriodRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(today, today)
+        PayrollPeriod period = payrollPeriodRepository.findCurrentPeriodForDate(today)
             .orElseThrow(() -> new PayrollPeriodException("No current payroll period found"));
         
         return convertToDto(period);
@@ -371,7 +370,7 @@ public class PayrollServiceImpl implements PayrollService {
     // Salary Component Operations
     @Override
     public SalaryComponentDto createSalaryComponent(SalaryComponentDto salaryComponentDto) {
-        log.info("Creating salary component: {}", salaryComponentDto.getName());
+        log.info("Creating salary component: {}", salaryComponentDto.getComponentName());
         
         SalaryComponent component = convertToEntity(salaryComponentDto);
         component.setCreatedAt(LocalDateTime.now());
@@ -388,10 +387,10 @@ public class PayrollServiceImpl implements PayrollService {
         SalaryComponent existingComponent = salaryComponentRepository.findById(id)
             .orElseThrow(() -> new PayrollNotFoundException("Salary component not found with id: " + id));
         
-        existingComponent.setName(salaryComponentDto.getName());
+        existingComponent.setComponentName(salaryComponentDto.getComponentName());
         existingComponent.setComponentType(salaryComponentDto.getComponentType());
-        existingComponent.setCalculationType(salaryComponentDto.getCalculationType());
-        existingComponent.setValue(salaryComponentDto.getValue());
+        existingComponent.setComponentType(salaryComponentDto.getComponentType());
+        existingComponent.setAmount(salaryComponentDto.getAmount());
         existingComponent.setIsActive(salaryComponentDto.getIsActive());
         existingComponent.setUpdatedAt(LocalDateTime.now());
         
@@ -429,7 +428,7 @@ public class PayrollServiceImpl implements PayrollService {
             .map(this::convertToDto)
             .collect(Collectors.toList());
         
-        return new PageResponse<>(
+        return PageResponse.of(
             componentDtos,
             componentPage.getNumber(),
             componentPage.getSize(),
@@ -495,28 +494,54 @@ public class PayrollServiceImpl implements PayrollService {
         PayrollLedgerDto dto = new PayrollLedgerDto();
         dto.setId(ledger.getId());
         dto.setEmployeeId(ledger.getEmployeeId());
+        if (ledger.getEmployee() != null) {
+            dto.setEmployeeName(ledger.getEmployee().getFullName());
+            dto.setEmployeeNumber(ledger.getEmployee().getEmployeeNumber());
+        }
         dto.setPayrollPeriodId(ledger.getPayrollPeriodId());
-        dto.setBasicSalary(ledger.getBasicSalary());
-        dto.setOvertimePay(ledger.getOvertimePay());
-        dto.setAllowances(ledger.getAllowances());
-        dto.setDeductions(ledger.getDeductions());
-        dto.setTaxAmount(ledger.getTaxAmount());
+        if (ledger.getPayrollPeriod() != null) {
+            dto.setPayrollPeriodName(ledger.getPayrollPeriod().getPeriodName());
+        }
+        dto.setBaseSalary(ledger.getBaseSalary());
+        dto.setGrossPay(ledger.getGrossPay());
+        dto.setTotalDeductions(ledger.getTotalDeductions());
+        dto.setTotalTaxes(ledger.getTotalTaxes());
         dto.setNetPay(ledger.getNetPay());
-        dto.setStatus(ledger.getStatus().name());
-        dto.setPaymentMethod(ledger.getPaymentMethod().name());
+        dto.setOvertimeHours(ledger.getOvertimeHours());
+        dto.setOvertimePay(ledger.getOvertimePay());
+        dto.setBonusAmount(ledger.getBonusAmount());
+        dto.setStatus(ledger.getStatus());
+        dto.setPaymentMethod(ledger.getPaymentMethod());
+        dto.setPayDate(ledger.getPayDate());
         dto.setPaymentReference(ledger.getPaymentReference());
+        dto.setNotes(ledger.getNotes());
+        dto.setApprovedBy(ledger.getApprovedBy());
+        // approvedByName would require a separate lookup from a user service
+        dto.setApprovedAt(ledger.getApprovedAt());
+        dto.setPaidBy(ledger.getPaidBy());
+        // paidByName would require a separate lookup from a user service
+        dto.setPaidAt(ledger.getPaidAt());
         dto.setCreatedAt(ledger.getCreatedAt());
         dto.setUpdatedAt(ledger.getUpdatedAt());
+        
+        // Convert components if they exist
+        if (ledger.getComponents() != null) {
+            List<PayrollLedgerComponentDto> componentDtos = ledger.getComponents().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+            dto.setComponents(componentDtos);
+        }
+        
         return dto;
     }
 
     private PayrollPeriodDto convertToDto(PayrollPeriod period) {
         PayrollPeriodDto dto = new PayrollPeriodDto();
         dto.setId(period.getId());
-        dto.setName(period.getName());
+        dto.setPeriodName(period.getPeriodName());
         dto.setStartDate(period.getStartDate());
         dto.setEndDate(period.getEndDate());
-        dto.setStatus(period.getStatus().name());
+        dto.setStatus(period.getStatus());
         dto.setCreatedAt(period.getCreatedAt());
         dto.setUpdatedAt(period.getUpdatedAt());
         return dto;
@@ -524,20 +549,19 @@ public class PayrollServiceImpl implements PayrollService {
 
     private PayrollPeriod convertToEntity(PayrollPeriodDto dto) {
         PayrollPeriod period = new PayrollPeriod();
-        period.setName(dto.getName());
+        period.setPeriodName(dto.getPeriodName());
         period.setStartDate(dto.getStartDate());
         period.setEndDate(dto.getEndDate());
-        period.setStatus(PayrollPeriodStatus.valueOf(dto.getStatus()));
+        period.setStatus(dto.getStatus());
         return period;
     }
 
     private SalaryComponentDto convertToDto(SalaryComponent component) {
         SalaryComponentDto dto = new SalaryComponentDto();
         dto.setId(component.getId());
-        dto.setName(component.getName());
+        dto.setComponentName(component.getComponentName());
         dto.setComponentType(component.getComponentType());
-        dto.setCalculationType(component.getCalculationType());
-        dto.setValue(component.getValue());
+        dto.setAmount(component.getAmount());
         dto.setIsActive(component.getIsActive());
         dto.setCreatedAt(component.getCreatedAt());
         dto.setUpdatedAt(component.getUpdatedAt());
@@ -546,10 +570,9 @@ public class PayrollServiceImpl implements PayrollService {
 
     private SalaryComponent convertToEntity(SalaryComponentDto dto) {
         SalaryComponent component = new SalaryComponent();
-        component.setName(dto.getName());
+        component.setComponentName(dto.getComponentName());
         component.setComponentType(dto.getComponentType());
-        component.setCalculationType(dto.getCalculationType());
-        component.setValue(dto.getValue());
+        component.setAmount(dto.getAmount());
         component.setIsActive(dto.getIsActive());
         return component;
     }
@@ -558,9 +581,25 @@ public class PayrollServiceImpl implements PayrollService {
         PayrollAudit audit = new PayrollAudit();
         audit.setPayrollLedgerId(payrollLedgerId);
         audit.setAction(action);
-        audit.setDescription(description);
+        audit.setReason(description);
         audit.setCreatedAt(LocalDateTime.now());
         // audit.setUserId would be set from security context
         payrollAuditRepository.save(audit);
+    }
+    
+    private PayrollLedgerComponentDto convertToDto(PayrollLedgerComponent component) {
+        PayrollLedgerComponentDto dto = new PayrollLedgerComponentDto();
+        dto.setId(component.getId());
+        dto.setPayrollLedgerId(component.getPayrollLedgerId());
+        dto.setSalaryComponentId(component.getSalaryComponentId());
+        if (component.getSalaryComponent() != null) {
+            dto.setComponentName(component.getSalaryComponent().getComponentName());
+            dto.setComponentType(component.getSalaryComponent().getComponentType());
+        }
+        dto.setAmount(component.getAmount());
+        dto.setCalculationBase(component.getCalculationBase());
+        dto.setPercentageApplied(component.getPercentageApplied());
+        dto.setNotes(component.getNotes());
+        return dto;
     }
 }

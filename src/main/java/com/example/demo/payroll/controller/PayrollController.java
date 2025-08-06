@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -315,7 +317,8 @@ public class PayrollController {
         
         if (componentType != null) {
             List<SalaryComponentDto> componentList = payrollService.getSalaryComponentsByType(componentType);
-            components = new PageResponse<>(componentList, pageable, componentList.size());
+            Page<SalaryComponentDto> componentPage = new PageImpl<>(componentList, pageable, componentList.size());
+            components = PageResponse.of(componentPage);
         } else {
             components = payrollService.getSalaryComponents(pageable);
         }
