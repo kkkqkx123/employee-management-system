@@ -342,7 +342,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 13: Employee Repository with Search Capabilities
 
-- [ ] 13.1 Create EmployeeRepository with advanced queries
+- [x] 13.1 Create EmployeeRepository with advanced queries
   - Extend JpaRepository<Employee, Long>
   - Add findByDepartmentId for department filtering
   - Implement findByStatus for status-based queries
@@ -350,7 +350,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add pagination support with Pageable parameters
   - _Requirements: 5.1, 5.2, 5.4_
 
-- [ ] 13.2 Implement dynamic search with Specification API
+- [x] 13.2 Implement dynamic search with Specification API
   - Create EmployeeSearchCriteria class
   - Implement dynamic query building
   - Add support for multiple search criteria
@@ -360,7 +360,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 14: Employee Service Layer
 
-- [ ] 14.1 Implement core EmployeeService operations
+- [x] 14.1 Implement core EmployeeService operations
   - Create CRUD operations for employee management
   - Add employee number generation and validation
   - Implement employee search with pagination
@@ -368,7 +368,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add employee status management methods
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 14.2 Create EmployeeImportService for Excel processing
+- [x] 14.2 Create EmployeeImportService for Excel processing
   - Implement Excel file parsing with Apache POI
   - Add data validation for imported employees
   - Create error reporting for invalid data
@@ -376,7 +376,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add duplicate detection and handling
   - _Requirements: 5.5, 5.7_
 
-- [ ] 14.3 Implement EmployeeExportService for data export
+- [x] 14.3 Implement EmployeeExportService for data export
   - Create Excel export functionality
   - Add customizable export templates
   - Implement filtered export based on criteria
@@ -386,7 +386,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 15: Employee Controller and API Endpoints
 
-- [ ] 15.1 Create EmployeeController with comprehensive REST API
+- [x] 15.1 Create EmployeeController with comprehensive REST API
   - Implement GET /api/employees with pagination and search
   - Add POST /api/employees for employee creation
   - Create PUT /api/employees/{id} for updates
@@ -395,7 +395,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Include proper security and validation
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 15.2 Add import/export endpoints
+- [x] 15.2 Add import/export endpoints
   - Create POST /api/employees/import for Excel upload
   - Implement GET /api/employees/export for data export
   - Add GET /api/employees/import/template for template download

@@ -2,6 +2,7 @@ package com.example.demo.employee.entity;
 
 import com.example.demo.security.security.EncryptedStringConverter;
 import com.example.demo.department.entity.Department;
+import com.example.demo.position.entity.Position;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -144,6 +145,10 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id", insertable = false, updatable = false)
+    private Position position;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", insertable = false, updatable = false)
