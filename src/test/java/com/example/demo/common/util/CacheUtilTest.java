@@ -210,7 +210,7 @@ class CacheUtilTest {
         cacheUtil.evictByPattern(pattern);
 
         verify(redisTemplate).keys(pattern);
-        verify(redisTemplate, never()).delete(any(Set.class));
+        verify(redisTemplate, never()).delete(anyCollection());
     }
 
     @Test
