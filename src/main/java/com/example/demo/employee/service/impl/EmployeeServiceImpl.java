@@ -2,6 +2,7 @@ package com.example.demo.employee.service.impl;
 
 import com.example.demo.employee.dto.EmployeeCreateRequest;
 import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.dto.EmployeeSearchCriteria;
 import com.example.demo.employee.dto.EmployeeUpdateRequest;
 import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.entity.EmployeeStatus;
@@ -34,17 +35,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDto createEmployee(EmployeeCreateRequest createRequest) {
         log.info("Creating employee with email: {}", createRequest.getEmail());
-        
+
         // Validate unique constraints
         if (employeeRepository.existsByEmail(createRequest.getEmail())) {
             throw EmployeeAlreadyExistsException.byEmail(createRequest.getEmail());
         }
-        
+
         // Validate department exists
         if (!departmentRepository.existsById(createRequest.getDepartmentId())) {
             throw new RuntimeException("Department not found with id: " + createRequest.getDepartmentId());
         }
-        
+
         // Create employee entity
         Employee employee = new Employee();
         employee.setEmployeeNumber(generateEmployeeNumber());
@@ -74,10 +75,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setBankAccount(createRequest.getBankAccount());
         employee.setTaxId(createRequest.getTaxId());
         employee.setEnabled(createRequest.getEnabled());
-        
+
         Employee savedEmployee = employeeRepository.save(employee);
         log.info("Employee created successfully with ID: {}", savedEmployee.getId());
-        
+
         return convertToDto(savedEmployee);
     }
 
@@ -85,10 +86,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     public EmployeeDto updateEmployee(Long id, EmployeeUpdateRequest updateRequest) {
         log.info("Updating employee with ID: {}", id);
-        
+
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
-        
+
         // Check email uniqueness (excluding current employee)
         employeeRepository.findByEmail(updateRequest.getEmail())
                 .ifPresent(employee -> {
@@ -96,12 +97,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                         throw EmployeeAlreadyExistsException.byEmail(updateRequest.getEmail());
                     }
                 });
-        
+
         // Validate department exists
         if (!departmentRepository.existsById(updateRequest.getDepartmentId())) {
             throw new RuntimeException("Department not found with id: " + updateRequest.getDepartmentId());
         }
-        
+
         // Update fields
         existingEmployee.setFirstName(updateRequest.getFirstName());
         existingEmployee.setLastName(updateRequest.getLastName());
@@ -130,10 +131,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setBankAccount(updateRequest.getBankAccount());
         existingEmployee.setTaxId(updateRequest.getTaxId());
         existingEmployee.setEnabled(updateRequest.getEnabled());
-        
+
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         log.info("Employee updated successfully with ID: {}", updatedEmployee.getId());
-        
+
         return convertToDto(updatedEmployee);
     }
 
@@ -168,8 +169,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional(readOnly = true)
     public List<EmployeeDto> getEmployeesByDepartmentId(Long departmentId) {
-        return employeeRepository.findByDepartmentId(departmentId)
-                .stream()
+        List<Employee> employees = employeeRepository.findByDepartmentId(departmentId);
+        return employees.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -184,6 +185,62 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional(readOnly = true)
     public Page<EmployeeDto> searchEmployees(String searchTerm, Pageable pageable) {
         return employeeRepository.searchEmployees(searchTerm, pageable).map(this::convertToDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EmployeeDto> searchEmployees(EmployeeSearchCriteria criteria, Pageable pageable) {
+        log.info("Searching employees with advanced criteria");
+
+        // If no criteria specified, return all employees
+        if (criteria == null || !criteria.hasAnyCriteria()) {
+            return employeeRepository.findAll(pageable).map(this::convertToDto);
+        }
+
+        // If only basic search term is provided, use simple search
+        if (criteria.hasSearchTerm() && !hasAdvancedCriteria(criteria)) {
+            return searchEmployees(criteria.getSearchTerm(), pageable);
+        }
+
+        // Use advanced search with criteria
+        return searchWithCriteria(criteria, pageable);
+    }
+
+    private boolean hasAdvancedCriteria(EmployeeSearchCriteria criteria) {
+        return criteria.getDepartmentIds() != null && !criteria.getDepartmentIds().isEmpty() ||
+                criteria.getPositionIds() != null && !criteria.getPositionIds().isEmpty() ||
+                criteria.getManagerIds() != null && !criteria.getManagerIds().isEmpty() ||
+                criteria.getStatuses() != null && !criteria.getStatuses().isEmpty() ||
+                criteria.getEmploymentTypes() != null && !criteria.getEmploymentTypes().isEmpty() ||
+                criteria.getPayTypes() != null && !criteria.getPayTypes().isEmpty() ||
+                criteria.getHireDateFrom() != null || criteria.getHireDateTo() != null ||
+                criteria.getTerminationDateFrom() != null || criteria.getTerminationDateTo() != null ||
+                criteria.getSalaryFrom() != null || criteria.getSalaryTo() != null ||
+                criteria.getHourlyRateFrom() != null || criteria.getHourlyRateTo() != null ||
+                criteria.getEnabled() != null || criteria.getHasManager() != null ||
+                criteria.getHasDirectReports() != null;
+    }
+
+    private Page<EmployeeDto> searchWithCriteria(EmployeeSearchCriteria criteria, Pageable pageable) {
+        // For now, implement basic filtering. In a real application, you would use
+        // JPA Criteria API or custom repository methods for complex queries
+
+        Page<Employee> employees = employeeRepository.findAll(pageable);
+
+        // Apply basic filters that can be handled by existing repository methods
+        if (criteria.getDepartmentIds() != null && criteria.getDepartmentIds().size() == 1) {
+            employees = employeeRepository.findByDepartmentId(criteria.getDepartmentIds().get(0), pageable);
+        } else if (criteria.getStatuses() != null && criteria.getStatuses().size() == 1) {
+            employees = employeeRepository.findByStatus(criteria.getStatuses().get(0), pageable);
+        } else if (criteria.getHireDateFrom() != null && criteria.getHireDateTo() != null) {
+            employees = employeeRepository.findByHireDateBetween(criteria.getHireDateFrom(), criteria.getHireDateTo(),
+                    pageable);
+        } else if (criteria.hasSearchTerm()) {
+            // Use the existing search method for basic text search
+            return searchEmployees(criteria.getSearchTerm(), pageable);
+        }
+
+        return employees.map(this::convertToDto);
     }
 
     @Override
@@ -218,12 +275,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         String prefix = "EMP";
         String suffix;
         String employeeNumber;
-        
+
         do {
             suffix = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
             employeeNumber = prefix + "-" + suffix;
         } while (employeeRepository.existsByEmployeeNumber(employeeNumber));
-        
+
         return employeeNumber;
     }
 
@@ -260,7 +317,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .updatedAt(employee.getUpdatedAt())
                 .fullName(employee.getFullName())
                 .build();
-        
+
         // Mask sensitive data
         if (employee.getBankAccount() != null && employee.getBankAccount().length() > 4) {
             dto.setBankAccount("****" + employee.getBankAccount().substring(employee.getBankAccount().length() - 4));
@@ -268,17 +325,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getTaxId() != null && employee.getTaxId().length() > 4) {
             dto.setTaxId("****" + employee.getTaxId().substring(employee.getTaxId().length() - 4));
         }
-        
+
         // Set department name if available
         if (employee.getDepartment() != null) {
             dto.setDepartmentName(employee.getDepartment().getName());
         }
-        
+
         // Set manager name if available
         if (employee.getManager() != null) {
             dto.setManagerName(employee.getManager().getFullName());
         }
-        
+
         return dto;
     }
 }

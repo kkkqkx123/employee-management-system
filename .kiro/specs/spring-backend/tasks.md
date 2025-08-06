@@ -993,7 +993,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ### Task 9: Department Entity and Repository
 
-- [ ] 9.1 Implement Department entity with hierarchical structure
+- [x] 9.1 Implement Department entity with hierarchical structure
   - Create Department.java with @Entity annotation
   - Define fields: id, name, code, depPath, parentId, isParent, location, managerId
   - Implement self-referencing relationship for hierarchy
@@ -1002,7 +1002,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Add proper indexes for hierarchical queries
   - _Requirements: 3.1, 3.4, 3.5, 3.6_
 
-- [ ] 9.2 Create DepartmentRepository with tree queries
+- [x] 9.2 Create DepartmentRepository with tree queries
   - Extend JpaRepository<Department, Long>
   - Add findByParentId method for child departments
   - Implement findRootDepartments for top-level departments
@@ -1011,7 +1011,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Implement caching for department tree structure
   - _Requirements: 3.1, 3.3, 3.4_
 
-- [ ] 9.3 Create Flyway migration for departments table
+- [x] 9.3 Create Flyway migration for departments table
   - Create V2__Create_departments_table.sql migration script
   - Define departments table with hierarchical constraints
   - Add foreign key constraints for parent-child relationships
@@ -1021,7 +1021,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ### Task 10: Department Service Implementation
 
-- [ ] 10.1 Implement DepartmentService with tree operations
+- [x] 10.1 Implement DepartmentService with tree operations
   - Create getDepartmentTree method with recursive loading
   - Implement createDepartment with path generation
   - Add updateDepartment with hierarchy validation
@@ -1030,7 +1030,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Add caching for frequently accessed department data
   - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6, 3.7_
 
-- [ ] 10.2 Add department validation and business logic
+- [x] 10.2 Add department validation and business logic
   - Validate department hierarchy constraints
   - Prevent circular references in department tree
   - Check for existing employees before deletion
@@ -1041,7 +1041,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
 
 ### Task 11: Department Controller and DTOs
 
-- [ ] 11.1 Create DepartmentController with REST endpoints
+- [x] 11.1 Create DepartmentController with REST endpoints
   - Implement GET /api/departments/tree for hierarchy
   - Add POST /api/departments for creation
   - Create PUT /api/departments/{id} for updates
@@ -1050,7 +1050,7 @@ This implementation plan provides a comprehensive roadmap for building the Sprin
   - Include proper security annotations and permission checks
   - _Requirements: 3.1, 3.2, 3.6_
 
-- [ ] 11.2 Implement department DTOs and validation
+- [x] 11.2 Implement department DTOs and validation
   - Create DepartmentDto for data transfer
   - Add DepartmentTreeDto for hierarchical display
   - Implement DepartmentCreateRequest with validation

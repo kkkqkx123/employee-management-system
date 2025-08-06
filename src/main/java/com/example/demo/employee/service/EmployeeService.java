@@ -2,6 +2,7 @@ package com.example.demo.employee.service;
 
 import com.example.demo.employee.dto.EmployeeCreateRequest;
 import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.dto.EmployeeSearchCriteria;
 import com.example.demo.employee.dto.EmployeeUpdateRequest;
 import com.example.demo.employee.entity.EmployeeStatus;
 import org.springframework.data.domain.Page;
@@ -55,6 +56,11 @@ public interface EmployeeService {
      * Search employees by term
      */
     Page<EmployeeDto> searchEmployees(String searchTerm, Pageable pageable);
+    
+    /**
+     * Advanced search employees with multiple criteria
+     */
+    Page<EmployeeDto> searchEmployees(EmployeeSearchCriteria criteria, Pageable pageable);
     
     /**
      * Delete employee by ID
