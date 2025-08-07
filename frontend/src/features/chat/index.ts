@@ -1,5 +1,6 @@
 // Chat feature public API
-export * from './components';
-export * from './hooks';
-export * from './services';
-export * from './types';
+// Note: These exports will be implemented in future tasks
+// export * from './components';
+// export * from './hooks';
+// export * from './services';
+// export * from './types';

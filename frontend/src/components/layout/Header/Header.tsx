@@ -1,4 +1,4 @@
-import { Group, Text, ActionIcon, Menu, Avatar, Badge, Indicator } from '@mantine/core';
+import { Group, Text, ActionIcon, Menu, Avatar, Indicator } from '@mantine/core';
 import { 
   IconBell, 
   IconUser, 
@@ -6,10 +6,10 @@ import {
   IconLogout,
   IconSearch
 } from '@tabler/icons-react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import classes from './Header.module.css';
-ex
-port interface HeaderProps {
+
+export interface HeaderProps {
   /** Mobile burger menu */
   burger?: ReactNode;
   /** Desktop burger menu */
@@ -32,8 +32,9 @@ port interface HeaderProps {
   onSettingsClick?: () => void;
   /** Logout handler */
   onLogout?: () => void;
-}expor
-t const Header = ({
+}
+
+export const Header = ({
   burger,
   desktopBurger,
   user = { name: 'John Doe', email: 'john.doe@company.com' },

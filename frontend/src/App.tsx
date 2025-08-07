@@ -1,24 +1,20 @@
 import { MantineProvider } from '@mantine/core';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { BrowserRouter } from 'react-router-dom';
+import { Notifications } from '@mantine/notifications';
 import { theme } from './theme';
 import { AppShell } from './components/layout';
+import { queryClient } from './services/queryClient';
+import { ApiDemo } from './demo/ApiDemo';
 import '@mantine/core/styles.css';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+import '@mantine/notifications/styles.css';
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={theme}>
+        <Notifications position="top-right" />
         <BrowserRouter>
           <AppShell>
             <div>
@@ -26,6 +22,8 @@ function App() {
               <p>Frontend foundation setup complete!</p>
               <p>Build system and development tools configured!</p>
               <p>Core UI component library implemented!</p>
+              <p>State management and API integration configured!</p>
+              <ApiDemo />
             </div>
           </AppShell>
         </BrowserRouter>
