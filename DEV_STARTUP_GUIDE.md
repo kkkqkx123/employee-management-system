@@ -40,17 +40,17 @@ psql -U postgres
 # 跳过测试启动
 mvn spring-boot:run -DskipTests
 
-# 或者使用Maven包装器
+# 或者使用Maven包装器【不要采用该方法，一律使用mvn】
 ./mvnw spring-boot:run -DskipTests
 ```
 
 #### 指定环境启动
 ```bash
 # 使用开发环境
-mvn spring-boot:run -Dspring-boot.run.profiles=dev -DskipTests
+mvn spring-boot:run "-Dspring-boot.run.profiles=dev -DskipTests"
 
 # 使用混合环境（需要设置环境变量）
-mvn spring-boot:run -Dspring-boot.run.profiles=hybrid -DskipTests
+mvn spring-boot:run "-Dspring-boot.run.profiles=hybrid -DskipTests"
 ```
 
 ### 4. 环境变量设置

@@ -38,12 +38,22 @@
         </encoder>
     </appender>
     
-    <!-- 根日志配置 -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="ERROR_FILE"/>
-    </root>
+    <!-- 环境特定的根日志配置 -->
+    <springProfile name="dev,local,hybrid">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+    
+    <springProfile name="prod,staging">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
     
     <!-- Spring框架日志 -->
     <logger name="org.springframework" level="WARN"/>
@@ -52,5 +62,5 @@
     
     <!-- 应用日志 -->
     <logger name="com.example.demo" level="DEBUG"/>
-    
+
 </configuration>
