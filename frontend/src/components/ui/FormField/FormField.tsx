@@ -1,59 +1,84 @@
-import { Box, Text } from '@mantine/core';
-import { ReactNode } from 'react';
-import classes from './FormField.module.css';
+import React from 'react';
+import { clsx } from 'clsx';
+import { FormFieldProps } from '../types/ui.types';
+import styles from './FormField.module.css';
 
-export interface FormFieldProps {
-  /** Field label */
-  label?: string;
-  /** Field description/helper text */
-  description?: string;
-  /** Error message */
-  error?: string;
-  /** Whether field is required */
-  required?: boolean;
-  /** Field content */
-  children: ReactNode;
-  /** Custom class name */
-  className?: string;
-}
-
-export const FormField = ({
+export const FormField: React.FC<FormFieldProps> = ({
   label,
-  description,
   error,
+  helperText,
   required = false,
   children,
   className,
-}: FormFieldProps) => {
+  labelClassName,
+  errorClassName,
+  helperClassName,
+  testId
+}) => {
+  const fieldId = React.useId();
+  
+  const fieldClasses = clsx(
+    styles.formField,
+    {
+      [styles.hasError]: error,
+    },
+    className
+  );
+
+  const labelClasses = clsx(
+    styles.label,
+    {
+      [styles.required]: required,
+    },
+    labelClassName
+  );
+
+  const errorClasses = clsx(
+    styles.error,
+    errorClassName
+  );
+
+  const helperClasses = clsx(
+    styles.helper,
+    helperClassName
+  );
+
   return (
-    <Box className={`${classes.container} ${className || ''}`}>
+    <div className={fieldClasses} data-testid={testId}>
       {label && (
-        <Text
-          component="label"
-          size="sm"
-          fw={500}
-          className={classes.label}
-        >
+        <label htmlFor={fieldId} className={labelClasses}>
           {label}
-          {required && <span className={classes.required}>*</span>}
-        </Text>
+          {required && <span className={styles.requiredIndicator} aria-label="required">*</span>}
+        </label>
       )}
       
-      {description && (
-        <Text size="xs" c="dimmed" className={classes.description}>
-          {description}
-        </Text>
-      )}
-      
-      <div className={classes.field}>
-        {children}
+      <div className={styles.inputContainer}>
+        {React.cloneElement(children as React.ReactElement, {
+          id: fieldId,
+          'aria-invalid': !!error,
+          'aria-describedby': error ? `${fieldId}-error` : helperText ? `${fieldId}-helper` : undefined,
+        })}
       </div>
       
       {error && (
-        <Text size="xs" c="red" className={classes.error}>
+        <div
+          id={`${fieldId}-error`}
+          className={errorClasses}
+          role="alert"
+          aria-live="polite"
+        >
           {error}
-        </Text>
+        </div>
       )}
-    </Box>
+      
+      {helperText && !error && (
+        <div
+          id={`${fieldId}-helper`}
+          className={helperClasses}
+        >
+          {helperText}
+        </div>
+      )}
+    </div>
   );
 };

@@ -1,32 +1,42 @@
-import { Loader, LoaderProps, Center } from '@mantine/core';
-import classes from './LoadingSpinner.module.css';
+import React from 'react';
+import { clsx } from 'clsx';
+import { LoadingSpinnerProps } from '../types/ui.types';
+import styles from './LoadingSpinner.module.css';
 
-export interface LoadingSpinnerProps extends LoaderProps {
-  /** Loading text */
-  text?: string;
-  /** Whether to center the spinner */
-  centered?: boolean;
-  /** Spinner size */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-}
-
-export const LoadingSpinner = ({
-  text,
-  centered = false,
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
+  color = 'primary',
+  overlay = false,
   className,
-  ...props
-}: LoadingSpinnerProps) => {
-  const spinner = (
-    <div className={`${classes.container} ${className || ''}`}>
-      <Loader size={size} {...props} />
-      {text && <div className={classes.text}>{text}</div>}
+  testId
+}) => {
+  const spinnerClasses = clsx(
+    styles.spinner,
+    styles[size],
+    styles[color],
+    {
+      [styles.overlay]: overlay,
+    },
+    className
+  );
+
+  const content = (
+    <div className={styles.spinnerContainer}>
+      <div className={spinnerClasses} data-testid={testId} role="status" aria-label="Loading">
+        <div className={styles.dot1}></div>
+        <div className={styles.dot2}></div>
+        <div className={styles.dot3}></div>
+      </div>
     </div>
   );
 
-  if (centered) {
-    return <Center>{spinner}</Center>;
+  if (overlay) {
+    return (
+      <div className={styles.overlayContainer}>
+        {content}
+      </div>
+    );
   }
 
-  return spinner;
+  return content;
 };

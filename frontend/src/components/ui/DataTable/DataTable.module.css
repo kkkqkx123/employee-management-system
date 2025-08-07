@@ -1,50 +1,263 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--mantine-spacing-md);
+  gap: 16px;
 }
 
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--mantine-spacing-md);
-}
-
-.search {
-  max-width: 300px;
+.tableWrapper {
+  overflow: auto;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
 }
 
 .table {
-  border: 1px solid var(--mantine-color-gray-3);
-  border-radius: var(--mantine-radius-md);
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
 }
 
-.sortableHeader {
+.table.bordered {
+  border: 1px solid var(--color-gray-200);
+}
+
+.table.bordered .th,
+.table.bordered .td {
+  border: 1px solid var(--color-gray-200);
+}
+
+/* Sizes */
+.small .th,
+.small .td {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.middle .th,
+.middle .td {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.large .th,
+.large .td {
+  padding: 16px 20px;
+  font-size: 16px;
+}
+
+/* Header */
+.thead {
+  background-color: var(--color-gray-50);
+}
+
+.headerRow {
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  background-color: var(--color-gray-50);
+  position: relative;
+}
+
+.th.sortable {
   cursor: pointer;
   user-select: none;
 }
 
-.sortableHeader:hover {
-  background-color: var(--mantine-color-gray-1);
+.th.sortable:hover {
+  background-color: var(--color-gray-100);
 }
 
-.clickableRow {
+.th.sorted {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.headerTitle {
+  flex: 1;
+}
+
+.sortIcon {
+  font-size: 12px;
+  color: var(--color-gray-400);
+  transition: color 0.2s;
+}
+
+.th.sorted .sortIcon {
+  color: var(--color-primary-500);
+}
+
+/* Body */
+.tbody {
+  background: white;
+}
+
+.tr {
+  border-bottom: 1px solid var(--color-gray-200);
+  transition: background-color 0.2s;
+}
+
+.tr:hover {
+  background-color: var(--color-gray-50);
+}
+
+.tr.selected {
+  background-color: var(--color-primary-50);
+}
+
+.tr.clickable {
   cursor: pointer;
 }
 
-.clickableRow:hover {
-  background-color: var(--mantine-color-gray-0);
+.td {
+  color: var(--color-gray-900);
+  vertical-align: middle;
+}
+
+/* Selection */
+.selectionInput {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Empty state */
+.emptyCell {
+  text-align: center;
+  padding: 40px 20px;
 }
 
 .emptyState {
-  text-align: center;
-  padding: var(--mantine-spacing-xl);
+  color: var(--color-gray-500);
+  font-size: 14px;
 }
 
+/* Loading */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: white;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+}
+
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--mantine-spacing-sm) 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.paginationInfo {
+  color: var(--color-gray-600);
+  font-size: 14px;
+}
+
+.totalText {
+  font-size: 14px;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sizeChanger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sizeSelect {
+  padding: 4px 8px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.pageControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pageButton {
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ellipsis {
+  padding: 0 8px;
+  color: var(--color-gray-400);
+  font-size: 14px;
+}
+
+.quickJumper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-gray-600);
+}
+
+.jumpInput {
+  width: 50px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pagination {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .paginationControls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .pageNumbers {
+    order: -1;
+  }
+}
+
+/* Scrollable */
+.scrollable .tableWrapper {
+  overflow: auto;
+}
+
+.scrollable .th[style*="position: sticky"],
+.scrollable .td[style*="position: sticky"] {
+  background: inherit;
+  z-index: 1;
 }

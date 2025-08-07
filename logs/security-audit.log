@@ -15,3 +15,11 @@
 2025-08-07 21:01:13.451 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized
 2025-08-07 21:03:22.661 [main] INFO  [,] c.e.d.s.security.JwtTokenProvider - JWT Token Provider initialized with expiration: 86400000 ms
 2025-08-07 21:03:26.503 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized
+2025-08-07 21:15:21.368 [main] INFO  [,] c.e.d.s.security.JwtTokenProvider - JWT Token Provider initialized with expiration: 86400000 ms
+2025-08-07 21:15:25.184 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized
+2025-08-07 21:21:52.280 [main] INFO  [,] c.e.d.s.security.JwtTokenProvider - JWT Token Provider initialized with expiration: 86400000 ms
+2025-08-07 21:21:56.112 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized
+2025-08-07 21:23:33.564 [main] INFO  [,] c.e.d.s.security.JwtTokenProvider - JWT Token Provider initialized with expiration: 86400000 ms
+2025-08-07 21:23:37.415 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized
+2025-08-07 21:24:41.259 [main] INFO  [,] c.e.d.s.security.JwtTokenProvider - JWT Token Provider initialized with expiration: 86400000 ms
+2025-08-07 21:24:45.271 [main] INFO  [,] c.e.demo.security.security.AESUtil - AES encryption utility initialized

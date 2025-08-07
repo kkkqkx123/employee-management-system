@@ -1,31 +1,66 @@
-import { TextInput, TextInputProps, PasswordInput, PasswordInputProps } from '@mantine/core';
-import { forwardRef } from 'react';
-import classes from './Input.module.css';
-
-export interface InputProps extends Omit<TextInputProps, 'type'> {
-  /** Input type */
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
-  /** Error message */
-  error?: string;
-  /** Helper text */
-  helperText?: string;
-}
+import React, { forwardRef } from 'react';
+import { clsx } from 'clsx';
+import { InputProps } from '../types/ui.types';
+import styles from './Input.module.css';
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', error, helperText, ...props }, ref) => {
-    const commonProps = {
-      ref,
-      className: `${classes.input} ${className || ''}`,
-      error: error,
-      description: helperText,
-      ...props,
-    };
+  ({
+    type = 'text',
+    size = 'md',
+    variant = 'outline',
+    error = false,
+    disabled = false,
+    readOnly = false,
+    leftIcon,
+    rightIcon,
+    className,
+    testId,
+    ...props
+  }, ref) => {
+    const inputClasses = clsx(
+      styles.input,
+      styles[size],
+      styles[variant],
+      {
+        [styles.error]: error,
+        [styles.disabled]: disabled,
+        [styles.readOnly]: readOnly,
+        [styles.hasLeftIcon]: leftIcon,
+        [styles.hasRightIcon]: rightIcon,
+      },
+      className
+    );
 
-    if (type === 'password') {
-      return <PasswordInput {...(commonProps as PasswordInputProps)} />;
-    }
+    const wrapperClasses = clsx(
+      styles.wrapper,
+      {
+        [styles.error]: error,
+        [styles.disabled]: disabled,
+      }
+    );
 
-    return <TextInput {...commonProps} type={type} />;
+    return (
+      <div className={wrapperClasses} data-testid={testId}>
+        {leftIcon && (
+          <span className={styles.leftIcon}>
+            {leftIcon}
+          </span>
+        )}
+        <input
+          ref={ref}
+          type={type}
+          className={inputClasses}
+          disabled={disabled}
+          readOnly={readOnly}
+          {...props}
+        />
+        {rightIcon && (
+          <span className={styles.rightIcon}>
+            {rightIcon}
+          </span>
+        )}
+      </div>
+    );
   }
 );
 

@@ -1,7 +1,21 @@
-// Base UI Components
-export * from './Button';
-export * from './Input';
-export * from './Modal';
-export * from './LoadingSpinner';
-export * from './DataTable';
-export * from './FormField';
+// UI Components
+export { Button } from './Button';
+export { DataTable, DataTableHeader, DataTableRow, DataTablePagination } from './DataTable';
+export { FormField } from './FormField';
+export { Input } from './Input';
+export { LoadingSpinner } from './LoadingSpinner';
+export { Modal } from './Modal';
+
+// Types
+export type { 
+  ButtonProps,
+  DataTableProps,
+  Column,
+  PaginationConfig,
+  RowSelectionConfig,
+  FormFieldProps,
+  InputProps,
+  LoadingSpinnerProps,
+  ModalProps,
+  BaseComponentProps
+} from './types/ui.types';

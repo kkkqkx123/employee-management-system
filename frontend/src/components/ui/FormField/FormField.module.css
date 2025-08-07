@@ -1,27 +1,48 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--mantine-spacing-xs);
+.formField {
+  margin-bottom: 16px;
 }
 
 .label {
-  display: flex;
-  align-items: center;
-  gap: 2px;
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
-.required {
-  color: var(--mantine-color-red-6);
+.required .requiredIndicator {
+  color: var(--color-red-500);
+  margin-left: 2px;
 }
 
-.description {
-  margin-top: -2px;
-}
-
-.field {
-  /* Field wrapper styles */
+.inputContainer {
+  position: relative;
 }
 
 .error {
-  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-red-500);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.helper {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.hasError .inputContainer input,
+.hasError .inputContainer textarea,
+.hasError .inputContainer select {
+  border-color: var(--color-red-500);
+}
+
+.hasError .inputContainer input:focus,
+.hasError .inputContainer textarea:focus,
+.hasError .inputContainer select:focus {
+  border-color: var(--color-red-500);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
