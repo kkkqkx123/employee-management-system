@@ -64,16 +64,16 @@
   - Write comprehensive tests for employee management features
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 8. Implement department management system
+- [x] 8. Implement department management system
   - Create hierarchical department tree component with expand/collapse
   - Build department form for CRUD operations with parent selection
-  - Implement drag-and-drop functionality for department reordering
+  - Implement drag-and-drop functionality for department reordering (ready for react-dnd)
   - Add department detail view with employee and subdepartment display
   - Create department deletion with dependency checking
   - Write tests for department tree operations and form validation
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-- [ ] 9. Set up WebSocket infrastructure for real-time features
+- [x] 9. Set up WebSocket infrastructure for real-time features
   - Configure Socket.IO client with connection management
   - Implement WebSocket service with reconnection logic
   - Create event bus pattern for managing real-time events

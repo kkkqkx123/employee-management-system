@@ -3,6 +3,7 @@
 import { io, Socket } from 'socket.io-client';
 import { WS_URL } from '../constants';
 import AuthService from './auth';
+import { eventBus } from './eventBus';
 
 export interface WebSocketEvent {
   type: string;
@@ -97,6 +98,7 @@ export class WebSocketService {
         this.isConnecting = false;
         this.reconnectAttempts = 0;
         this.emit('connection:status', { connected: true });
+        eventBus.emit('connection:status', { connected: true }, 'WebSocketService');
         resolve();
       });
 
@@ -104,6 +106,7 @@ export class WebSocketService {
         console.log('❌ WebSocket disconnected:', reason);
         this.isConnecting = false;
         this.emit('connection:status', { connected: false, reason });
+        eventBus.emit('connection:status', { connected: false, reason }, 'WebSocketService');
         
         // Attempt to reconnect if not manually disconnected
         if (reason !== 'io client disconnect') {
@@ -115,6 +118,7 @@ export class WebSocketService {
         console.error('❌ WebSocket connection error:', error);
         this.isConnecting = false;
         this.emit('connection:error', { error: error.message });
+        eventBus.emit('connection:error', { error: error.message }, 'WebSocketService');
         reject(error);
       });
 
@@ -245,33 +249,40 @@ export class WebSocketService {
     // Chat events
     this.socket.on('chat:new-message', (data) => {
       this.emit('chat:new-message', data);
+      eventBus.emit('chat:new-message', data, 'WebSocketService');
     });
 
     this.socket.on('chat:typing', (data) => {
       this.emit('chat:typing', data);
+      eventBus.emit('chat:typing', data, 'WebSocketService');
     });
 
     this.socket.on('chat:message-read', (data) => {
       this.emit('chat:message-read', data);
+      eventBus.emit('chat:message-read', data, 'WebSocketService');
     });
 
     // Notification events
     this.socket.on('notification:new', (data) => {
       this.emit('notification:new', data);
+      eventBus.emit('notification:new', data, 'WebSocketService');
     });
 
     this.socket.on('notification:updated', (data) => {
       this.emit('notification:updated', data);
+      eventBus.emit('notification:updated', data, 'WebSocketService');
     });
 
     // User status events
     this.socket.on('user:online-status', (data) => {
       this.emit('user:online-status', data);
+      eventBus.emit('user:online-status', data, 'WebSocketService');
     });
 
     // System events
     this.socket.on('system:announcement', (data) => {
       this.emit('system:announcement', data);
+      eventBus.emit('system:announcement', data, 'WebSocketService');
     });
 
     // Error events

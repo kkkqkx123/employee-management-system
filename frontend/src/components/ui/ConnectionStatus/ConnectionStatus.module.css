@@ -1,0 +1,28 @@
+.statusAlert {
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.compactStatus {
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: var(--mantine-color-gray-0);
+  border: 1px solid var(--mantine-color-gray-3);
+}
+
+.compactStatus[data-connected="true"] {
+  background-color: var(--mantine-color-green-0);
+  border-color: var(--mantine-color-green-3);
+}
+
+.compactStatus[data-connecting="true"] {
+  background-color: var(--mantine-color-yellow-0);
+  border-color: var(--mantine-color-yellow-3);
+}
+
+.compactStatus[data-error="true"] {
+  background-color: var(--mantine-color-red-0);
+  border-color: var(--mantine-color-red-3);
+}

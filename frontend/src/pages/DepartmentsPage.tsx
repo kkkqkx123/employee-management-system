@@ -1,12 +1,5 @@
-import { Container, Title, Text } from '@mantine/core';
+import { DepartmentTree } from '../features/departments';
 
 export const DepartmentsPage = () => {
-  return (
-    <Container size="xl">
-      <Title order={1} mb="lg">Departments</Title>
-      <Text c="dimmed">
-        Department management functionality will be implemented in a future task.
-      </Text>
-    </Container>
-  );
+  return <DepartmentTree />;
 };

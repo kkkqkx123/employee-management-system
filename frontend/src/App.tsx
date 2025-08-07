@@ -7,6 +7,7 @@ import { theme } from './theme';
 import { AppShell } from './components/layout';
 import { queryClient } from './services/queryClient';
 import { AppRouter } from './router';
+import { WebSocketProvider } from './components/providers/WebSocketProvider';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
@@ -16,9 +17,11 @@ function App() {
       <MantineProvider theme={theme}>
         <Notifications position="top-right" />
         <BrowserRouter>
-          <AppShell>
-            <AppRouter />
-          </AppShell>
+          <WebSocketProvider showConnectionStatus={true} autoConnect={true}>
+            <AppShell>
+              <AppRouter />
+            </AppShell>
+          </WebSocketProvider>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
       </MantineProvider>

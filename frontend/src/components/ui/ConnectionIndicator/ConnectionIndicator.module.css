@@ -1,0 +1,20 @@
+.indicatorGroup {
+  align-items: center;
+}
+
+.indicator {
+  cursor: help;
+}
+
+.indicator[data-processing="true"] {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

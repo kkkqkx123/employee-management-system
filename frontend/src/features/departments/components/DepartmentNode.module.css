@@ -1,0 +1,51 @@
+.nodeContainer {
+  border-left: 1px solid var(--mantine-color-gray-3);
+  margin-left: 12px;
+}
+
+.nodeContent {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-height: 40px;
+}
+
+.nodeContent:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.nodeContent.selected {
+  background-color: var(--mantine-color-blue-0);
+  border: 1px solid var(--mantine-color-blue-3);
+}
+
+.actions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.nodeContent:hover .actions {
+  opacity: 1;
+}
+
+.children {
+  margin-left: 0;
+}
+
+.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.dropTarget {
+  background-color: var(--mantine-color-blue-0);
+  border: 2px dashed var(--mantine-color-blue-4);
+}
+
+.dropTargetInvalid {
+  background-color: var(--mantine-color-red-0);
+  border: 2px dashed var(--mantine-color-red-4);
+}

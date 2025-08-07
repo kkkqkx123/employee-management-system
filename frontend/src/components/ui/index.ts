@@ -5,6 +5,8 @@ export { FormField } from './FormField';
 export { Input } from './Input';
 export { LoadingSpinner } from './LoadingSpinner';
 export { Modal } from './Modal';
+export { ConnectionStatus } from './ConnectionStatus';
+export { ConnectionIndicator } from './ConnectionIndicator';
 
 // Types
 export type { 
