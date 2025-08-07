@@ -5,6 +5,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -133,7 +134,7 @@ public class AsyncConfig implements AsyncConfigurer {
     public static class CustomAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
         @Override
-        public void handleUncaughtException(Throwable throwable, Method method, Object... params) {
+        public void handleUncaughtException(@NonNull Throwable throwable, @NonNull Method method, @NonNull Object... params) {
             log.error("Async method execution failed - Method: {}.{}, Parameters: {}", 
                     method.getDeclaringClass().getSimpleName(), 
                     method.getName(), 

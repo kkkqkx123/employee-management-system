@@ -658,7 +658,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 26: Unit Testing Setup
 
-- [ ] 26.1 Create test configuration and utilities
+- [x] 26.1 Create test configuration and utilities
   - Set up test application properties
   - Create test data builders and factories
   - Implement test utilities for Redis operations
@@ -666,8 +666,8 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Create test security configuration
   - _Requirements: 10.1, 10.2_
 
-- [ ] 26.2 Implement repository layer tests
-  - Create @DataRedisTest classes for repositories
+- [x] 26.2 Implement repository layer tests
+  - Create @DataJpaTest classes for repositories
   - Add test cases for custom query methods
   - Implement pagination and sorting tests
   - Create transaction rollback tests
@@ -676,7 +676,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
 
 ### Task 27: Service Layer Testing
 
-- [ ] 27.1 Create service unit tests with Mockito
+- [x] 27.1 Create service unit tests with Mockito
   - Implement @ExtendWith(MockitoExtension.class) setup
   - Add @Mock and @InjectMocks configurations
   - Create test cases for business logic validation
@@ -684,7 +684,7 @@ This implementation plan provides detailed, actionable tasks for building the Sp
   - Add async method testing
   - _Requirements: 10.1_
 
-- [ ] 27.2 Create integration tests for services
+- [x] 27.2 Create integration tests for services
   - Implement @SpringBootTest configurations
   - Add database integration tests
   - Create email service integration tests

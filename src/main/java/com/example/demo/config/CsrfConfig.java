@@ -50,14 +50,16 @@ public class CsrfConfig {
      */
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
-        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
         repository.setCookieName(csrfCookieName);
         repository.setHeaderName(csrfHeaderName);
         repository.setParameterName(csrfParameterName);
-        repository.setCookieHttpOnly(csrfCookieHttpOnly);
-        repository.setSecure(csrfCookieSecure);
         repository.setCookiePath("/");
-        repository.setCookieMaxAge(-1); // Session cookie
+        repository.setCookieCustomizer(customizer -> customizer
+                .httpOnly(csrfCookieHttpOnly)
+                .secure(csrfCookieSecure)
+                .maxAge(-1)
+                .sameSite(csrfCookieSameSite));
         
         return repository;
     }
@@ -139,13 +141,14 @@ public class CsrfConfig {
          * Development CSRF configuration (more lenient)
          */
         public CsrfTokenRepository developmentCsrfTokenRepository() {
-            CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+            CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
             repository.setCookieName("DEV-XSRF-TOKEN");
             repository.setHeaderName("X-XSRF-TOKEN");
-            repository.setCookieHttpOnly(false);
-            repository.setSecure(false);
             repository.setCookiePath("/");
-            repository.setCookieMaxAge(3600); // 1 hour for development
+            repository.setCookieCustomizer(customizer -> customizer
+                    .httpOnly(false)
+                    .secure(false)
+                    .maxAge(3600)); // 1 hour for development
             
             return repository;
         }
@@ -154,13 +157,14 @@ public class CsrfConfig {
          * Production CSRF configuration (more secure)
          */
         public CsrfTokenRepository productionCsrfTokenRepository() {
-            CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+            CookieCsrfTokenRepository repository = new CookieCsrfTokenRepository();
             repository.setCookieName("XSRF-TOKEN");
             repository.setHeaderName("X-XSRF-TOKEN");
-            repository.setCookieHttpOnly(false); // Must be false for JavaScript access
-            repository.setSecure(true); // HTTPS only in production
             repository.setCookiePath("/");
-            repository.setCookieMaxAge(-1); // Session cookie
+            repository.setCookieCustomizer(customizer -> customizer
+                    .httpOnly(false) // Must be false for JavaScript access
+                    .secure(true) // HTTPS only in production
+                    .maxAge(-1)); // Session cookie
             
             return repository;
         }

@@ -91,10 +91,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return new HttpSessionHandshakeInterceptor() {
             @Override
             public boolean beforeHandshake(
-                    org.springframework.http.server.ServerHttpRequest request,
-                    org.springframework.http.server.ServerHttpResponse response,
-                    org.springframework.web.socket.WebSocketHandler wsHandler,
-                    Map<String, Object> attributes) throws Exception {
+                    @NonNull org.springframework.http.server.ServerHttpRequest request,
+                    @NonNull org.springframework.http.server.ServerHttpResponse response,
+                    @NonNull org.springframework.web.socket.WebSocketHandler wsHandler,
+                    @NonNull Map<String, Object> attributes) throws Exception {
                 
                 log.info("WebSocket handshake attempt from: {}", request.getRemoteAddress());
                 
@@ -118,10 +118,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
             @Override
             public void afterHandshake(
-                    org.springframework.http.server.ServerHttpRequest request,
-                    org.springframework.http.server.ServerHttpResponse response,
-                    org.springframework.web.socket.WebSocketHandler wsHandler,
-                    Exception exception) {
+                    @NonNull org.springframework.http.server.ServerHttpRequest request,
+                    @NonNull org.springframework.http.server.ServerHttpResponse response,
+                    @NonNull org.springframework.web.socket.WebSocketHandler wsHandler,
+                    @SuppressWarnings("null") Exception exception) {
                 
                 if (exception != null) {
                     log.error("WebSocket handshake error for: {}", request.getRemoteAddress(), exception);

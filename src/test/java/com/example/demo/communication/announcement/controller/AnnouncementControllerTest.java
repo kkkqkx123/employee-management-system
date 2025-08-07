@@ -4,10 +4,13 @@ import com.example.demo.communication.announcement.dto.AnnouncementCreateRequest
 import com.example.demo.communication.announcement.dto.AnnouncementDto;
 import com.example.demo.communication.announcement.dto.AnnouncementUpdateRequest;
 import com.example.demo.communication.announcement.service.AnnouncementService;
+import com.example.demo.security.security.CustomUserDetailsService;
+import com.example.demo.security.security.JwtTokenProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -28,6 +31,15 @@ public class AnnouncementControllerTest {
 
     @MockitoBean
     private AnnouncementService announcementService;
+
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockitoBean
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
