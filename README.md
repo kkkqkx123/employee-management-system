@@ -108,6 +108,34 @@ spring.redis.host=localhost
 spring.redis.port=6379
 ```
 
+#### Hybrid Environment Setup (WSL PostgreSQL + Docker Redis)
+
+If you're running PostgreSQL in WSL and Redis in Docker, you can use the provided `application-hybrid.properties` configuration:
+
+1. Get your WSL IP address:
+   ```bash
+   wsl hostname -I
+   ```
+
+2. Get your Docker Redis container IP:
+   ```bash
+   docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis-server
+   ```
+
+3. Update the `application-hybrid.properties` file with the correct IP addresses if needed.
+
+4. Run the application with the hybrid profile:
+   ```bash
+   # Windows PowerShell
+   $env:SPRING_PROFILES_ACTIVE="hybrid"; mvn spring-boot:run
+
+   # Windows Command Prompt
+   set SPRING_PROFILES_ACTIVE=hybrid && mvn spring-boot:run
+
+   # Unix/Linux/macOS
+   export SPRING_PROFILES_ACTIVE=hybrid && mvn spring-boot:run
+   ```
+
 ### 4. Build and Run
 
 ```bash
@@ -122,6 +150,9 @@ mvn spring-boot:run
 
 # Or run with specific profile
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+# Run with hybrid profile (WSL PostgreSQL + Docker Redis)
+mvn spring-boot:run -Dspring-boot.run.profiles=hybrid
 ```
 
 The application will start on `http://localhost:8080`

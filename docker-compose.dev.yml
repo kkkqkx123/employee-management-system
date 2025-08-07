@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: employee-redis-dev
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - employee-network
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: employee-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - employee-network
+
+volumes:
+  redis_data:
+
+networks:
+  employee-network:
+    driver: bridge

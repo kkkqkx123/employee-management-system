@@ -2,7 +2,6 @@ package com.example.demo.config;
 
 import com.example.demo.security.security.JwtTokenProvider;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -12,6 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Test configuration for Spring Boot tests.
@@ -23,19 +23,19 @@ public class TestConfig {
     /**
      * Mock JWT token provider for security tests
      */
-    @MockBean
+    @MockitoBean
     private JwtTokenProvider jwtTokenProvider;
 
     /**
      * Mock mail sender for email tests
      */
-    @MockBean
+    @MockitoBean
     private JavaMailSender javaMailSender;
 
     /**
      * Mock Redis connection factory for Redis tests
      */
-    @MockBean
+    @MockitoBean
     private RedisConnectionFactory redisConnectionFactory;
 
     /**
