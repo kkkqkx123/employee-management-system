@@ -1,4 +1,4 @@
-import { NavLink, ScrollArea, Group, Text, ThemeIcon } from '@mantine/core';
+import { NavLink, ScrollArea, Group, Text, ThemeIcon, Badge } from '@mantine/core';
 import { 
   IconDashboard, 
   IconUsers, 
@@ -9,7 +9,9 @@ import {
   IconShield
 } from '@tabler/icons-react';
 import { useLocation, Link } from 'react-router-dom';
-import { ROUTES } from '@/constants';
+import { ROUTES, PERMISSIONS } from '@/constants';
+import { usePermissionCheck } from '@/features/auth/hooks';
+import { useNotificationStore } from '@/stores';
 import classes from './Navigation.module.css';
 
 interface NavigationItem {
@@ -18,6 +20,8 @@ interface NavigationItem {
   href: string;
   description?: string;
   badge?: string | number;
+  permission?: string;
+  showBadge?: () => number | undefined;
 }
 
 const navigationItems: NavigationItem[] = [
@@ -32,12 +36,14 @@ const navigationItems: NavigationItem[] = [
     icon: IconUsers,
     href: ROUTES.EMPLOYEES,
     description: 'Manage employee records',
+    permission: PERMISSIONS.EMPLOYEE_READ,
   },
   {
     label: 'Departments',
     icon: IconBuilding,
     href: ROUTES.DEPARTMENTS,
     description: 'Organizational structure',
+    permission: PERMISSIONS.DEPARTMENT_READ,
   },
   {
     label: 'Chat',
@@ -62,11 +68,20 @@ const navigationItems: NavigationItem[] = [
     icon: IconShield,
     href: ROUTES.PERMISSIONS,
     description: 'Access control',
+    permission: PERMISSIONS.USER_READ,
   },
 ];
 
 export const Navigation = () => {
   const location = useLocation();
+  const { hasPermission } = usePermissionCheck();
+  const { unreadCount } = useNotificationStore();
+
+  // Filter navigation items based on permissions
+  const visibleItems = navigationItems.filter((item) => {
+    if (!item.permission) return true;
+    return hasPermission(item.permission);
+  });
 
   return (
     <ScrollArea className={classes.scrollArea}>
@@ -87,9 +102,17 @@ export const Navigation = () => {
       </div>
 
       <div className={classes.navSection}>
-        {navigationItems.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.href;
+          
+          // Get badge count for notifications
+          let badgeCount: number | undefined;
+          if (item.showBadge) {
+            badgeCount = item.showBadge();
+          } else if (item.href === ROUTES.NOTIFICATIONS) {
+            badgeCount = unreadCount > 0 ? unreadCount : undefined;
+          }
 
           return (
             <NavLink
@@ -99,11 +122,17 @@ export const Navigation = () => {
               label={item.label}
               description={item.description}
               leftSection={<Icon size={18} />}
-              rightSection={item.badge && (
-                <Text size="xs" c="dimmed">
-                  {item.badge}
-                </Text>
-              )}
+              rightSection={
+                badgeCount ? (
+                  <Badge size="sm" variant="filled" color="red">
+                    {badgeCount > 99 ? '99+' : badgeCount}
+                  </Badge>
+                ) : item.badge ? (
+                  <Text size="xs" c="dimmed">
+                    {item.badge}
+                  </Text>
+                ) : null
+              }
               active={isActive}
               className={classes.navLink}
             />

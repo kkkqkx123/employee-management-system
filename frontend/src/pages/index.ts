@@ -1,0 +1,9 @@
+export { DashboardPage } from './DashboardPage';
+export { EmployeesPage } from './EmployeesPage';
+export { DepartmentsPage } from './DepartmentsPage';
+export { ChatPage } from './ChatPage';
+export { EmailPage } from './EmailPage';
+export { NotificationsPage } from './NotificationsPage';
+export { PermissionsPage } from './PermissionsPage';
+export { LoginPage } from './LoginPage';
+export { NotFoundPage } from './NotFoundPage';

@@ -2,3 +2,4 @@
 export * from './AppShell';
 export * from './Navigation';
 export * from './Header';
+export * from './Breadcrumbs';

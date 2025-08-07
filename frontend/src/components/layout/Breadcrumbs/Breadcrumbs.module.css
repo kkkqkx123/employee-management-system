@@ -1,0 +1,15 @@
+.breadcrumbs {
+  margin-bottom: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-xs) 0;
+}
+
+.breadcrumbLink {
+  text-decoration: none;
+  color: var(--mantine-color-blue-6);
+  transition: color 0.2s ease;
+}
+
+.breadcrumbLink:hover {
+  color: var(--mantine-color-blue-7);
+  text-decoration: underline;
+}

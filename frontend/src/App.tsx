@@ -6,7 +6,7 @@ import { Notifications } from '@mantine/notifications';
 import { theme } from './theme';
 import { AppShell } from './components/layout';
 import { queryClient } from './services/queryClient';
-import { ApiDemo } from './demo/ApiDemo';
+import { AppRouter } from './router';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
@@ -17,14 +17,7 @@ function App() {
         <Notifications position="top-right" />
         <BrowserRouter>
           <AppShell>
-            <div>
-              <h1>Employee Management System</h1>
-              <p>Frontend foundation setup complete!</p>
-              <p>Build system and development tools configured!</p>
-              <p>Core UI component library implemented!</p>
-              <p>State management and API integration configured!</p>
-              <ApiDemo />
-            </div>
+            <AppRouter />
           </AppShell>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />

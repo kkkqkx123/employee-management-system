@@ -1,8 +1,11 @@
 import { AppShell as MantineAppShell, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Navigation } from '../Navigation';
 import { Header } from '../Header';
+import { Breadcrumbs } from '../Breadcrumbs';
+import { ROUTES } from '@/constants';
 import classes from './AppShell.module.css';
 
 export interface AppShellProps {
@@ -27,12 +30,18 @@ export const AppShell = ({
 }: AppShellProps) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const location = useLocation();
+  
+  // Don't show navigation and header on login page
+  const isLoginPage = location.pathname === ROUTES.LOGIN;
+  const shouldShowNavigation = withNavigation && !isLoginPage;
+  const shouldShowHeader = withHeader && !isLoginPage;
 
   return (
     <MantineAppShell
-      header={withHeader ? { height: headerHeight } : undefined}
+      header={shouldShowHeader ? { height: headerHeight } : undefined}
       navbar={
-        withNavigation
+        shouldShowNavigation
           ? {
               width: navigationWidth,
               breakpoint: 'sm',
@@ -40,14 +49,14 @@ export const AppShell = ({
             }
           : undefined
       }
-      padding="md"
+      padding={isLoginPage ? 0 : "md"}
       className={classes.shell}
     >
-      {withHeader && (
+      {shouldShowHeader && (
         <MantineAppShell.Header className={classes.header}>
           <Header
             burger={
-              withNavigation ? (
+              shouldShowNavigation ? (
                 <Burger
                   opened={mobileOpened}
                   onClick={toggleMobile}
@@ -57,7 +66,7 @@ export const AppShell = ({
               ) : undefined
             }
             desktopBurger={
-              withNavigation ? (
+              shouldShowNavigation ? (
                 <Burger
                   opened={desktopOpened}
                   onClick={toggleDesktop}
@@ -70,13 +79,14 @@ export const AppShell = ({
         </MantineAppShell.Header>
       )}
 
-      {withNavigation && (
+      {shouldShowNavigation && (
         <MantineAppShell.Navbar p="md" className={classes.navbar}>
           <Navigation />
         </MantineAppShell.Navbar>
       )}
 
       <MantineAppShell.Main className={classes.main}>
+        {!isLoginPage && <Breadcrumbs />}
         {children}
       </MantineAppShell.Main>
     </MantineAppShell>
