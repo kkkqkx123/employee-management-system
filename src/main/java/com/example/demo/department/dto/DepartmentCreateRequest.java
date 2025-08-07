@@ -3,6 +3,7 @@ package com.example.demo.department.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Min;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DepartmentCreateRequest {
     
     @NotBlank(message = "Department name is required")

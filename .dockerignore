@@ -1,0 +1,70 @@
+# Git
+.git
+.gitignore
+
+# Maven
+target/
+!target/employee-management-system.jar
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+
+# Documentation
+docs/
+README.md
+CHANGELOG.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Configuration (sensitive)
+.env
+.env.local
+.env.production
+
+# Test files
+src/test/
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts
+*.jar
+*.war
+*.ear
+
+# IDE specific
+.settings/
+.project
+.classpath
+
+# Backup files
+*.bak
+*.backup
+
+# Coverage reports
+coverage/
+*.coverage
+
+# Dependency directories
+.m2/

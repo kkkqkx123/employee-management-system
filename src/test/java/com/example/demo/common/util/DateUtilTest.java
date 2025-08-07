@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Unit tests for DateUtil class.
  */
-@SpringBootTest
 class DateUtilTest {
 
     @Test

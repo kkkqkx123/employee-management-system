@@ -1,10 +1,16 @@
 package com.example.demo.security.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserCreateRequest {
     @NotBlank
     @Size(min = 3, max = 50)
