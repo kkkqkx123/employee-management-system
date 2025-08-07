@@ -1,0 +1,3 @@
+使用application-hybrid.properties运行。
+
+mvn spring-boot:run "-Dspring-boot.run.profiles=hybrid"
