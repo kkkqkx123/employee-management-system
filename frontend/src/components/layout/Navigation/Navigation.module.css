@@ -1,0 +1,35 @@
+.scrollArea {
+  height: 100%;
+}
+
+.header {
+  padding: var(--mantine-spacing-md);
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+}
+
+.navLink {
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-sm);
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  background-color: var(--mantine-color-gray-1);
+}
+
+.navLink[data-active="true"] {
+  background-color: var(--mantine-primary-color-light);
+  color: var(--mantine-primary-color-filled);
+  font-weight: 500;
+}
+
+.navLink[data-active="true"]:hover {
+  background-color: var(--mantine-primary-color-light-hover);
+}

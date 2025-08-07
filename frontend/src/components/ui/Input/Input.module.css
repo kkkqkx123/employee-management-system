@@ -1,0 +1,17 @@
+.input {
+  /* Custom input styles */
+}
+
+.input input:focus {
+  border-color: var(--mantine-primary-color-filled);
+  box-shadow: 0 0 0 1px var(--mantine-primary-color-filled);
+}
+
+.input input[aria-invalid="true"] {
+  border-color: var(--mantine-color-error);
+}
+
+.input input[aria-invalid="true"]:focus {
+  border-color: var(--mantine-color-error);
+  box-shadow: 0 0 0 1px var(--mantine-color-error);
+}

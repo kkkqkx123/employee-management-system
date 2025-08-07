@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+}
+
+.text {
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-gray-6);
+  text-align: center;
+}

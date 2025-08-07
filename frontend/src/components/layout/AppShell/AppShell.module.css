@@ -1,0 +1,18 @@
+.shell {
+  min-height: 100vh;
+}
+
+.header {
+  border-bottom: 1px solid var(--mantine-color-gray-3);
+  background-color: var(--mantine-color-white);
+}
+
+.navbar {
+  border-right: 1px solid var(--mantine-color-gray-3);
+  background-color: var(--mantine-color-white);
+}
+
+.main {
+  background-color: var(--mantine-color-gray-0);
+  min-height: calc(100vh - 60px);
+}

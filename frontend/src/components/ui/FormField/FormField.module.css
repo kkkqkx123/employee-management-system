@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.required {
+  color: var(--mantine-color-red-6);
+}
+
+.description {
+  margin-top: -2px;
+}
+
+.field {
+  /* Field wrapper styles */
+}
+
+.error {
+  margin-top: 2px;
+}
