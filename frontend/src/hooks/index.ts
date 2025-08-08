@@ -7,6 +7,7 @@ export * from './useResponsive';
 export * from './useAccessibility';
 export * from './useAsyncOperation';
 export * from './useFormErrors';
+export * from './usePerformanceMonitor';
 
 // Re-export commonly used hooks from other libraries
 export { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';

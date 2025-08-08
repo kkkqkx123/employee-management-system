@@ -10,6 +10,8 @@ export { ConnectionStatus } from './ConnectionStatus';
 export { ConnectionIndicator } from './ConnectionIndicator';
 export { TouchGesture } from './TouchGesture';
 export { ResponsiveContainer } from './ResponsiveContainer';
+export { VirtualList } from './VirtualList';
+export { OptimizedImage } from './OptimizedImage';
 
 // Error Handling Components
 export { ErrorBoundary } from './ErrorBoundary';

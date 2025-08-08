@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react';
+import React, { forwardRef, useRef, useEffect, memo } from 'react';
 import { clsx } from 'clsx';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { ButtonProps } from '../types/ui.types';
@@ -138,3 +138,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
+
+// Memoize the Button component for performance
+export const MemoizedButton = memo(Button);

@@ -24,14 +24,26 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['@mantine/core', '@mantine/hooks'],
+          ui: ['@mantine/core', '@mantine/hooks', '@mantine/notifications'],
+          query: ['@tanstack/react-query'],
+          router: ['react-router-dom'],
           utils: ['axios', 'socket.io-client'],
+          forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
+          icons: ['@tabler/icons-react'],
         },
       },
     },
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV === 'development',
     minify: 'terser',
     target: 'esnext',
+    chunkSizeWarningLimit: 1000,
+    terserOptions: {
+      compress: {
+        drop_console: process.env.NODE_ENV === 'production',
+        drop_debugger: process.env.NODE_ENV === 'production',
+      },
+    },
+    reportCompressedSize: false, // Disable for faster builds
   },
   css: {
     modules: {

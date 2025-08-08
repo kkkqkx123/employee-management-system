@@ -1,0 +1,37 @@
+.container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  /* Enable hardware acceleration for smooth scrolling */
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: var(--mantine-color-gray-1);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: var(--mantine-color-gray-4);
+  border-radius: 4px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: var(--mantine-color-gray-5);
+}
+
+/* Smooth scrolling behavior */
+.container {
+  scroll-behavior: smooth;
+}
+
+/* Performance optimizations */
+.container * {
+  /* Prevent layout thrashing during scroll */
+  contain: layout style paint;
+}
