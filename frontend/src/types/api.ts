@@ -104,4 +104,25 @@ export const API_ENDPOINTS = {
     BY_ID: (id: number) => `/notifications/${id}`,
     MARK_READ: '/notifications/mark-read',
   },
+  // Permissions and Roles
+  PERMISSIONS: {
+    BASE: '/permissions',
+    BY_ID: (id: number) => `/permissions/${id}`,
+    IMPACT: (id: number) => `/permissions/${id}/impact`,
+  },
+  ROLES: {
+    BASE: '/roles',
+    BY_ID: (id: number) => `/roles/${id}`,
+    PERMISSIONS: '/roles/permissions',
+    SEARCH: '/roles/search',
+    IMPACT: (id: number) => `/roles/${id}/impact`,
+    VALIDATE_PERMISSIONS: (id: number) => `/roles/${id}/validate-permissions`,
+  },
+  USER_ROLES: {
+    BASE: '/users/roles',
+    BY_USER_ID: (userId: number) => `/users/${userId}/roles`,
+    SEARCH: '/users/roles/search',
+    BULK: '/users/roles/bulk',
+    VALIDATE: (userId: number) => `/users/${userId}/roles/validate`,
+  },
 } as const;
