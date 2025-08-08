@@ -1,0 +1,19 @@
+.scrollArea {
+  height: 100%;
+}
+
+.messagesList {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 100%;
+}
+
+.messageLeft {
+  align-self: flex-start;
+}
+
+.messageRight {
+  align-self: flex-end;
+}

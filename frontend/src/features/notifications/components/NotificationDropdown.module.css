@@ -1,0 +1,32 @@
+.dropdown {
+  padding: 0;
+  border: 1px solid var(--mantine-color-gray-3);
+}
+
+.trigger {
+  transition: all 0.2s ease;
+}
+
+.trigger:hover {
+  background-color: var(--mantine-color-gray-1);
+}
+
+.header {
+  padding: 0.75rem 1rem;
+  background-color: var(--mantine-color-gray-0);
+  border-bottom: 1px solid var(--mantine-color-gray-2);
+}
+
+.scrollArea {
+  max-height: 400px;
+}
+
+.notificationsList {
+  padding: 0;
+}
+
+.footer {
+  padding: 0.5rem;
+  background-color: var(--mantine-color-gray-0);
+  border-top: 1px solid var(--mantine-color-gray-2);
+}

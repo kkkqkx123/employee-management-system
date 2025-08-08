@@ -1,0 +1,10 @@
+.filterContainer {
+  padding: 0.5rem 1rem;
+  background-color: var(--mantine-color-gray-0);
+  border-bottom: 1px solid var(--mantine-color-gray-2);
+}
+
+.filterSelect {
+  min-width: 80px;
+  flex: 1;
+}

@@ -1,0 +1,11 @@
+.container {
+  padding: 2rem 0;
+}
+
+.notificationsList {
+  overflow: hidden;
+}
+
+.notificationsList > div:last-child {
+  border-bottom: none;
+}

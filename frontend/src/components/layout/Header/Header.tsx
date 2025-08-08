@@ -1,12 +1,12 @@
-import { Group, Text, ActionIcon, Menu, Avatar, Indicator } from '@mantine/core';
+import { Group, Text, ActionIcon, Menu, Avatar } from '@mantine/core';
 import { 
-  IconBell, 
   IconUser, 
   IconSettings, 
   IconLogout,
   IconSearch
 } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
+import { HeaderNotifications } from '../../../features/notifications';
 import classes from './Header.module.css';
 
 export interface HeaderProps {
@@ -20,8 +20,6 @@ export interface HeaderProps {
     email: string;
     avatar?: string;
   };
-  /** Notification count */
-  notificationCount?: number;
   /** Search handler */
   onSearch?: (query: string) => void;
   /** Notification click handler */
@@ -38,7 +36,6 @@ export const Header = ({
   burger,
   desktopBurger,
   user = { name: 'John Doe', email: 'john.doe@company.com' },
-  notificationCount = 0,
   onSearch,
   onNotificationClick,
   onProfileClick,
@@ -64,21 +61,7 @@ export const Header = ({
           <IconSearch size={18} />
         </ActionIcon>
 
-        <Indicator
-          inline
-          label={notificationCount > 0 ? notificationCount : undefined}
-          size={16}
-          disabled={notificationCount === 0}
-        >
-          <ActionIcon
-            variant="subtle"
-            size="lg"
-            onClick={onNotificationClick}
-            className={classes.actionIcon}
-          >
-            <IconBell size={18} />
-          </ActionIcon>
-        </Indicator>     
+        <HeaderNotifications onClick={onNotificationClick} />     
    <Menu shadow="md" width={200}>
           <Menu.Target>
             <Group className={classes.userMenu}>

@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--mantine-color-gray-0);
+  border-radius: var(--mantine-radius-md);
+}
+
+.attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--mantine-color-blue-1);
+  border-radius: var(--mantine-radius-sm);
+  font-size: 0.75rem;
+}
+
+.messageInput {
+  border-radius: 1.5rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}

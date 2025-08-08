@@ -1,0 +1,51 @@
+.messageContainer {
+  display: flex;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.messageContainer.own {
+  justify-content: flex-end;
+}
+
+.messageContainer.other {
+  justify-content: flex-start;
+}
+
+.messageContent {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageBubble {
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.ownBubble {
+  background-color: var(--mantine-color-blue-6);
+  color: white;
+  margin-left: auto;
+}
+
+.otherBubble {
+  background-color: var(--mantine-color-gray-1);
+  color: var(--mantine-color-dark-7);
+}
+
+.messageActions {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.messageBubble:hover .messageActions {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .messageContent {
+    max-width: 85%;
+  }
+}

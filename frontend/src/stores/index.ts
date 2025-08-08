@@ -27,5 +27,9 @@ export {
   useRecentNotifications
 } from './notificationStore';
 
+export {
+  useChatStore
+} from '../features/chat/stores/chatStore';
+
 // Re-export types
 export type { UINotification } from './uiStore';
