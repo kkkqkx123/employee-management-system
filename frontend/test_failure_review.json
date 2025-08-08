@@ -1,0 +1,476 @@
+{
+    "failed_tests": [
+        {
+            "test_file": "src/components/ui/RetryButton/__tests__/RetryButton.test.tsx",
+            "test_case": "RetryButton > renders with default text"
+        },
+        {
+            "test_file": "src/test/api.test.tsx",
+            "test_case": "API Integration > useEmployees > should fetch employees successfully"
+        },
+        {
+            "test_file": "src/test/api.test.tsx",
+            "test_case": "API Integration > useCreateEmployee > should create employee successfully"
+        },
+        {
+            "test_file": "src/test/api.test.tsx",
+            "test_case": "API Integration > useCreateEmployee > should handle validation errors"
+        },
+        {
+            "test_file": "src/test/api.test.tsx",
+            "test_case": "Query Invalidation > should invalidate related queries after mutation"
+        },
+        {
+            "test_file": "src/hooks/__tests__/useAsyncOperation.test.tsx",
+            "test_case": "useAsyncOperation > prevents multiple simultaneous executions"
+        },
+        {
+            "test_file": "src/hooks/__tests__/useAsyncOperation.test.tsx",
+            "test_case": "useAsyncOperation > tracks retry count correctly"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > XSS Prevention > should sanitize user input in forms"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > CSRF Protection > should include CSRF token in state-changing requests"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > CSRF Protection > should not include CSRF token in GET requests"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Rate Limiting > should enforce API rate limits"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Rate Limiting > should track remaining requests"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > File Upload Security > should detect suspicious file names"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Token Security > should validate JWT token format"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Token Security > should detect expired tokens"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Content Security Policy > should apply CSP policy without errors"
+        },
+        {
+            "test_file": "src/test/security-integration.test.tsx",
+            "test_case": "Security Integration Tests > Security Headers > should include security headers in API requests"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > renders employee list with data"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > displays loading state"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > opens create modal when add button is clicked"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > opens import modal when import button is clicked"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > opens export modal when export button is clicked"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > filters employees by search criteria"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > handles employee selection in selection mode"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > shows employee actions"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > opens employee detail modal when view button is clicked"
+        },
+        {
+            "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",
+            "test_case": "EmployeeList > clears filters when clear button is clicked"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should render the matrix with roles and permissions"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should filter roles by search term"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should toggle system roles visibility"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should handle save changes"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should handle role selection callback"
+        },
+        {
+            "test_file": "src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx",
+            "test_case": "RolePermissionMatrix > should disable editing in read-only mode"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Security Utils > XSS Prevention > should sanitize text input"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Security Utils > XSS Prevention > should escape HTML entities"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Security Utils > Form Data Sanitization > should sanitize form data"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Security Utils > File Validation > should detect suspicious file names"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Token Security > JWT Validation > should validate JWT format"
+        },
+        {
+            "testFile": "src/test/security.test.tsx",
+            "testCase": "Secure File Upload > should handle drag and drop"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > WCAG 2.1 Level AA Compliance > 2. Operable > 2.1.1 Keyboard - All functionality available via keyboard"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > WCAG 2.1 Level AA Compliance > 2. Operable > 2.1.2 No Keyboard Trap - Focus can move away from components"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > WCAG 2.1 Level AA Compliance > 2. Operable > 2.4.3 Focus Order - Logical focus order maintained"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > WCAG 2.1 Level AA Compliance > 3. Understandable > 3.2.1 On Focus - No unexpected context changes on focus"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > Focus trap works correctly in modals"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > Keyboard navigation works in lists"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > Screen reader announcements work correctly"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > High contrast mode is supported"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > Reduced motion is respected"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Advanced Accessibility Features > Data table has proper accessibility structure"
+        },
+        {
+            "testFile": "src/test/accessibility-comprehensive.test.tsx",
+            "testCase": "Comprehensive Accessibility Tests > Form Accessibility > Complex form has proper accessibility features"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > subscribe and emit > should subscribe to events and receive them"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > subscribe and emit > should support multiple subscribers for the same event"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > subscribe and emit > should support wildcard listeners"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > unsubscribe > should unsubscribe from events"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > subscribeToMultiple > should subscribe to multiple event types"
+        },
+        {
+            "testFile": "src/services/__tests__/eventBus.test.ts",
+            "testCase": "EventBus > error handling > should handle errors in event listeners gracefully"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Button Component > should have proper focus indicators"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Button Component > should handle keyboard navigation"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Modal Component > should trap focus within modal"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > SkipLinks Component > should be visible when focused"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > SkipLinks Component > should navigate to target element"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > DataTable Component > should have proper table structure"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > DataTable Component > should have proper table structure"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > DataTable Component > should support keyboard navigation"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Color Contrast > should meet WCAG AAA standards"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Focus Management > should trap focus correctly"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Reduced Motion > should respect prefers-reduced-motion"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > High Contrast Mode > should adapt to high contrast preferences"
+        },
+        {
+            "testFile": "src/test/accessibility.test.tsx",
+            "testCase": "Accessibility Tests > Touch Targets > should meet minimum touch target requirements on mobile"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > validates required fields"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > validates email format"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > validates phone number format"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > shows salary field when pay type is salaried"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > shows hourly rate field when pay type is hourly"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > submits create form with valid data"
+        },
+        {
+            "testFile": "src/features/employees/components/__tests__/EmployeeForm.test.tsx",
+            "testCase": "EmployeeForm > shows loading state during submission"
+        },
+        {
+            "testFile": "src/App.test.tsx",
+            "testCase": "App > renders the application title"
+        },
+        {
+            "testFile": "src/App.test.tsx",
+            "testCase": "App > renders the setup complete message"
+        },
+        {
+            "testFile": "src/test/breadcrumbs.test.tsx",
+            "testCase": "Breadcrumbs > does not render for root path"
+        },
+        {
+            "testFile": "src/test/breadcrumbs.test.tsx",
+            "testCase": "Breadcrumbs > does not render for single-level paths"
+        },
+        {
+            "testFile": "src/components/ui/LoadingState/__tests__/LoadingState.test.tsx",
+            "testCase": "LoadingState > shows retry button when onRetry is provided"
+        },
+        {
+            "testFile": "src/components/ui/LoadingState/__tests__/LoadingState.test.tsx",
+            "testCase": "LoadingState > applies overlay styles when overlay is true"
+        },
+        {
+            "testFile": "src/components/ui/LoadingState/__tests__/LoadingState.test.tsx",
+            "testCase": "LoadingState > applies size classes correctly"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Authentication Flow > should complete full login workflow"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Authentication Flow > should handle logout workflow"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Employee Management Workflow > should complete employee CRUD workflow"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Real-time Features Workflow > should handle chat workflow"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Real-time Features Workflow > should handle notifications workflow"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Navigation and Accessibility Workflow > should support keyboard navigation"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Navigation and Accessibility Workflow > should handle responsive navigation"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Error Handling Workflow > should handle network errors gracefully"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Performance and Loading States > should show loading states during navigation"
+        },
+        {
+            "testFile": "src/test/integration/full-workflow.integration.test.tsx",
+            "testCase": "Full Application Workflow Integration Tests > Performance and Loading States > should handle concurrent operations"
+        },
+        {
+            "testFile": "src/components/ui/Input/Input.test.tsx",
+            "testCase": "Input > shows error state"
+        },
+        {
+            "testFile": "src/components/ui/Input/Input.test.tsx",
+            "testCase": "Input > shows helper text"
+        },
+        {
+            "testFile": "src/components/ui/Input/Input.test.tsx",
+            "testCase": "Input > renders password input"
+        },
+        {
+            "testFile": "src/components/ui/FormField/FormField.test.tsx",
+            "testCase": "FormField > shows description text"
+        },
+        {
+            "testFile": "src/components/ui/LoadingSpinner/LoadingSpinner.test.tsx",
+            "testCase": "LoadingSpinner > renders spinner"
+        },
+        {
+            "testFile": "src/components/ui/LoadingSpinner/LoadingSpinner.test.tsx",
+            "testCase": "LoadingSpinner > shows loading text"
+        },
+        {
+            "testFile": "src/components/ui/LoadingSpinner/LoadingSpinner.test.tsx",
+            "testCase": "LoadingSpinner > centers spinner when centered prop is true"
+        },
+        {
+            "testFile": "src/components/ui/LoadingSpinner/LoadingSpinner.test.tsx",
+            "testCase": "LoadingSpinner > applies custom className"
+        },
+        {
+            "testFile": "src/test/performance.test.tsx",
+            "testCase": "Performance Optimizations > OptimizedImage > should render with lazy loading by default"
+        },
+        {
+            "testFile": "src/test/performance.test.tsx",
+            "testCase": "Performance Optimizations > OptimizedImage > should not use lazy loading when disabled"
+        },
+        {
+            "testFile": "src/test/performance.test.tsx",
+            "testCase": "Performance Optimizations > OptimizedImage > should show skeleton while loading"
+        },
+        {
+            "testFile": "src/test/performance.test.tsx",
+            "testCase": "Performance Optimizations > Performance Monitoring > should track render performance"
+        },
+        {
+            "testFile": "src/test/performance.test.tsx",
+            "testCase": "Performance Optimizations > Memory Optimization > should properly cleanup event listeners"
+        },
+        {
+            "testFile": "src/features/notifications/components/__tests__/NotificationItem.test.tsx",
+            "testCase": "NotificationItem > shows unread indicator for unread notifications"
+        },
+        {
+            "testFile": "src/features/notifications/components/__tests__/NotificationItem.test.tsx",
+            "testCase": "NotificationItem > calls onClick when notification is clicked"
+        },
+        {
+            "testFile": "src/features/notifications/components/__tests__/NotificationItem.test.tsx",
+            "testCase": "NotificationItem > calls onDelete when delete button is clicked"
+        },
+        {
+            "testFile": "src/test/integration/auth-flow.integration.test.tsx",
+            "testCase": "Authentication Flow Integration > should handle complete login flow"
+        },
+        {
+            "testFile": "src/test/integration/auth-flow.integration.test.tsx",
+            "testCase": "Authentication Flow Integration > should handle login failure"
+        },
+        {
+            "testFile": "src/test/integration/auth-flow.integration.test.tsx",
+            "testCase": "Authentication Flow Integration > should handle token expiration and refresh"
+        },
+        {
+            "testFile": "src/test/integration/auth-flow.integration.test.tsx",
+            "testCase": "Authentication Flow Integration > should handle logout flow"
+        },
+        {
+            "testFile": "src/test/integration/employee-crud.integration.test.tsx",
+            "testCase": "Employee CRUD Integration > should load and display employee list"
+        },
+        {
+            "testFile": "src/test/integration/employee-crud.integration.test.tsx",
+            "testCase": "Employee CRUD Integration > should create new employee"
+        },
+        {
+            "testFile": "src/test/integration/employee-crud.integration.test.tsx",
+            "testCase": "Employee CRUD Integration > should update existing employee"
+        },
+        {
+            "testFile": "src/test/integration/employee-crud.integration.test.tsx",
+            "testCase": "Employee CRUD Integration > should delete employee with confirmation"
+        },
+        {
+            "testFile": "src/test/integration/employee-crud.integration.test.tsx",
+            "testCase": "Employee CRUD Integration > should handle search functionality"
+        }
+    ]
+}

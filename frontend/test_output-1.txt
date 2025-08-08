@@ -1,0 +1,2680 @@
+
+> frontend@0.0.0 test
+> vitest
+
+
+[1m[44m DEV [49m[22m [34mv3.2.4 [39m[90mD:/项目/Spring/employee-management-system/frontend[39m
+
+[90mstdout[2m | src/test/security-integration.test.tsx
+[22m[39m✅ Security configuration validated successfully
+
+ [31m❯[39m src/components/ui/RetryButton/__tests__/RetryButton.test.tsx [2m([22m[2m13 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 402[2mms[22m[39m
+[31m   [31m×[31m RetryButton[2m > [22mrenders with default text[39m[32m 44[2mms[22m[39m
+[31m     → Unable to find an accessible element with the role "button" and name `/try again/i`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Retry operation":
+  [36m<button[31m
+    [33maria-busy[31m=[32m"false"[31m
+    [33maria-disabled[31m=[32m"false"[31m
+    [33maria-label[31m=[32m"Retry operation"[31m
+    [33mclass[31m=[32m"_button_273f36 _primary_273f36 _md_273f36 _retryButton_12ac9c"[31m
+    [33mtype[31m=[32m"button"[31m
+  [36m/>[31m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"_retryContainer_12ac9c"[31m
+    [36m>[31m
+      [36m<button[31m
+        [33maria-busy[31m=[32m"false"[31m
+        [33maria-disabled[31m=[32m"false"[31m
+        [33maria-label[31m=[32m"Retry operation"[31m
+        [33mclass[31m=[32m"_button_273f36 _primary_273f36 _md_273f36 _retryButton_12ac9c"[31m
+        [33mtype[31m=[32m"button"[31m
+      [36m>[31m
+        [36m<span[31m
+          [33mclass[31m=[32m"_content_273f36"[31m
+        [36m>[31m
+          [0mTry Again[0m
+        [36m</span>[31m
+      [36m</button>[31m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+   [32m✓[39m RetryButton[2m > [22mrenders with custom children[32m 7[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mcalls onRetry when clicked[32m 17[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mshows loading state during retry[32m 130[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mdisables button when disabled prop is true[32m 5[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mdisables button during retry[32m 105[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mshows attempt count when showAttempts is true[32m 14[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mshows error message when retry fails[32m 16[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mresets attempts on successful retry[32m 30[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mapplies custom className[32m 4[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22muses custom testId[32m 3[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mhandles synchronous onRetry function[32m 5[2mms[22m[39m
+   [32m✓[39m RetryButton[2m > [22mprevents multiple simultaneous retries[32m 19[2mms[22m[39m
+ [31m❯[39m src/test/api.test.tsx [2m([22m[2m7 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 339[2mms[22m[39m
+[31m   [31m×[31m API Integration[2m > [22museEmployees[2m > [22mshould fetch employees successfully[39m[32m 101[2mms[22m[39m
+[31m     → expected "get" to be called with arguments: [ '/employees', { params: {} } ][90m
+
+Received: 
+
+[1m  1st get call:
+
+[22m[2m  [[22m
+[2m    "/employees",[22m
+[2m    {[22m
+[32m-     "params": {},[90m
+[31m+     "params": undefined,[90m
+[2m    },[22m
+[2m  ][22m
+[31m[90m
+
+Number of calls: [1m1[22m
+[31m[39m
+   [32m✓[39m API Integration[2m > [22museEmployees[2m > [22mshould handle API errors[32m 80[2mms[22m[39m
+[31m   [31m×[31m API Integration[2m > [22museCreateEmployee[2m > [22mshould create employee successfully[39m[32m 14[2mms[22m[39m
+[31m     → Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.[39m
+[31m   [31m×[31m API Integration[2m > [22museCreateEmployee[2m > [22mshould handle validation errors[39m[32m 4[2mms[22m[39m
+[31m     → Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.[39m
+   [32m✓[39m Error Handling[2m > [22mshould handle network errors[32m 59[2mms[22m[39m
+   [32m✓[39m Error Handling[2m > [22mshould handle timeout errors[32m 77[2mms[22m[39m
+[31m   [31m×[31m Query Invalidation[2m > [22mshould invalidate related queries after mutation[39m[32m 4[2mms[22m[39m
+[31m     → Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.[39m
+ [31m❯[39m src/hooks/__tests__/useAsyncOperation.test.tsx [2m([22m[2m10 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 1441[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22minitializes with correct default state[32m 34[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mhandles successful execution[32m 29[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mhandles execution error[32m 37[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mcalls onSuccess callback on successful execution[32m 16[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mcalls onError callback on failed execution[32m 10[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mhandles retry functionality[32m 19[2mms[22m[39m
+   [32m✓[39m useAsyncOperation[2m > [22mresets state when reset is called[32m 17[2mms[22m[39m
+[31m   [31m×[31m useAsyncOperation[2m > [22mprevents multiple simultaneous executions[39m[32m 125[2mms[22m[39m
+[31m     → expected "spy" to be called 1 times, but got 3 times[39m
+   [32m✓[39m useAsyncOperation[2m > [22mprevents retry when already retrying[32m 140[2mms[22m[39m
+[31m   [31m×[31m useAsyncOperation[2m > [22mtracks retry count correctly[39m[33m 1012[2mms[22m[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toHaveTextContent()[22m
+
+Expected element to have text content:
+[32m  "success"[31m
+Received:
+[31m  null[31m
+
+Ignored nodes: comments, script, style
+[36m<html>[31m
+  [36m<head />[31m
+  [36m<body>[31m
+    [36m<div>[31m
+      [36m<div>[31m
+        [36m<div[31m
+          [33mdata-testid[31m=[32m"data"[31m
+        [36m>[31m
+          [0mnull[0m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mdata-testid[31m=[32m"loading"[31m
+        [36m>[31m
+          [0mfalse[0m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mdata-testid[31m=[32m"error"[31m
+        [36m>[31m
+          [0mSecond attempt failed[0m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mdata-testid[31m=[32m"isRetrying"[31m
+        [36m>[31m
+          [0mfalse[0m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mdata-testid[31m=[32m"retryCount"[31m
+        [36m>[31m
+          [0m1[0m
+        [36m</div>[31m
+        [36m<button>[31m
+          [0mExecute[0m
+        [36m</button>[31m
+        [36m<button>[31m
+          [0mRetry[0m
+        [36m</button>[31m
+        [36m<button>[31m
+          [0mReset[0m
+        [36m</button>[31m
+      [36m</div>[31m
+    [36m</div>[31m
+  [36m</body>[31m
+[36m</html>[31m[39m
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mCSRF Protection[2m > [22m[2mshould include CSRF token in state-changing requests
+[22m[39m🚀 API Request: POST /api/test {
+  params: [90mundefined[39m,
+  data: { data: [32m'test'[39m },
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-CSRF-Token'[39m: [32m'67eb71678e7f17ac2b0535c70a7dd0826a5d12a5c3756a595e2147c8ac647ac6'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mCSRF Protection[2m > [22m[2mshould not include CSRF token in GET requests
+[22m[39m🚀 API Request: GET /api/test {
+  params: { _t: [33m1754657310969[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-0 {
+  params: { _t: [33m1754657310981[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-1 {
+  params: { _t: [33m1754657310987[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-2 {
+  params: { _t: [33m1754657310993[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-3 {
+  params: { _t: [33m1754657310998[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-4 {
+  params: { _t: [33m1754657311002[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-5 {
+  params: { _t: [33m1754657311011[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-6 {
+  params: { _t: [33m1754657311017[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-7 {
+  params: { _t: [33m1754657311023[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-8 {
+  params: { _t: [33m1754657311029[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-9 {
+  params: { _t: [33m1754657311032[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-10 {
+  params: { _t: [33m1754657311037[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-11 {
+  params: { _t: [33m1754657311041[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-12 {
+  params: { _t: [33m1754657311045[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-13 {
+  params: { _t: [33m1754657311049[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-14 {
+  params: { _t: [33m1754657311053[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-15 {
+  params: { _t: [33m1754657311057[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-16 {
+  params: { _t: [33m1754657311061[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-17 {
+  params: { _t: [33m1754657311067[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-18 {
+  params: { _t: [33m1754657311071[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-19 {
+  params: { _t: [33m1754657311074[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-20 {
+  params: { _t: [33m1754657311078[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-21 {
+  params: { _t: [33m1754657311082[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-22 {
+  params: { _t: [33m1754657311085[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-23 {
+  params: { _t: [33m1754657311089[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-24 {
+  params: { _t: [33m1754657311092[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-25 {
+  params: { _t: [33m1754657311096[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-26 {
+  params: { _t: [33m1754657311100[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-27 {
+  params: { _t: [33m1754657311105[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-28 {
+  params: { _t: [33m1754657311109[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-29 {
+  params: { _t: [33m1754657311113[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-30 {
+  params: { _t: [33m1754657311117[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-31 {
+  params: { _t: [33m1754657311122[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-32 {
+  params: { _t: [33m1754657311129[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-33 {
+  params: { _t: [33m1754657311134[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-34 {
+  params: { _t: [33m1754657311138[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-35 {
+  params: { _t: [33m1754657311142[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-36 {
+  params: { _t: [33m1754657311145[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-37 {
+  params: { _t: [33m1754657311149[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-38 {
+  params: { _t: [33m1754657311152[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-39 {
+  params: { _t: [33m1754657311156[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-40 {
+  params: { _t: [33m1754657311160[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-41 {
+  params: { _t: [33m1754657311163[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-42 {
+  params: { _t: [33m1754657311167[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-43 {
+  params: { _t: [33m1754657311170[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-44 {
+  params: { _t: [33m1754657311174[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-45 {
+  params: { _t: [33m1754657311179[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-46 {
+  params: { _t: [33m1754657311183[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-47 {
+  params: { _t: [33m1754657311187[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-48 {
+  params: { _t: [33m1754657311191[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-49 {
+  params: { _t: [33m1754657311195[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-50 {
+  params: { _t: [33m1754657311198[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-51 {
+  params: { _t: [33m1754657311200[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-52 {
+  params: { _t: [33m1754657311203[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-53 {
+  params: { _t: [33m1754657311206[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-54 {
+  params: { _t: [33m1754657311210[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-55 {
+  params: { _t: [33m1754657311213[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-56 {
+  params: { _t: [33m1754657311216[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-57 {
+  params: { _t: [33m1754657311219[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-58 {
+  params: { _t: [33m1754657311222[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-59 {
+  params: { _t: [33m1754657311229[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-60 {
+  params: { _t: [33m1754657311232[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-61 {
+  params: { _t: [33m1754657311235[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-62 {
+  params: { _t: [33m1754657311238[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-63 {
+  params: { _t: [33m1754657311242[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-64 {
+  params: { _t: [33m1754657311245[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-65 {
+  params: { _t: [33m1754657311248[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-66 {
+  params: { _t: [33m1754657311252[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-67 {
+  params: { _t: [33m1754657311256[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-68 {
+  params: { _t: [33m1754657311259[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-69 {
+  params: { _t: [33m1754657311263[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-70 {
+  params: { _t: [33m1754657311265[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-71 {
+  params: { _t: [33m1754657311267[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-72 {
+  params: { _t: [33m1754657311270[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-73 {
+  params: { _t: [33m1754657311272[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-74 {
+  params: { _t: [33m1754657311276[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-75 {
+  params: { _t: [33m1754657311279[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-76 {
+  params: { _t: [33m1754657311281[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-77 {
+  params: { _t: [33m1754657311284[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-78 {
+  params: { _t: [33m1754657311287[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-79 {
+  params: { _t: [33m1754657311290[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-80 {
+  params: { _t: [33m1754657311293[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-81 {
+  params: { _t: [33m1754657311296[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-82 {
+  params: { _t: [33m1754657311300[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-83 {
+  params: { _t: [33m1754657311303[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-84 {
+  params: { _t: [33m1754657311305[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-85 {
+  params: { _t: [33m1754657311309[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-86 {
+  params: { _t: [33m1754657311312[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-87 {
+  params: { _t: [33m1754657311320[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-88 {
+  params: { _t: [33m1754657311324[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-89 {
+  params: { _t: [33m1754657311328[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-90 {
+  params: { _t: [33m1754657311331[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-91 {
+  params: { _t: [33m1754657311335[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-92 {
+  params: { _t: [33m1754657311338[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-93 {
+  params: { _t: [33m1754657311342[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-94 {
+  params: { _t: [33m1754657311345[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-95 {
+  params: { _t: [33m1754657311349[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-96 {
+  params: { _t: [33m1754657311352[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-97 {
+  params: { _t: [33m1754657311355[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-98 {
+  params: { _t: [33m1754657311359[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-99 {
+  params: { _t: [33m1754657311362[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mRate Limiting[2m > [22m[2mshould enforce API rate limits
+[22m[39m🚀 API Request: GET /api/test-100 {
+  params: { _t: [33m1754657311366[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+[90mstdout[2m | src/test/security-integration.test.tsx[2m > [22m[2mSecurity Integration Tests[2m > [22m[2mSecurity Headers[2m > [22m[2mshould include security headers in API requests
+[22m[39m🚀 API Request: GET /api/test {
+  params: { _t: [33m1754657311396[39m },
+  data: [90mundefined[39m,
+  headers: Object [AxiosHeaders] {
+    Accept: [32m'application/json, text/plain, */*'[39m,
+    [32m'Content-Type'[39m: [32m'application/json'[39m,
+    [32m'X-Requested-With'[39m: [32m'XMLHttpRequest'[39m,
+    [32m'X-Content-Type-Options'[39m: [32m'nosniff'[39m,
+    [32m'X-Frame-Options'[39m: [32m'DENY'[39m,
+    [32m'X-XSS-Protection'[39m: [32m'1; mode=block'[39m
+  }
+}
+
+ [31m❯[39m src/test/security-integration.test.tsx [2m([22m[2m15 tests[22m[2m | [22m[31m10 failed[39m[2m)[22m[33m 1834[2mms[22m[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mXSS Prevention[2m > [22mshould sanitize user input in forms[39m[33m 1359[2mms[22m[39m
+[31m     → expected '' to be 'John' // Object.is equality[39m
+   [32m✓[39m Security Integration Tests[2m > [22mXSS Prevention[2m > [22mshould detect and prevent XSS in content[32m 2[2mms[22m[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mCSRF Protection[2m > [22mshould include CSRF token in state-changing requests[39m[32m 37[2mms[22m[39m
+[31m     → Network Error[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mCSRF Protection[2m > [22mshould not include CSRF token in GET requests[39m[32m 10[2mms[22m[39m
+[31m     → Network Error[39m
+   [32m✓[39m Security Integration Tests[2m > [22mCSRF Protection[2m > [22mshould validate CSRF tokens[32m 2[2mms[22m[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mRate Limiting[2m > [22mshould enforce API rate limits[39m[33m 396[2mms[22m[39m
+[31m     → expected { success: false, …(4) } to deeply equal Error: Rate limit exceeded[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mRate Limiting[2m > [22mshould track remaining requests[39m[32m 2[2mms[22m[39m
+[31m     → Cannot find module '../utils/security'
+Require stack:
+- D:\项目\Spring\employee-management-system\frontend\src\test\security-integration.test.tsx[39m
+   [32m✓[39m Security Integration Tests[2m > [22mFile Upload Security[2m > [22mshould validate file types and sizes[32m 10[2mms[22m[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mFile Upload Security[2m > [22mshould detect suspicious file names[39m[32m 3[2mms[22m[39m
+[31m     → expected 'File type text/plain is not allowed' to contain 'security reasons'[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mToken Security[2m > [22mshould validate JWT token format[39m[32m 2[2mms[22m[39m
+[31m     → Cannot find module '../utils/tokenSecurity'
+Require stack:
+- D:\项目\Spring\employee-management-system\frontend\src\test\security-integration.test.tsx[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mToken Security[2m > [22mshould detect expired tokens[39m[32m 1[2mms[22m[39m
+[31m     → Cannot find module '../utils/tokenSecurity'
+Require stack:
+- D:\项目\Spring\employee-management-system\frontend\src\test\security-integration.test.tsx[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mContent Security Policy[2m > [22mshould apply CSP policy without errors[39m[32m 1[2mms[22m[39m
+[31m     → Cannot find module '../utils/contentSecurityPolicy'
+Require stack:
+- D:\项目\Spring\employee-management-system\frontend\src\test\security-integration.test.tsx[39m
+[31m   [31m×[31m Security Integration Tests[2m > [22mSecurity Headers[2m > [22mshould include security headers in API requests[39m[32m 6[2mms[22m[39m
+[31m     → Network Error[39m
+   [32m✓[39m Security Integration Tests[2m > [22mInput Validation[2m > [22mshould validate email addresses[32m 1[2mms[22m[39m
+   [32m✓[39m Security Integration Tests[2m > [22mInput Validation[2m > [22mshould sanitize form data before submission[32m 1[2mms[22m[39m
+ [31m❯[39m src/features/employees/components/__tests__/EmployeeList.test.tsx [2m([22m[2m11 tests[22m[2m | [22m[31m10 failed[39m[2m)[22m[33m 528[2mms[22m[39m
+[31m   [31m×[31m EmployeeList[2m > [22mrenders employee list with data[39m[32m 123[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mdisplays loading state[39m[32m 68[2mms[22m[39m
+[31m     → Unable to find an element by: [data-testid="loading-spinner"]
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_7485cace mantine-Container-root"[31m
+      [33mdata-size[31m=[32m"xl"[31m
+      [33mdata-strategy[31m=[32m"block"[31m
+      [33mstyle[31m=[32m"--container-size: var(--container-size-xl);"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-lg); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: space-between; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div>[31m
+            [36m<h1[31m
+              [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+              [33mdata-order[31m=[32m"1"[31m
+              [33mstyle[31m=[32m"--title-fw: var(--mantine-h1-font-weight); --title-lh: var(--mantine-h1-line-height); --title-fz: var(--mantine-h1-font-size);"[31m
+            [36m>[31m
+              [0mEmployees[0m
+            [36m</h1>[31m
+            [36m<p[31m
+              [33mclass[31m=[32m"mantine-focus-auto m_b6d8b162 mantine-Text-root"[31m
+              [33mstyle[31m=[32m"color: var(--mantine-color-dimmed);"[31m
+            [36m>[31m
+              [0mManage employee records and information[0m
+            [36m</p>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+            [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+          [36m>[31m
+            [36m<button[31m
+              [33mclass[31m=[32m"mantine-focus-auto mantine-active m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"[31m
+              [33mdata-variant[31m=[32m"light"[31m
+              [33mdata-with-left-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--button-bg: var(--mantine-color-blue-light); --button-hover: var(--mantine-color-blue-light-hover); --button-color: var(--mantine-color-blue-light-color); --button-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"[31m
+              [33mtype[31m=[32m"button"[31m
+            [36m>[31m
+              [36m<span[31m
+                [33mclass[31m=[32m"m_80f1301b mantine-Button-inner"[31m
+              [36m>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"m_a74036a mantine-Button-section"[31m
+                  [33mdata-position[31m=[32m"left"[31m
+                [36m>[31m
+                  [36m<svg[31m
+                    [33mclass[31m=[32m"tabler-icon tabler-icon-upload "[31m
+                    [33mfill[31m=[32m"none"[31m
+                    [33mheight[31m=[32m"16"[31m
+                    [33mstroke[31m=[32m"currentColor"[31m
+                    [33mstroke-linecap[31m=[32m"round"[31m
+                    [33mstroke-linejoin[31m=[32m"round"[31m
+                    [33mstroke-width[31m=[32m"2"[31m
+                    [33mviewBox[31m=[32m"0 0 24 24"[31m
+                    [33mwidth[31m=[32m"16"[31m
+                    [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                  [36m>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"[31m
+                    [36m/>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M7 9l5 -5l5 5"[31m
+                    [36m/>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M12 4l0 12"[31m
+                    [36m/>[31m
+                  [36m</svg>[31m
+                [36m</span>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"m_811560b9 mantine-Button-label"[31m
+                [36m>[31m
+                  [0mImport[0m
+                [36m</span>[31m
+              [36m</span>[31m
+            [36m</button>[31m
+            [36m<button[31m
+              [33mclass[31m=[32m"mantine-focus-auto mantine-active m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"[31m
+              [33mdata-variant[31m=[32m"light"[31m
+              [33mdata-with-left-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--button-bg: var(--mantine-color-blue-light); --button-hover: var(--mantine-color-blue-light-hover); --button-color: var(--mantine-color-blue-light-color); --button-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"[31m
+              [33mtype[31m=[32m"button"[31m
+            [36m>[31m
+              [36m<span[31m
+                [33mclass[31m=[32m"m_80f1301b mantine-Button-inner"[31m
+              [36m>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"m_a74036a mantine-Button-section"[31m
+                  [33mdata-position[31m=[32m"left"[31m
+                [36m>[31m
+                  [36m<svg[31m
+                    [33mclass[31m=[32m"tabler-icon tabler-icon-download "[31m
+                    [33mfill[31m=[32m"none"[31m
+                    [33mheight[31m=[32m"16"[31m
+                    [33mstroke[31m=[32m"currentColor"[31m
+                    [33mstroke-linecap[31m=[32m"round"[31m
+                    [33mstroke-linejoin[31m=[32m"round"[31m
+                    [33mstroke-width[31m=[32m"2"[31m
+                    [33mviewBox[31m=[32m"0 0 24 24"[31m
+                    [33mwidth[31m=[32m"16"[31m
+                    [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                  [36m>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"[31m
+                    [36m/>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M7 11l5 5l5 -5"[31m
+                    [36m/>[31m
+                    [36m<path[31m
+                      [33md[31m=[32m"M12 4l0 12"[31m
+                    [36m/>[31m
+                  [36m</svg>[31m
+                [36m</span>[31m
+                [36m<span[31m
+                  [33mclass[31m=[32m"m_811560b9 mantine-Button-label"[31m
+                [36m>[31m
+                  [0mExport[0m
+                [36m</span>[31m
+              [36m</span>[31m
+            [36m</button>[31m
+            [36m<button[31m
+              [33mclass[31m=[32m"mantine-focus-auto mantine-active m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"[31m
+              [33mdata-with-left-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--button-color: var(--mantine-color-white);"[31m
+              [33mtype[31m=[32m"button"[31m
+...[39m
+   [32m✓[39m EmployeeList[2m > [22mdisplays error state[32m 11[2mms[22m[39m
+[31m   [31m×[31m EmployeeList[2m > [22mopens create modal when add button is clicked[39m[32m 37[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mopens import modal when import button is clicked[39m[32m 30[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mopens export modal when export button is clicked[39m[32m 47[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mfilters employees by search criteria[39m[32m 40[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mhandles employee selection in selection mode[39m[32m 48[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'id')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mshows employee actions[39m[32m 41[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mopens employee detail modal when view button is clicked[39m[32m 38[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+[31m   [31m×[31m EmployeeList[2m > [22mclears filters when clear button is clicked[39m[32m 43[2mms[22m[39m
+[31m     → Cannot read properties of undefined (reading 'replace')[39m
+ [31m❯[39m src/features/permissions/components/__tests__/RolePermissionMatrix.test.tsx [2m([22m[2m11 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 1785[2mms[22m[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould render the matrix with roles and permissions[39m[32m 137[2mms[22m[39m
+[31m     → Unable to find an element with the text: ADMIN. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mspacing[31m=[32m"md"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mposition[31m=[32m"apart"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<h3[31m
+            [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+            [33mdata-order[31m=[32m"3"[31m
+            [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+          [36m>[31m
+            [0mRole-Permission Matrix[0m
+          [36m</h3>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+            [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33micon[31m=[32m"[object Object]"[31m
+                [33mid[31m=[32m"mantine-iers7y1vt"[31m
+                [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                [33mvalue[31m=[32m""[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+            [33mstyle[31m=[32m"min-width: 200px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+              [33mdata-pointer[31m=[32m"true"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+              [33mdata-with-right-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-haspopup[31m=[32m"listbox"[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mid[31m=[32m"mantine-rk8jmp3kv"[31m
+                [33mplaceholder[31m=[32m"Filter by category"[31m
+                [33mreadonly[31m=[32m""[31m
+                [33mvalue[31m=[32m"All Categories"[31m
+              [36m/>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                [33mdata-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                  [33mdata-combobox-chevron[31m=[32m"true"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 15 15"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<input[31m
+            [33mtype[31m=[32m"hidden"[31m
+            [33mvalue[31m=[32m""[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+            [33mdata-label-position[31m=[32m"right"[31m
+            [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                [33mdata-label-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                  [33mid[31m=[32m"mantine-005ddrde9"[31m
+                  [33mtype[31m=[32m"checkbox"[31m
+                [36m/>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"m_bf295423 mantine-Checkbox-icon"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 10 7"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4 4.586L1.707 2.293A1 1 0 1 0 .293 3.707l3 3a.997.997 ...[39m
+   [32m✓[39m RolePermissionMatrix[2m > [22mshould show loading state[32m 47[2mms[22m[39m
+   [32m✓[39m RolePermissionMatrix[2m > [22mshould show error state[32m 12[2mms[22m[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould filter roles by search term[39m[32m 88[2mms[22m[39m
+[31m     → Unable to find an element with the text: ADMIN. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div[31m
+    [33mdata-mantine-shared-portal-node[31m=[32m"true"[31m
+    [33mdata-portal[31m=[32m"true"[31m
+  [36m/>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mspacing[31m=[32m"md"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mposition[31m=[32m"apart"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<h3[31m
+            [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+            [33mdata-order[31m=[32m"3"[31m
+            [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+          [36m>[31m
+            [0mRole-Permission Matrix[0m
+          [36m</h3>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+            [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33micon[31m=[32m"[object Object]"[31m
+                [33mid[31m=[32m"mantine-0a1wl7qse"[31m
+                [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                [33mvalue[31m=[32m"ADMIN"[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+            [33mstyle[31m=[32m"min-width: 200px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+              [33mdata-pointer[31m=[32m"true"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+              [33mdata-with-right-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-haspopup[31m=[32m"listbox"[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mid[31m=[32m"mantine-8az85l6gv"[31m
+                [33mplaceholder[31m=[32m"Filter by category"[31m
+                [33mreadonly[31m=[32m""[31m
+                [33mvalue[31m=[32m"All Categories"[31m
+              [36m/>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                [33mdata-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                  [33mdata-combobox-chevron[31m=[32m"true"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 15 15"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<input[31m
+            [33mtype[31m=[32m"hidden"[31m
+            [33mvalue[31m=[32m""[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+            [33mdata-label-position[31m=[32m"right"[31m
+            [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                [33mdata-label-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                  [33mid[31m=[32m"mantine-a4ebt2efd"[31m
+                  [33mtype[31m=[32m"checkbox"[31m
+                [36m/>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"m_bf295423 mantine-Checkbox-icon"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 10 7"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4 4.586L1.707 2.293A1 1 0 1 0 .293 3.707l3 3a.997.997 0 0 0 1.414 0l5-5A1 1 0 1 0 8.293.293L4 4.586z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_d3ea56bb mantine-Checkbox-labelWrapper"[31m
+              [36m>[31m
+                [36m<label[31m
+                  [33mclass[31m=[32m"m_8ee546b8 mantine-Checkbox-label"[31m
+                  [33mfor[31m=[32m"mantine-a4ebt2efd"[31m
+                [36m>[31m
+                  [0mShow system roles[0m
+                [36m</label>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mstyle[31m=[32m"position: relative;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_d57069b5 mantine-ScrollArea-root"[31m
+            [33mstyle[31m=[32m"--sa-corner-width: 0px; --sa-corner-height: 0px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_c0783ff9 mantine-ScrollArea-viewport"[31m
+              [33mdata-scrollbars[31m=[32m"xy"[31m
+              [33mstyle[31m=[32m"overflow-x: scroll; overflow-y: scroll;"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_b1336c6 mantine-ScrollArea-content"[31m
+              [36m>[31m
+                [36m<table[31m
+                  [33mclass[31m=[32m"m_b23fa0ef mantine-Table-table"[31m
+                  [33mstyle[31m=[32m"--table-vertical-spacing: calc(0.4375rem * var(--mantine-scale));"[31m
+                [36m>[31m
+                  [36m<thead>[31m
+                    [36m<tr>[31m
+                      [36m<th[31m
+                        [33mstyle[31m=[32m"min-width: 200px; position: sticky; left: 0px; background: white; z-index: 1;"[31m
+                      [36m>[31m
+                        [0mRole / Permission[0m
+                      [36m</th>[31m
+                    [36m</tr>[31m
+                  [36m</thead>[31m
+                  [36m<tbody />[31m
+                [36m</table>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33maria-describedby[31m=[32m"mantine-7v83m9hft-body"[31m
+          [33mclass[31m=[32m"m_66836ed3 mantine-Alert-root"[31m
+          [33mdata-variant[31m=[32m"light"[31m
+          [33mid[31m=[32m"mantine-7v83m9hft"[31m
+          [33mrole[31m=[32m"alert"[31m
+          [33mstyle[31m=[32m"--alert-bg: var(--mantine-color-blue-light); --alert-color: var(--mantine-color-blue-light-color); --alert-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_a5d60502 mantine-Alert-wrapper"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_667f2a6a mantine-Alert-icon"[31m
+            [36m>[31m
+              [36m<svg[31m
+                [33mclass[31m=[32m"tabler-icon tabler-icon-info-circle "[31m
+                [33mfill[31m=[32m"none"[31m
+                [33mheight[31m=[32m"16"[31m
+                [33mstroke[31m=[32m"currentColor"[31m
+                [33mstroke-linecap[31m=[32m"round"[31m
+                [33mstroke-linejoin[31m=[32m"round"[31m
+                [33mstroke-width[31m=[32m"2"[31m
+                [33mviewBox[31m=[32m"0 0 24 24"[31m
+                [33mwidth[31m=[32m"16"[31m
+                [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+              [36m>[31m
+                [36m<path[31m
+                  [33md[31m=[32m"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"[31m
+                [36m/>[31m
+                [36m<path[31m
+                  [33md[31m=[32m"M12 9h.01"[31m
+                [36m/>[31m
+                [36m<path[31m
+                  [33md[31m=[32m"M11 12h1v4h1"[31m
+                [36m/>[31m
+              [36m</svg>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_667c2793 mantine-Alert-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_7fa78076 mantine-Alert-message"[31m
+                [33mdata-variant[31m=[32m"light"[31m
+                [33mid[31m=[32m"mantine-7v83m9hft-body"[31m
+              [36m>[31m
+                [36m<p[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_b6d8b162 mantine-Text-root"[31m
+                  [33mdata-size[31m=[32m"sm"[31m
+                  [33mstyle[31m=[32m"--text-fz: var(--mantine-font-size-sm); --text-lh: var(--mantine-line-height-sm);"[31m
+                [36m>[31m
+                  [0mClick on role names to view details, or permission headers to see permission information.[0m
+                  [0m Check/uncheck boxes to modify permissions, then save your changes.[0m
+                [36m</p>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+      [36m</div>[31m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+   [32m✓[39m RolePermissionMatrix[2m > [22mshould filter by permission category[32m 113[2mms[22m[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould toggle system roles visibility[39m[32m 50[2mms[22m[39m
+[31m     → Unable to find an element with the text: ADMIN. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div[31m
+    [33mdata-mantine-shared-portal-node[31m=[32m"true"[31m
+    [33mdata-portal[31m=[32m"true"[31m
+  [36m/>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mspacing[31m=[32m"md"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mposition[31m=[32m"apart"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<h3[31m
+            [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+            [33mdata-order[31m=[32m"3"[31m
+            [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+          [36m>[31m
+            [0mRole-Permission Matrix[0m
+          [36m</h3>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+            [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33micon[31m=[32m"[object Object]"[31m
+                [33mid[31m=[32m"mantine-d8jrwxebc"[31m
+                [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                [33mvalue[31m=[32m""[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+            [33mstyle[31m=[32m"min-width: 200px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+              [33mdata-pointer[31m=[32m"true"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+              [33mdata-with-right-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-haspopup[31m=[32m"listbox"[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mid[31m=[32m"mantine-ukr1pycvg"[31m
+                [33mplaceholder[31m=[32m"Filter by category"[31m
+                [33mreadonly[31m=[32m""[31m
+                [33mvalue[31m=[32m"All Categories"[31m
+              [36m/>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                [33mdata-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                  [33mdata-combobox-chevron[31m=[32m"true"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 15 15"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<input[31m
+            [33mtype[31m=[32m"hidden"[31m
+            [33mvalue[31m=[32m""[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+            [33mdata-label-position[31m=[32m"right"[31m
+            [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                [33mdata-label-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                  [33mid[31m=[32m"mantine-p3mowb8tz"[31m
+                  [33mtype[31m=[32m"checkbox"[31m
+                [36m/>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"m_bf295423 mantine-Checkbox-icon"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 10 7"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+               ...[39m
+   [32m✓[39m RolePermissionMatrix[2m > [22mshould handle permission toggle[32m 83[2mms[22m[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould handle save changes[39m[33m 1086[2mms[22m[39m
+[31m     → Unable to find an element with the text: Save Changes. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div[31m
+    [33mdata-mantine-shared-portal-node[31m=[32m"true"[31m
+    [33mdata-portal[31m=[32m"true"[31m
+  [36m/>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mspacing[31m=[32m"md"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mposition[31m=[32m"apart"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<h3[31m
+            [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+            [33mdata-order[31m=[32m"3"[31m
+            [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+          [36m>[31m
+            [0mRole-Permission Matrix[0m
+          [36m</h3>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+            [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33micon[31m=[32m"[object Object]"[31m
+                [33mid[31m=[32m"mantine-v629cxwpa"[31m
+                [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                [33mvalue[31m=[32m""[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+            [33mstyle[31m=[32m"min-width: 200px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+              [33mdata-pointer[31m=[32m"true"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+              [33mdata-with-right-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-haspopup[31m=[32m"listbox"[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mid[31m=[32m"mantine-4d5ql5xsi"[31m
+                [33mplaceholder[31m=[32m"Filter by category"[31m
+                [33mreadonly[31m=[32m""[31m
+                [33mvalue[31m=[32m"All Categories"[31m
+              [36m/>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                [33mdata-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                  [33mdata-combobox-chevron[31m=[32m"true"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 15 15"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<input[31m
+            [33mtype[31m=[32m"hidden"[31m
+            [33mvalue[31m=[32m""[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+            [33mdata-checked[31m=[32m"true"[31m
+            [33mdata-label-position[31m=[32m"right"[31m
+            [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                [33mdata-label-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                  [33mid[31m=[32m"mantine-eaae5rzmz"[31m
+                  [33mtype[31m=[32m"checkbox"[31m
+                [36m/>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"m_bf295423 mantine-Checkbox-icon"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 10 7"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[3...
+
+Ignored nodes: comments, script, style
+[36m<html[31m
+  [33mdata-mantine-color-scheme[31m=[32m"light"[31m
+[36m>[31m
+  [36m<head />[31m
+  [36m<body>[31m
+    [36m<div[31m
+      [33mdata-mantine-shared-portal-node[31m=[32m"true"[31m
+      [33mdata-portal[31m=[32m"true"[31m
+    [36m/>[31m
+    [36m<div>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+            [33mposition[31m=[32m"apart"[31m
+            [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+          [36m>[31m
+            [36m<h3[31m
+              [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+              [33mdata-order[31m=[32m"3"[31m
+              [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+            [36m>[31m
+              [0mRole-Permission Matrix[0m
+            [36m</h3>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+            [33mspacing[31m=[32m"md"[31m
+            [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+              [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33maria-invalid[31m=[32m"false"[31m
+                  [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                  [33mdata-variant[31m=[32m"default"[31m
+                  [33micon[31m=[32m"[object Object]"[31m
+                  [33mid[31m=[32m"mantine-v629cxwpa"[31m
+                  [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                  [33mvalue[31m=[32m""[31m
+                [36m/>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+              [33mstyle[31m=[32m"min-width: 200px;"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+                [33mdata-pointer[31m=[32m"true"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mdata-with-right-section[31m=[32m"true"[31m
+                [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33maria-haspopup[31m=[32m"listbox"[31m
+                  [33maria-invalid[31m=[32m"false"[31m
+                  [33mautocomplete[31m=[32m"off"[31m
+                  [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                  [33mdata-variant[31m=[32m"default"[31m
+                  [33mid[31m=[32m"mantine-4d5ql5xsi"[31m
+                  [33mplaceholder[31m=[32m"Filter by category"[31m
+                  [33mreadonly[31m=[32m""[31m
+                  [33mvalue[31m=[32m"All Categories"[31m
+                [36m/>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                  [33mdata-position[31m=[32m"right"[31m
+                [36m>[31m
+                  [36m<svg[31m
+                    [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                    [33mdata-combobox-chevron[31m=[32m"true"[31m
+                    [33mfill[31m=[32m"none"[31m
+                    [33mviewBox[31m=[32m"0 0 15 15"[31m
+                    [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                  [36m>[31m
+                    [36m<path[31m
+                      [33mclip-rule[31m=[32m"evenodd"[31m
+                      [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                      [33mfill[31m=[32m"currentColor"[31m
+                      [33mfill-rule[31m=[32m"evenodd"[31m
+                    [36m/>[31m
+                  [36m</svg>[31m
+                [36m</div>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+            [36m<input[31m
+              [33mtype[31m=[32m"hidden"[31m
+              [33mvalue[31m=[32m""[31m
+            [36m/>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+              [33mdata-checked[31m=[32m"true"[31m
+              [33mdata-label-position[31m=[32m"right"[31m
+              [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+              [36m>[31m
+                [36m<div[31m
+                  [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                  [33mdata-label-position[31m=[32m"right"[31m
+                [36m>[31m
+                  [36m<input[31m
+                    [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                    [33mid[31m=[32m"mantine-eaae5rzmz"[31m
+                    [33mtype[31m=[32m"checkbox"[31m
+                  [36m/>[31m
+                  [36m<svg[31m
+  ...[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould handle role selection callback[39m[32m 59[2mms[22m[39m
+[31m     → Unable to find an element with the text: ADMIN. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div[31m
+    [33mdata-mantine-shared-portal-node[31m=[32m"true"[31m
+    [33mdata-portal[31m=[32m"true"[31m
+  [36m/>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"m_e615b15f mantine-Card-root m_1b7284a3 mantine-Paper-root"[31m
+    [36m>[31m
+      [36m<div[31m
+        [33mclass[31m=[32m"m_6d731127 mantine-Stack-root"[31m
+        [33mspacing[31m=[32m"md"[31m
+        [33mstyle[31m=[32m"--stack-gap: var(--mantine-spacing-md); --stack-align: stretch; --stack-justify: flex-start;"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mposition[31m=[32m"apart"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<h3[31m
+            [33mclass[31m=[32m"m_8a5d1357 mantine-Title-root"[31m
+            [33mdata-order[31m=[32m"3"[31m
+            [33mstyle[31m=[32m"--title-fw: var(--mantine-h3-font-weight); --title-lh: var(--mantine-h3-line-height); --title-fz: var(--mantine-h3-font-size);"[31m
+          [36m>[31m
+            [0mRole-Permission Matrix[0m
+          [36m</h3>[31m
+        [36m</div>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"m_4081bf90 mantine-Group-root"[31m
+          [33mspacing[31m=[32m"md"[31m
+          [33mstyle[31m=[32m"--group-gap: var(--mantine-spacing-md); --group-align: center; --group-justify: flex-start; --group-wrap: wrap;"[31m
+        [36m>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"[31m
+            [33mstyle[31m=[32m"flex: 1 1 0%;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33micon[31m=[32m"[object Object]"[31m
+                [33mid[31m=[32m"mantine-cy2dfpmwf"[31m
+                [33mplaceholder[31m=[32m"Search roles or permissions..."[31m
+                [33mvalue[31m=[32m""[31m
+              [36m/>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_46b77525 mantine-InputWrapper-root mantine-Select-root"[31m
+            [33mstyle[31m=[32m"min-width: 200px;"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"[31m
+              [33mdata-pointer[31m=[32m"true"[31m
+              [33mdata-variant[31m=[32m"default"[31m
+              [33mdata-with-right-section[31m=[32m"true"[31m
+              [33mstyle[31m=[32m"--input-right-section-pointer-events: none;"[31m
+            [36m>[31m
+              [36m<input[31m
+                [33maria-haspopup[31m=[32m"listbox"[31m
+                [33maria-invalid[31m=[32m"false"[31m
+                [33mautocomplete[31m=[32m"off"[31m
+                [33mclass[31m=[32m"m_8fb7ebe7 mantine-Input-input mantine-Select-input"[31m
+                [33mdata-variant[31m=[32m"default"[31m
+                [33mid[31m=[32m"mantine-rj39uoqza"[31m
+                [33mplaceholder[31m=[32m"Filter by category"[31m
+                [33mreadonly[31m=[32m""[31m
+                [33mvalue[31m=[32m"All Categories"[31m
+              [36m/>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_82577fc2 mantine-Input-section mantine-Select-section"[31m
+                [33mdata-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<svg[31m
+                  [33mclass[31m=[32m"m_2943220b mantine-ComboboxChevron-chevron"[31m
+                  [33mdata-combobox-chevron[31m=[32m"true"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 15 15"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+                    [33mclip-rule[31m=[32m"evenodd"[31m
+                    [33md[31m=[32m"M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z"[31m
+                    [33mfill[31m=[32m"currentColor"[31m
+                    [33mfill-rule[31m=[32m"evenodd"[31m
+                  [36m/>[31m
+                [36m</svg>[31m
+              [36m</div>[31m
+            [36m</div>[31m
+          [36m</div>[31m
+          [36m<input[31m
+            [33mtype[31m=[32m"hidden"[31m
+            [33mvalue[31m=[32m""[31m
+          [36m/>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"m_bf2d988c mantine-Checkbox-root m_5f75b09e mantine-Checkbox-root"[31m
+            [33mdata-label-position[31m=[32m"right"[31m
+            [33mstyle[31m=[32m"--checkbox-color: var(--mantine-color-blue-filled);"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"m_5f6e695e mantine-Checkbox-body"[31m
+            [36m>[31m
+              [36m<div[31m
+                [33mclass[31m=[32m"m_26062bec mantine-Checkbox-inner"[31m
+                [33mdata-label-position[31m=[32m"right"[31m
+              [36m>[31m
+                [36m<input[31m
+                  [33mclass[31m=[32m"mantine-focus-auto m_26063560 mantine-Checkbox-input"[31m
+                  [33mid[31m=[32m"mantine-49su1viyp"[31m
+                  [33mtype[31m=[32m"checkbox"[31m
+                [36m/>[31m
+                [36m<svg[31m
+                  [33maria-hidden[31m=[32m"true"[31m
+                  [33mclass[31m=[32m"m_bf295423 mantine-Checkbox-icon"[31m
+                  [33mfill[31m=[32m"none"[31m
+                  [33mviewBox[31m=[32m"0 0 10 7"[31m
+                  [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+                [36m>[31m
+                  [36m<path[31m
+               ...[39m
+   [32m✓[39m RolePermissionMatrix[2m > [22mshould handle permission selection callback[32m 53[2mms[22m[39m
+[31m   [31m×[31m RolePermissionMatrix[2m > [22mshould disable editing in read-only mode[39m[32m 53[2mms[22m[39m
+[31m     → [2mexpect([22m[31melement[31m[2m).toBeDisabled()[22m
