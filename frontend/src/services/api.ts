@@ -3,52 +3,96 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { API_BASE_URL } from '../constants';
 import type { ApiResponse, ApiError, RequestConfig } from '../types/api';
+import { CSRFProtection } from '../utils/csrfProtection';
+import { RateLimiter, SecurityUtils } from '../utils/security';
+import { createTokenStorage } from '../utils/tokenSecurity';
 
-// Create axios instance
+// Create axios instance with security headers
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest', // CSRF protection
   },
+  withCredentials: true, // Include cookies for CSRF protection
 });
 
-// Token management
+// Secure token management
+const tokenStorage = createTokenStorage();
 let authToken: string | null = null;
 
 export const setAuthToken = (token: string | null) => {
   authToken = token;
   if (token) {
-    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    localStorage.setItem('auth_token', token);
+    // Validate token format before setting
+    if (SecurityUtils.isValidJWTFormat && SecurityUtils.isValidJWTFormat(token)) {
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      tokenStorage.setToken(token);
+    } else {
+      console.warn('Invalid JWT token format');
+      return;
+    }
   } else {
     delete apiClient.defaults.headers.common['Authorization'];
-    localStorage.removeItem('auth_token');
+    tokenStorage.removeToken();
   }
 };
 
-// Initialize token from localStorage
-const storedToken = localStorage.getItem('auth_token');
+// Initialize token from secure storage
+const storedToken = tokenStorage.getToken();
 if (storedToken) {
   setAuthToken(storedToken);
 }
 
-// Request interceptor
+// Request interceptor with security measures
 apiClient.interceptors.request.use(
   (config) => {
-    // Add timestamp to prevent caching
-    if (config.method === 'get') {
+    const method = config.method?.toUpperCase() || 'GET';
+    const url = config.url || '';
+
+    // Rate limiting check
+    const rateLimitKey = `api_${method}_${url}`;
+    if (!RateLimiter.isAllowed(rateLimitKey, 100, 60000)) { // 100 requests per minute
+      return Promise.reject(new Error('Rate limit exceeded'));
+    }
+
+    // Add CSRF protection for state-changing operations
+    if (CSRFProtection.requiresProtection(method)) {
+      const csrfHeaders = CSRFProtection.getHeaders();
+      config.headers = {
+        ...config.headers,
+        ...csrfHeaders,
+      };
+    }
+
+    // Sanitize request data
+    if (config.data && typeof config.data === 'object') {
+      config.data = SecurityUtils.sanitizeFormData(config.data);
+    }
+
+    // Add timestamp to prevent caching for GET requests
+    if (method === 'GET') {
       config.params = {
         ...config.params,
         _t: Date.now(),
       };
     }
 
+    // Add security headers
+    config.headers = {
+      ...config.headers,
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+    };
+
     // Log request in development
     if (import.meta.env.DEV) {
-      console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`, {
+      console.log(`🚀 API Request: ${method} ${url}`, {
         params: config.params,
         data: config.data,
+        headers: config.headers,
       });
     }
 
@@ -87,7 +131,7 @@ apiClient.interceptors.response.use(
 
       try {
         // Try to refresh token
-        const refreshToken = localStorage.getItem('refresh_token');
+        const refreshToken = tokenStorage.getRefreshToken();
         if (refreshToken) {
           const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
             refreshToken,
@@ -103,9 +147,10 @@ apiClient.interceptors.response.use(
           return apiClient(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, redirect to login
+        // Refresh failed, clear tokens and redirect to login
         setAuthToken(null);
-        localStorage.removeItem('refresh_token');
+        tokenStorage.removeRefreshToken();
+        CSRFProtection.clearToken();
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }

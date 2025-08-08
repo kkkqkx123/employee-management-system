@@ -12,6 +12,7 @@ export { TouchGesture } from './TouchGesture';
 export { ResponsiveContainer } from './ResponsiveContainer';
 export { VirtualList } from './VirtualList';
 export { OptimizedImage } from './OptimizedImage';
+export { SecureFileUpload } from './SecureFileUpload';
 
 // Error Handling Components
 export { ErrorBoundary } from './ErrorBoundary';
@@ -49,6 +50,7 @@ export type {
 } from './types/ui.types';
 export type { TouchGestureProps } from './TouchGesture';
 export type { ResponsiveContainerProps } from './ResponsiveContainer';
+export type { SecureFileUploadProps } from './SecureFileUpload';
 
 // Error Handling Types
 export type { 
