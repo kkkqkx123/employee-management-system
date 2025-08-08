@@ -1,6 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { BrowserRouter } from 'react-router-dom';
+import { MantineProvider } from '@mantine/core';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
+
+import { describe, it, expect } from 'vitest';
 
 describe('App', () => {
   it('renders the application title', () => {

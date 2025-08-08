@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { useEmployees, useCreateEmployee } from '../hooks/useApi';
 import { EmployeeStatus } from '../types/entities';
 import ApiService from '../services/api';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
 
 // Mock API service
 vi.mock('../services/api');

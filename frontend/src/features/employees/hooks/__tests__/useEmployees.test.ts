@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 import { useEmployees, useCreateEmployee, useUpdateEmployee, useDeleteEmployee } from '../useEmployees';
 import { EmployeeApiService } from '../../services/employeeApi';
 import type { Employee, EmployeeCreateRequest, EmployeeUpdateRequest } from '../../types';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
 
 // Mock the API service
 vi.mock('../../services/employeeApi');
@@ -47,11 +48,8 @@ const createWrapper = () => {
     },
   });
 
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+  return ({ children }: { children: React.ReactNode }) => 
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
 };
 
 describe('useEmployees', () => {

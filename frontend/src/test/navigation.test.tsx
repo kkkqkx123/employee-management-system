@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import { Navigation } from '@/components/layout/Navigation';
 import { useAuthStore, useNotificationStore } from '@/stores';
 import { ROUTES, PERMISSIONS } from '@/constants';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
 
 // Mock the stores
 jest.mock('@/stores', () => ({

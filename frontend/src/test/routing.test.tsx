@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppRouter } from '@/router';
 import { useAuthStore } from '@/stores';
 import { ROUTES } from '@/constants';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
 
 // Mock the auth store
 jest.mock('@/stores', () => ({

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRoles, useCreateRole, useUpdateRole, useDeleteRole } from '../useRoles';
 import { PermissionApi } from '../../services/permissionApi';
 import type { RoleCreateRequest, RoleUpdateRequest } from '../../types';
+import React from 'react'; // 添加 React 导入以支持 JSX 语法
 
 // Mock the API
 vi.mock('../../services/permissionApi');
