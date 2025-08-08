@@ -2,6 +2,8 @@
  * Performance monitoring and optimization utilities
  */
 
+import React from "react";
+
 // Performance metrics interface
 export interface PerformanceMetrics {
   loadTime: number;
@@ -59,9 +61,9 @@ class PerformanceMonitor {
 
   private handleNavigationEntry(entry: PerformanceNavigationTiming) {
     const metrics: PerformanceMetrics = {
-      loadTime: entry.loadEventEnd - entry.navigationStart,
-      renderTime: entry.domContentLoadedEventEnd - entry.navigationStart,
-      interactionTime: entry.domInteractive - entry.navigationStart,
+      loadTime: entry.loadEventEnd - entry.startTime,
+      renderTime: entry.domContentLoadedEventEnd - entry.startTime,
+      interactionTime: entry.domInteractive - entry.startTime,
     };
 
     this.metrics.push(metrics);

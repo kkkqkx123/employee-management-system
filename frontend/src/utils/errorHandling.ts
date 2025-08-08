@@ -100,7 +100,7 @@ export function isPermissionError(error: unknown): boolean {
  */
 export function isValidationError(error: unknown): boolean {
   if (isApiError(error)) {
-    return error.message.includes('400') || (error.errors && error.errors.length > 0);
+    return error.message.includes('400') || (Array.isArray(error.errors) && error.errors.length > 0);
   }
   return false;
 }
