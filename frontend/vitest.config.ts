@@ -19,7 +19,7 @@ export default defineConfig({
     exclude: ['node_modules', 'dist', '.idea', '.git', '.cache'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
       exclude: [
         'node_modules/',
         'src/test/',
@@ -28,6 +28,9 @@ export default defineConfig({
         '**/coverage/**',
         'src/main.tsx',
         'src/vite-env.d.ts',
+        '**/*.stories.*',
+        '**/mocks/**',
+        '**/factories/**',
       ],
       thresholds: {
         global: {
@@ -36,7 +39,28 @@ export default defineConfig({
           lines: 80,
           statements: 80,
         },
+        './src/components/ui/': {
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90,
+        },
+        './src/features/auth/': {
+          branches: 85,
+          functions: 85,
+          lines: 85,
+          statements: 85,
+        },
+        './src/hooks/': {
+          branches: 85,
+          functions: 85,
+          lines: 85,
+          statements: 85,
+        },
       },
+      reportsDirectory: './coverage',
+      all: true,
+      include: ['src/**/*.{js,ts,jsx,tsx}'],
     },
   },
 });
