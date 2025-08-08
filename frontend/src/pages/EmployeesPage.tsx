@@ -1,6 +1,8 @@
 import React from 'react';
 import { EmployeeList } from '../features/employees';
 
-export const EmployeesPage = () => {
+const EmployeesPage = () => {
   return <EmployeeList />;
 };
+
+export default EmployeesPage;

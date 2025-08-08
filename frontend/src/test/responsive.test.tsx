@@ -79,11 +79,13 @@ describe('Responsive Components', () => {
 describe('Responsive Theme', () => {
   it('should have proper breakpoints defined', () => {
     expect(theme.breakpoints).toBeDefined();
-    expect(theme.breakpoints.xs).toBe('30em');
-    expect(theme.breakpoints.sm).toBe('48em');
-    expect(theme.breakpoints.md).toBe('64em');
-    expect(theme.breakpoints.lg).toBe('74em');
-    expect(theme.breakpoints.xl).toBe('90em');
+    // Type assertion to tell TypeScript that breakpoints is not undefined
+    const breakpoints = theme.breakpoints!;
+    expect(breakpoints.xs).toBe('30em');
+    expect(breakpoints.sm).toBe('48em');
+    expect(breakpoints.md).toBe('64em');
+    expect(breakpoints.lg).toBe('74em');
+    expect(breakpoints.xl).toBe('90em');
   });
 
   it('should have responsive heading sizes', () => {

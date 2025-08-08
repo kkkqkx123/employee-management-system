@@ -1,5 +1,7 @@
 import { DepartmentTree } from '../features/departments';
 
-export const DepartmentsPage = () => {
+const DepartmentsPage = () => {
   return <DepartmentTree />;
 };
+
+export default DepartmentsPage;

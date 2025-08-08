@@ -14,39 +14,7 @@ import { SkipLinks } from '../components/ui/SkipLinks/SkipLinks';
 import { DataTable } from '../components/ui/DataTable/DataTable';
 import { AccessibilityTestUtils } from './accessibility-utils';
 import { theme } from '../theme';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { it } from 'node:test';
-import { describe } from 'node:test';
-import { describe } from 'node:test';
-import { beforeEach } from 'node:test';
-import { describe } from 'node:test';
+import { it, describe, beforeEach, expect } from 'vitest';
 
 // Test wrapper with all providers
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -305,7 +273,7 @@ describe('Comprehensive Accessibility Tests', () => {
           <TestWrapper>
             <Button 
               ariaLabel="Save document"
-              ariaPressed={false}
+              aria-pressed={false}
               role="button"
             >
               Save
@@ -474,8 +442,8 @@ describe('Comprehensive Accessibility Tests', () => {
       ];
 
       const columns = [
-        { key: 'name', title: 'Name' },
-        { key: 'email', title: 'Email' }
+        { key: 'name' as const, title: 'Name' },
+        { key: 'email' as const, title: 'Email' }
       ];
 
       render(

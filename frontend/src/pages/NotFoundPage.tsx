@@ -2,7 +2,7 @@ import { Container, Title, Text, Button, Group } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants';
 
-export const NotFoundPage = () => {
+const NotFoundPage = () => {
   return (
     <Container size="md" ta="center" py={100}>
       <Title order={1} size={120} fw={900} c="dimmed">
@@ -22,3 +22,5 @@ export const NotFoundPage = () => {
     </Container>
   );
 };
+
+export default NotFoundPage;

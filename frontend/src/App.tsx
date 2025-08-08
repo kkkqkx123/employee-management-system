@@ -9,9 +9,15 @@ import { SkipLinks } from './components/ui/SkipLinks/SkipLinks';
 import { queryClient } from './services/queryClient';
 import { AppRouter } from './router';
 import { WebSocketProvider } from './components/providers/WebSocketProvider';
+import { initializePerformanceOptimizations } from './utils/performance';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './styles/accessibility.css';
+
+// Initialize performance optimizations
+if (typeof window !== 'undefined') {
+  initializePerformanceOptimizations();
+}
 
 function App() {
   return (

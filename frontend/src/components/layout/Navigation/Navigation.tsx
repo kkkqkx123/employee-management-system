@@ -10,7 +10,7 @@ import {
 } from '@tabler/icons-react';
 import { useLocation, Link } from 'react-router-dom';
 import { ROUTES, PERMISSIONS } from '@/constants';
-import { usePermissionCheck } from '@/features/auth/hooks';
+import { usePermissions } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores';
 import { useResponsive } from '@/hooks';
 import classes from './Navigation.module.css';
@@ -75,7 +75,7 @@ const navigationItems: NavigationItem[] = [
 
 export const Navigation = () => {
   const location = useLocation();
-  const { hasPermission } = usePermissionCheck();
+  const { hasPermission } = usePermissions();
   const { unreadCount } = useNotificationStore();
   const { isMobile } = useResponsive();
 

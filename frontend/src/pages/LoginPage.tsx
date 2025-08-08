@@ -1,7 +1,7 @@
 import { Container, Paper, Title, Text, Center } from '@mantine/core';
 import { LoginForm } from '@/features/auth/components';
 
-export const LoginPage = () => {
+const LoginPage = () => {
   return (
     <Container size={420} my={40}>
       <Center>
@@ -18,3 +18,5 @@ export const LoginPage = () => {
     </Container>
   );
 };
+
+export default LoginPage;

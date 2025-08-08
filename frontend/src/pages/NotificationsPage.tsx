@@ -1,5 +1,7 @@
 import { NotificationCenter } from '../features/notifications';
 
-export const NotificationsPage = () => {
+const NotificationsPage = () => {
   return <NotificationCenter />;
 };
+
+export default NotificationsPage;

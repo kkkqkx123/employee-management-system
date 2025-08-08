@@ -202,6 +202,7 @@ describe('Accessibility Tests', () => {
     ];
 
     const mockColumns = [
+      { key: 'id', title: 'ID' },
       { key: 'name', title: 'Name' },
       { key: 'email', title: 'Email' }
     ];

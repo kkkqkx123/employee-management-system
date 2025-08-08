@@ -130,6 +130,7 @@ select:focus-visible,
 /* Keyboard navigation indicators */
 .keyboard-navigation-active {
   /* Show focus indicators when keyboard navigation is active */
+  outline: none; /* Prevent default focus outline when using custom focus styles */
 }
 
 .keyboard-navigation-active *:focus {
@@ -155,10 +156,18 @@ select:focus-visible,
 /* Color contrast utilities */
 .contrast-aa {
   /* Ensures AA level contrast (4.5:1 for normal text, 3:1 for large text) */
+  /* This is a utility class, styles will be applied through other classes or inline styles */
+  /* Example implementation:
+  color: #000; /* Black text on white background for 4.5:1 contrast */
+  background-color: #fff;
 }
 
 .contrast-aaa {
   /* Ensures AAA level contrast (7:1 for normal text, 4.5:1 for large text) */
+  /* This is a utility class, styles will be applied through other classes or inline styles */
+  /* Example implementation:
+  color: #000; /* Black text on white background for 7:1 contrast */
+  background-color: #fff;
 }
 
 /* Error states with sufficient contrast */

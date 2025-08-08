@@ -1,6 +1,6 @@
 import { Container, Title, Text } from '@mantine/core';
 
-export const PermissionsPage = () => {
+const PermissionsPage = () => {
   return (
     <Container size="xl">
       <Title order={1} mb="lg">Permissions</Title>
@@ -10,3 +10,5 @@ export const PermissionsPage = () => {
     </Container>
   );
 };
+
+export default PermissionsPage;

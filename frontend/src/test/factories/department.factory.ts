@@ -26,7 +26,7 @@ export const createMockDepartment = (overrides: Partial<MockDepartment> = {}): M
     'Research & Development'
   ]),
   description: faker.lorem.sentence(),
-  parentId: faker.helpers.maybe(() => faker.number.int({ min: 1, max: 100 })),
+  parentId: faker.helpers.maybe(() => faker.number.int({ min: 1, max: 100 }), { probability: 0.5 }) ?? null,
   children: [],
   employeeCount: faker.number.int({ min: 1, max: 50 }),
   managerId: faker.helpers.maybe(() => faker.number.int({ min: 1, max: 100 })),

@@ -1,12 +1,27 @@
-import React, { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import React, { type ReactElement } from 'react';
+import * as testingLibrary from '@testing-library/react';
+import { render, type RenderOptions } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MantineProvider } from '@mantine/core';
 import { vi } from 'vitest';
 
+
 // Mock data factories
-export const createMockEmployee = (overrides = {}) => ({
+interface MockEmployee {
+  id: number;
+  employeeNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  department: string;
+  position: string;
+  status: string;
+  dateOfBirth: string;
+  hireDate: string;
+}
+
+export const createMockEmployee = (overrides: Partial<MockEmployee> = {}): MockEmployee => ({
   id: 1,
   employeeNumber: 'EMP001',
   firstName: 'John',
@@ -20,7 +35,15 @@ export const createMockEmployee = (overrides = {}) => ({
   ...overrides,
 });
 
-export const createMockDepartment = (overrides = {}) => ({
+interface MockDepartment {
+  id: number;
+  name: string;
+  description: string;
+  parentId: number | null;
+  children: MockDepartment[];
+}
+
+export const createMockDepartment = (overrides: Partial<MockDepartment> = {}): MockDepartment => ({
   id: 1,
   name: 'Engineering',
   description: 'Software Engineering Department',
@@ -29,7 +52,18 @@ export const createMockDepartment = (overrides = {}) => ({
   ...overrides,
 });
 
-export const createMockUser = (overrides = {}) => ({
+interface MockUser {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  enabled: boolean;
+  roles: string[];
+  permissions: string[];
+}
+
+export const createMockUser = (overrides: Partial<MockUser> = {}): MockUser => ({
   id: 1,
   username: 'testuser',
   email: 'test@example.com',
@@ -41,7 +75,16 @@ export const createMockUser = (overrides = {}) => ({
   ...overrides,
 });
 
-export const createMockNotification = (overrides = {}) => ({
+interface MockNotification {
+  id: number;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export const createMockNotification = (overrides: Partial<MockNotification> = {}): MockNotification => ({
   id: 1,
   title: 'Test Notification',
   message: 'This is a test notification',
@@ -51,7 +94,17 @@ export const createMockNotification = (overrides = {}) => ({
   ...overrides,
 });
 
-export const createMockChatMessage = (overrides = {}) => ({
+interface MockChatMessage {
+  id: number;
+  content: string;
+  senderId: number;
+  senderName: string;
+  roomId: number;
+  timestamp: string;
+  type: string;
+}
+
+export const createMockChatMessage = (overrides: Partial<MockChatMessage> = {}): MockChatMessage => ({
   id: 1,
   content: 'Hello, world!',
   senderId: 1,
@@ -67,7 +120,7 @@ interface AllTheProvidersProps {
   children: React.ReactNode;
 }
 
-const AllTheProviders = ({ children }: AllTheProvidersProps) => {
+const AllTheProviders: React.FC<AllTheProvidersProps> = ({ children }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -91,16 +144,29 @@ const AllTheProviders = ({ children }: AllTheProvidersProps) => {
 const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
-) => render(ui, { wrapper: AllTheProviders, ...options });
+): ReturnType<typeof render> => render(ui, { wrapper: AllTheProviders, ...options });
 
-// Mock functions
-export const createMockApiResponse = <T>(data: T, success = true) => ({
+interface MockApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export const createMockApiResponse = <T extends unknown>(data: T, success = true): MockApiResponse<T> => ({
   success,
   message: success ? 'Operation successful' : 'Operation failed',
   data,
 });
 
-export const createMockPageResponse = <T>(content: T[], totalElements = 1) => ({
+interface MockPageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
+export const createMockPageResponse = <T extends unknown>(content: T[], totalElements = 1): MockPageResponse<T> => ({
   content,
   totalElements,
   totalPages: Math.ceil(totalElements / 20),
@@ -108,8 +174,16 @@ export const createMockPageResponse = <T>(content: T[], totalElements = 1) => ({
   number: 0,
 });
 
-// Mock hooks
-export const mockUseAuth = (overrides = {}) => ({
+interface MockUseAuth {
+  user: ReturnType<typeof createMockUser>;
+  isAuthenticated: boolean;
+  login: ReturnType<typeof vi.fn>;
+  logout: ReturnType<typeof vi.fn>;
+  hasPermission: ReturnType<typeof vi.fn>;
+  hasRole: ReturnType<typeof vi.fn>;
+}
+
+export const mockUseAuth = (overrides: Partial<MockUseAuth> = {}): MockUseAuth => ({
   user: createMockUser(),
   isAuthenticated: true,
   login: vi.fn(),
@@ -119,7 +193,14 @@ export const mockUseAuth = (overrides = {}) => ({
   ...overrides,
 });
 
-export const mockUseNotifications = (overrides = {}) => ({
+interface MockUseNotifications {
+  notifications: ReturnType<typeof createMockNotification>[];
+  unreadCount: number;
+  markAsRead: ReturnType<typeof vi.fn>;
+  markAllAsRead: ReturnType<typeof vi.fn>;
+}
+
+export const mockUseNotifications = (overrides: Partial<MockUseNotifications> = {}): MockUseNotifications => ({
   notifications: [createMockNotification()],
   unreadCount: 1,
   markAsRead: vi.fn(),
@@ -128,7 +209,7 @@ export const mockUseNotifications = (overrides = {}) => ({
 });
 
 // Accessibility testing helpers
-export const expectToHaveNoA11yViolations = async (container: HTMLElement) => {
+export const expectToHaveNoA11yViolations = async (container: HTMLElement): Promise<void> => {
   const { toHaveNoViolations } = await import('jest-axe');
   expect.extend(toHaveNoViolations);
   
@@ -138,7 +219,7 @@ export const expectToHaveNoA11yViolations = async (container: HTMLElement) => {
 };
 
 // Form testing helpers
-export const fillForm = async (form: HTMLFormElement, data: Record<string, string>) => {
+export const fillForm = async (form: HTMLFormElement, data: Record<string, string>): Promise<void> => {
   const { fireEvent } = await import('@testing-library/react');
   
   Object.entries(data).forEach(([name, value]) => {
@@ -150,7 +231,7 @@ export const fillForm = async (form: HTMLFormElement, data: Record<string, strin
 };
 
 // Wait for loading states
-export const waitForLoadingToFinish = async () => {
+export const waitForLoadingToFinish = async (): Promise<void> => {
   const { waitForElementToBeRemoved, screen } = await import('@testing-library/react');
   
   try {
@@ -165,3 +246,6 @@ export const waitForLoadingToFinish = async () => {
 // Re-export everything from testing-library
 export * from '@testing-library/react';
 export { customRender as render };
+
+// Explicitly export commonly used items to ensure they are available
+export const { screen, fireEvent, waitFor } = testingLibrary;

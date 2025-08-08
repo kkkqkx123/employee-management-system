@@ -19,7 +19,7 @@ import {
   IconDeviceMobile,
   IconDeviceTablet,
   IconDeviceDesktop,
-  IconTouch,
+  IconPointer,
   IconScreenShare,
   IconSettings,
   IconUser,
@@ -72,9 +72,9 @@ export const ResponsiveDemo: React.FC = () => {
   ];
 
   const tableColumns = [
-    { key: 'name', title: 'Name', sortable: true },
-    { key: 'email', title: 'Email', sortable: true },
-    { key: 'role', title: 'Role', sortable: false },
+    { key: 'name' as const, title: 'Name', sortable: true },
+    { key: 'email' as const, title: 'Email', sortable: true },
+    { key: 'role' as const, title: 'Role', sortable: false },
   ];
 
   const handleSwipe = (direction: string) => {
@@ -148,7 +148,7 @@ export const ResponsiveDemo: React.FC = () => {
               <Grid.Col span={{ base: 12, sm: 6, md: 3 }}>
                 <Card withBorder p={cardPadding}>
                   <Stack align="center" gap="xs">
-                    <IconTouch 
+                    <IconPointer 
                       size={32} 
                       color={touch.isTouchDevice ? 'var(--mantine-color-green-6)' : 'var(--mantine-color-gray-4)'} 
                     />
@@ -236,10 +236,9 @@ export const ResponsiveDemo: React.FC = () => {
               data={sampleData}
               columns={tableColumns}
               pagination={{
-                page: 1,
+                current: 1,
                 pageSize: 10,
-                total: sampleData.length,
-                onChange: () => {},
+                total: sampleData.length
               }}
             />
           </Stack>
