@@ -52,9 +52,11 @@ export interface ModalProps {
 // LoadingSpinner component types
 export interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | string;
   overlay?: boolean;
   label?: string;
+  className?: string;
+  testId?: string;
 }
 
 // DataTable component types

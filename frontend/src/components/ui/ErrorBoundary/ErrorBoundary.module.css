@@ -1,0 +1,205 @@
+/* Error Boundary Styles */
+
+.errorBoundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-error);
+  background-color: var(--color-bg-error-light);
+  color: var(--color-text-error);
+}
+
+.errorBoundary.component {
+  min-height: 100px;
+  margin: 0.5rem 0;
+}
+
+.errorBoundary.feature {
+  min-height: 200px;
+  margin: 1rem 0;
+}
+
+.errorBoundary.page {
+  min-height: 400px;
+  margin: 2rem 0;
+}
+
+/* Severity levels */
+.errorBoundary.low {
+  border-color: var(--color-warning-border);
+  background-color: var(--color-warning-bg-light);
+  color: var(--color-warning-text);
+}
+
+.errorBoundary.medium {
+  border-color: var(--color-error-border);
+  background-color: var(--color-error-bg-light);
+  color: var(--color-error-text);
+}
+
+.errorBoundary.high {
+  border-color: var(--color-error-border);
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text-contrast);
+}
+
+.errorBoundary.critical {
+  border-color: var(--color-danger-border);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text-contrast);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.errorIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.errorMessage {
+  margin-bottom: 1.5rem;
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.errorDescription {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  opacity: 0.9;
+}
+
+.errorDetails {
+  font-size: 0.875rem;
+  margin: 0;
+  padding: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  word-break: break-word;
+}
+
+.errorActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Error details modal */
+.errorDetailsModal {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.errorSection {
+  margin-bottom: 1.5rem;
+}
+
+.errorSection h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--color-text-primary);
+}
+
+.errorCode {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .errorBoundary {
+    padding: 0.75rem;
+  }
+
+  .errorIcon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .errorTitle {
+    font-size: 1.25rem;
+  }
+
+  .errorActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .errorActions button {
+    width: 100%;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .errorBoundary {
+    border-width: 2px;
+  }
+
+  .errorDetails {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .errorBoundary.critical {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .errorBoundary {
+    background-color: var(--color-bg-error-dark, #2d1b1b);
+    color: var(--color-text-error-dark, #ff6b6b);
+  }
+
+  .errorBoundary.low {
+    background-color: var(--color-warning-bg-dark, #2d2a1b);
+    color: var(--color-warning-text-dark, #ffd93d);
+  }
+
+  .errorCode {
+    background-color: var(--color-bg-tertiary, #1a1a1a);
+    color: var(--color-text-primary-dark, #e0e0e0);
+  }
+}

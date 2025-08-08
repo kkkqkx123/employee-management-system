@@ -1,0 +1,109 @@
+/* Network Status Styles */
+
+.networkStatus {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  border-radius: 0 0 8px 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.networkStatus.offline {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
+  animation: slideDown 0.3s ease;
+}
+
+.networkStatus.reconnected {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.offlineMessage,
+.reconnectedMessage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusIcon {
+  font-size: 1rem;
+}
+
+.statusText {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .networkStatus.offline {
+    background-color: var(--color-warning-bg-dark, #2d2a1b);
+    color: var(--color-warning-text-dark, #ffd93d);
+    border-color: var(--color-warning-border-dark, #ffd93d);
+  }
+
+  .networkStatus.reconnected {
+    background-color: var(--color-success-bg-dark, #1b2d1b);
+    color: var(--color-success-text-dark, #4ade80);
+    border-color: var(--color-success-border-dark, #4ade80);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .networkStatus {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+    border-radius: 0 0 8px 8px;
+    padding: 0.5rem 1rem;
+  }
+
+  .statusText {
+    font-size: 0.8125rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .networkStatus {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .networkStatus {
+    transition: none;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

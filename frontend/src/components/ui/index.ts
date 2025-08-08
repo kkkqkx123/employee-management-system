@@ -11,6 +11,18 @@ export { ConnectionIndicator } from './ConnectionIndicator';
 export { TouchGesture } from './TouchGesture';
 export { ResponsiveContainer } from './ResponsiveContainer';
 
+// Error Handling Components
+export { ErrorBoundary } from './ErrorBoundary';
+export { FeatureErrorBoundary } from './ErrorBoundary/FeatureErrorBoundary';
+export { PageErrorBoundary } from './ErrorBoundary/PageErrorBoundary';
+export { ErrorMessage } from './ErrorMessage';
+export { FormError } from './FormError';
+
+// Loading and State Components
+export { LoadingState } from './LoadingState';
+export { RetryButton } from './RetryButton';
+export { NetworkStatus, useNetworkStatus } from './NetworkStatus';
+
 // Accessibility Components
 export { 
   AccessibilityProvider, 
@@ -35,3 +47,17 @@ export type {
 } from './types/ui.types';
 export type { TouchGestureProps } from './TouchGesture';
 export type { ResponsiveContainerProps } from './ResponsiveContainer';
+
+// Error Handling Types
+export type { 
+  ErrorBoundaryProps, 
+  FeatureErrorBoundaryProps, 
+  PageErrorBoundaryProps 
+} from './ErrorBoundary/types';
+export type { ErrorMessageProps } from './ErrorMessage/types';
+export type { FormErrorProps } from './FormError/types';
+
+// Loading and State Types
+export type { LoadingStateProps } from './LoadingState/types';
+export type { RetryButtonProps } from './RetryButton/types';
+export type { NetworkStatusProps } from './NetworkStatus/types';

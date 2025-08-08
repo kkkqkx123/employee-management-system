@@ -1,0 +1,215 @@
+/* Error Handling Demo Styles */
+
+.demo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: var(--font-sans);
+}
+
+.demo h1 {
+  color: var(--color-text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-bg-secondary);
+}
+
+.section h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.section h3 {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.section p {
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 6px;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.controls input[type="checkbox"] {
+  margin: 0;
+}
+
+.errorBoundaryExamples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.errorBoundaryExamples > div {
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-bg-primary);
+}
+
+.successMessage {
+  padding: 1rem;
+  background-color: var(--color-success-bg-light);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.apiResult {
+  padding: 1rem;
+  background-color: var(--color-success-bg-light);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.errorMessageExamples {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.retryExamples {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formField label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+}
+
+.formField input {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.formField input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.errorInput {
+  border-color: var(--color-error-border) !important;
+  box-shadow: 0 0 0 2px var(--color-error-light) !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .section {
+    background-color: var(--color-bg-secondary-dark, #1a1a1a);
+    border-color: var(--color-border-dark, #333);
+  }
+
+  .controls {
+    background-color: var(--color-bg-tertiary-dark, #0f0f0f);
+  }
+
+  .errorBoundaryExamples > div {
+    background-color: var(--color-bg-primary-dark, #000);
+    border-color: var(--color-border-dark, #333);
+  }
+
+  .formField input {
+    background-color: var(--color-bg-primary-dark, #000);
+    border-color: var(--color-border-dark, #333);
+    color: var(--color-text-primary-dark, #fff);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .demo {
+    padding: 1rem;
+  }
+
+  .section {
+    padding: 1rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .errorBoundaryExamples {
+    grid-template-columns: 1fr;
+  }
+
+  .retryExamples {
+    flex-direction: column;
+  }
+
+  .retryExamples button {
+    width: 100%;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .section {
+    border-width: 2px;
+  }
+
+  .formField input {
+    border-width: 2px;
+  }
+
+  .errorInput {
+    border-width: 3px !important;
+  }
+}

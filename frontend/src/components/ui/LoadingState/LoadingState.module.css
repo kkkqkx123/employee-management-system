@@ -1,0 +1,148 @@
+/* Loading State Styles */
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loadingContainer.sm {
+  padding: 1rem;
+}
+
+.loadingContainer.md {
+  padding: 2rem;
+}
+
+.loadingContainer.lg {
+  padding: 3rem;
+}
+
+.loadingContainer.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 1000;
+}
+
+.loadingText {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+}
+
+/* Error state styles */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--color-border-error);
+  border-radius: 8px;
+  background-color: var(--color-bg-error-light);
+}
+
+.errorContainer.sm {
+  padding: 1rem;
+}
+
+.errorContainer.md {
+  padding: 2rem;
+}
+
+.errorContainer.lg {
+  padding: 3rem;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.errorText {
+  color: var(--color-text-error);
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+}
+
+.retryButton {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.retryButton:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.retryButton:active {
+  background-color: var(--color-primary-active);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .loadingContainer.overlay {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .errorContainer {
+    background-color: var(--color-bg-error-dark, #2d1b1b);
+    border-color: var(--color-border-error-dark, #ff6b6b);
+  }
+
+  .errorText {
+    color: var(--color-text-error-dark, #ff6b6b);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .loadingContainer,
+  .errorContainer {
+    padding: 1rem;
+  }
+
+  .loadingContainer.lg,
+  .errorContainer.lg {
+    padding: 1.5rem;
+  }
+
+  .errorIcon {
+    font-size: 1.5rem;
+  }
+
+  .retryButton {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .errorContainer {
+    border-width: 2px;
+  }
+
+  .retryButton {
+    border: 2px solid var(--color-primary-contrast);
+  }
+}
