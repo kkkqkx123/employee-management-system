@@ -73,7 +73,7 @@ export const AppShell = ({
       className={classes.shell}
     >
       {shouldShowHeader && (
-        <MantineAppShell.Header className={classes.header}>
+        <MantineAppShell.Header className={classes.header} component="header" role="banner">
           <Header
             burger={
               shouldShowNavigation ? (
@@ -82,6 +82,9 @@ export const AppShell = ({
                   onClick={toggleMobile}
                   hiddenFrom="sm"
                   size="sm"
+                  aria-label={mobileOpened ? "Close navigation menu" : "Open navigation menu"}
+                  aria-expanded={mobileOpened}
+                  aria-controls="mobile-navigation"
                 />
               ) : undefined
             }
@@ -92,6 +95,9 @@ export const AppShell = ({
                   onClick={toggleDesktop}
                   visibleFrom="sm"
                   size="sm"
+                  aria-label={desktopOpened ? "Collapse navigation" : "Expand navigation"}
+                  aria-expanded={desktopOpened}
+                  aria-controls="desktop-navigation"
                 />
               ) : undefined
             }
@@ -100,18 +106,39 @@ export const AppShell = ({
       )}
 
       {shouldShowNavigation && !isMobile && (
-        <MantineAppShell.Navbar p="md" className={classes.navbar}>
+        <MantineAppShell.Navbar 
+          p="md" 
+          className={classes.navbar}
+          component="aside"
+          role="complementary"
+          id="desktop-navigation"
+          aria-label="Main navigation"
+        >
           <Navigation />
         </MantineAppShell.Navbar>
       )}
 
       {/* Mobile Navigation Drawer */}
       {shouldShowNavigation && isMobile && (
-        <MobileNavigation opened={mobileOpened} onClose={closeMobile} />
+        <MobileNavigation 
+          opened={mobileOpened} 
+          onClose={closeMobile}
+          id="mobile-navigation"
+        />
       )}
 
-      <MantineAppShell.Main className={classes.main}>
-        {!isLoginPage && <Breadcrumbs />}
+      <MantineAppShell.Main 
+        className={classes.main}
+        component="main"
+        role="main"
+        id="main-content"
+        tabIndex={-1}
+      >
+        {!isLoginPage && (
+          <nav aria-label="Breadcrumb navigation">
+            <Breadcrumbs />
+          </nav>
+        )}
         {children}
       </MantineAppShell.Main>
     </MantineAppShell>

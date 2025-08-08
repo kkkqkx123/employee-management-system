@@ -112,20 +112,28 @@ export const Navigation = () => {
             to={item.href}
             label={item.label}
             description={!isMobile ? item.description : undefined}
-            leftSection={<Icon size={isMobile ? 20 : 18} />}
+            leftSection={<Icon size={isMobile ? 20 : 18} aria-hidden="true" />}
             rightSection={
               badgeCount ? (
-                <Badge size="sm" variant="filled" color="red">
+                <Badge 
+                  size="sm" 
+                  variant="filled" 
+                  color="red"
+                  aria-label={`${badgeCount} unread notifications`}
+                >
                   {badgeCount > 99 ? '99+' : badgeCount}
                 </Badge>
               ) : item.badge ? (
-                <Text size="xs" c="dimmed">
+                <Text size="xs" c="dimmed" aria-hidden="true">
                   {item.badge}
                 </Text>
               ) : null
             }
             active={isActive}
             className={classes.navLink}
+            role="listitem"
+            aria-current={isActive ? 'page' : undefined}
+            aria-describedby={item.description ? `${item.href}-desc` : undefined}
           />
         );
       })}
@@ -133,56 +141,81 @@ export const Navigation = () => {
   );
 
   return (
-    <ScrollArea className={classes.scrollArea}>
-      <div className={classes.header}>
-        <Group gap={isMobile ? "xs" : "sm"}>
-          <ThemeIcon 
-            size={isMobile ? "md" : "lg"} 
-            variant="gradient" 
-            gradient={{ from: 'blue', to: 'cyan' }}
-          >
-            <IconUsers size={isMobile ? 16 : 20} />
-          </ThemeIcon>
-          <div className={classes.headerText}>
-            <Text fw={600} size={isMobile ? "xs" : "sm"} truncate>
-              {isMobile ? "EMS" : "Employee Management"}
-            </Text>
-            {!isMobile && (
-              <Text size="xs" c="dimmed">
-                System
+    <nav 
+      className={classes.scrollArea}
+      role="navigation"
+      aria-label="Main navigation"
+      id="navigation"
+    >
+      <ScrollArea className={classes.scrollArea}>
+        <div className={classes.header} role="banner">
+          <Group gap={isMobile ? "xs" : "sm"}>
+            <ThemeIcon 
+              size={isMobile ? "md" : "lg"} 
+              variant="gradient" 
+              gradient={{ from: 'blue', to: 'cyan' }}
+              aria-hidden="true"
+            >
+              <IconUsers size={isMobile ? 16 : 20} />
+            </ThemeIcon>
+            <div className={classes.headerText}>
+              <Text fw={600} size={isMobile ? "xs" : "sm"} truncate>
+                {isMobile ? "EMS" : "Employee Management"}
               </Text>
-            )}
-          </div>
-        </Group>
-      </div>
+              {!isMobile && (
+                <Text size="xs" c="dimmed">
+                  System
+                </Text>
+              )}
+            </div>
+          </Group>
+        </div>
 
-      <div className={classes.navSection}>
-        {isMobile ? (
-          // Mobile: Group items by category
-          <>
-            {renderNavItems(primaryItems)}
-            {communicationItems.length > 0 && (
-              <>
-                <Text size="xs" c="dimmed" className={classes.sectionLabel}>
-                  Communication
-                </Text>
-                {renderNavItems(communicationItems)}
-              </>
-            )}
-            {adminItems.length > 0 && (
-              <>
-                <Text size="xs" c="dimmed" className={classes.sectionLabel}>
-                  Administration
-                </Text>
-                {renderNavItems(adminItems)}
-              </>
-            )}
-          </>
-        ) : (
-          // Desktop: Show all items in one list
-          renderNavItems(visibleItems)
-        )}
-      </div>
-    </ScrollArea>
+        <div className={classes.navSection} role="list">
+          {isMobile ? (
+            // Mobile: Group items by category
+            <>
+              <div role="group" aria-labelledby="primary-nav-heading">
+                <h3 id="primary-nav-heading" className="sr-only">Primary Navigation</h3>
+                {renderNavItems(primaryItems)}
+              </div>
+              {communicationItems.length > 0 && (
+                <div role="group" aria-labelledby="communication-nav-heading">
+                  <Text 
+                    id="communication-nav-heading"
+                    size="xs" 
+                    c="dimmed" 
+                    className={classes.sectionLabel}
+                    component="h3"
+                  >
+                    Communication
+                  </Text>
+                  {renderNavItems(communicationItems)}
+                </div>
+              )}
+              {adminItems.length > 0 && (
+                <div role="group" aria-labelledby="admin-nav-heading">
+                  <Text 
+                    id="admin-nav-heading"
+                    size="xs" 
+                    c="dimmed" 
+                    className={classes.sectionLabel}
+                    component="h3"
+                  >
+                    Administration
+                  </Text>
+                  {renderNavItems(adminItems)}
+                </div>
+              )}
+            </>
+          ) : (
+            // Desktop: Show all items in one list
+            <div role="group" aria-label="Navigation menu">
+              {renderNavItems(visibleItems)}
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+    </nav>
   );
 };

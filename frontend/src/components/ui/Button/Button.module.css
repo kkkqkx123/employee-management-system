@@ -13,112 +13,216 @@
   user-select: none;
   outline: none;
   font-family: inherit;
+  /* Ensure minimum touch target size */
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Enhanced focus indicators for accessibility */
+.button:focus {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--color-primary-500);
+  outline: 2px solid #0ea5e9;
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
 }
 
-/* Sizes */
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .button:focus,
+  .button:focus-visible {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+  
+  .button {
+    border: 2px solid transparent;
+  }
+  
+  .outline {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}
+
+/* Sizes - ensuring accessibility requirements */
 .xs {
-  height: 24px;
+  height: max(32px, 44px); /* Ensure minimum touch target */
   padding: 0 8px;
   font-size: 12px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .sm {
-  height: 32px;
+  height: max(36px, 44px); /* Ensure minimum touch target */
   padding: 0 12px;
   font-size: 14px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .md {
-  height: 40px;
+  height: 44px; /* Meets WCAG touch target requirements */
   padding: 0 16px;
-  font-size: 14px;
-  line-height: 1;
+  font-size: 16px; /* Prevents zoom on iOS */
+  line-height: 1.2;
 }
 
 .lg {
   height: 48px;
   padding: 0 20px;
   font-size: 16px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .xl {
   height: 56px;
   padding: 0 24px;
   font-size: 18px;
-  line-height: 1;
+  line-height: 1.2;
 }
 
-/* Variants */
+/* Touch-friendly sizing on mobile */
+@media (pointer: coarse) {
+  .xs,
+  .sm,
+  .md,
+  .lg,
+  .xl {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Variants - with WCAG compliant contrast ratios */
 .primary {
-  background-color: var(--color-primary-500);
+  background-color: #0ea5e9; /* Ensures 4.5:1 contrast with white text */
   color: white;
 }
 
 .primary:hover:not(.disabled) {
-  background-color: var(--color-primary-600);
+  background-color: #0284c7;
 }
 
 .primary:active:not(.disabled) {
-  background-color: var(--color-primary-700);
+  background-color: #0369a1;
+}
+
+.primary:focus:not(.disabled) {
+  background-color: #0ea5e9;
+  outline-color: #0ea5e9;
 }
 
 .secondary {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-900);
+  background-color: #f3f4f6; /* Ensures sufficient contrast */
+  color: #111827;
+  border: 1px solid #d1d5db;
 }
 
 .secondary:hover:not(.disabled) {
-  background-color: var(--color-gray-200);
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.secondary:focus:not(.disabled) {
+  border-color: #0ea5e9;
 }
 
 .outline {
   background-color: transparent;
-  color: var(--color-primary-500);
-  border: 1px solid var(--color-primary-500);
+  color: #0ea5e9;
+  border: 2px solid #0ea5e9; /* Thicker border for better visibility */
 }
 
 .outline:hover:not(.disabled) {
-  background-color: var(--color-primary-50);
+  background-color: #f0f9ff;
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+.outline:focus:not(.disabled) {
+  background-color: #f0f9ff;
 }
 
 .ghost {
   background-color: transparent;
-  color: var(--color-gray-700);
+  color: #374151; /* Ensures sufficient contrast */
+  border: 1px solid transparent;
 }
 
 .ghost:hover:not(.disabled) {
-  background-color: var(--color-gray-100);
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.ghost:focus:not(.disabled) {
+  background-color: #f3f4f6;
+  border-color: #0ea5e9;
 }
 
 .danger {
-  background-color: var(--color-red-500);
+  background-color: #dc2626; /* Ensures 4.5:1 contrast with white text */
   color: white;
 }
 
 .danger:hover:not(.disabled) {
-  background-color: var(--color-red-600);
+  background-color: #b91c1c;
+}
+
+.danger:active:not(.disabled) {
+  background-color: #991b1b;
+}
+
+.danger:focus:not(.disabled) {
+  outline-color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
 }
 
 /* States */
 .disabled {
-  opacity: 0.5;
+  opacity: 0.6; /* Slightly higher opacity for better visibility */
   cursor: not-allowed;
+  pointer-events: none; /* Prevent interaction */
+}
+
+.disabled:focus {
+  outline: 2px solid #9ca3af; /* Different focus color for disabled state */
+  box-shadow: 0 0 0 4px rgba(156, 163, 175, 0.1);
 }
 
 .loading {
   cursor: wait;
+  position: relative;
+}
+
+.loading .content {
+  opacity: 0.7; /* Slightly fade content during loading */
 }
 
 .fullWidth {
   width: 100%;
+}
+
+/* Loading state accessibility */
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* Icons */

@@ -1,44 +1,70 @@
+import { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes } from 'react';
+
+// Base component props
 export interface BaseComponentProps {
   className?: string;
-  children?: React.ReactNode;
-  testId?: string;
+  children?: ReactNode;
 }
 
-export interface ButtonProps extends BaseComponentProps {
+// Button component types
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  loading?: boolean;
   disabled?: boolean;
-  loading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
   fullWidth?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  type?: 'button' | 'submit' | 'reset';
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  ariaLabel?: string;
+  ariaDescribedBy?: string;
 }
 
+// Input component types
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean;
+  helperText?: string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+}
+
+// FormField component types
+export interface FormFieldProps {
+  label: string;
+  error?: string;
+  helperText?: string;
+  required?: boolean;
+  children: ReactNode;
+  className?: string;
+}
+
+// Modal component types
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children: ReactNode;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  closeOnOverlayClick?: boolean;
+  closeOnEscape?: boolean;
+  ariaDescribedBy?: string;
+}
+
+// LoadingSpinner component types
+export interface LoadingSpinnerProps {
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  color?: string;
+  overlay?: boolean;
+  label?: string;
+}
+
+// DataTable component types
 export interface Column<T = any> {
-  key: string;
+  key: keyof T;
   title: string;
-  dataIndex?: keyof T;
-  render?: (value: any, record: T, index: number) => React.ReactNode;
   sortable?: boolean;
-  filterable?: boolean;
-  width?: number | string;
+  width?: string | number;
+  render?: (value: any, record: T, index: number) => ReactNode;
   align?: 'left' | 'center' | 'right';
-  fixed?: 'left' | 'right';
-}
-
-export interface DataTableProps<T = any> extends BaseComponentProps {
-  data: T[];
-  columns: Column<T>[];
-  loading?: boolean;
-  pagination?: PaginationConfig;
-  rowSelection?: RowSelectionConfig<T>;
-  onRow?: (record: T, index: number) => React.HTMLAttributes<HTMLTableRowElement>;
-  scroll?: { x?: number | string; y?: number | string };
-  size?: 'small' | 'middle' | 'large';
-  bordered?: boolean;
-  showHeader?: boolean;
 }
 
 export interface PaginationConfig {
@@ -47,69 +73,38 @@ export interface PaginationConfig {
   total: number;
   showSizeChanger?: boolean;
   showQuickJumper?: boolean;
-  showTotal?: (total: number, range: [number, number]) => string;
-  onChange?: (page: number, pageSize: number) => void;
-  onShowSizeChange?: (current: number, size: number) => void;
+  showTotal?: (total: number, range: [number, number]) => ReactNode;
 }
 
-export interface RowSelectionConfig<T> {
-  type?: 'checkbox' | 'radio';
-  selectedRowKeys?: React.Key[];
-  onChange?: (selectedRowKeys: React.Key[], selectedRows: T[]) => void;
-  getCheckboxProps?: (record: T) => { disabled?: boolean };
-  onSelect?: (record: T, selected: boolean, selectedRows: T[]) => void;
+export interface RowSelectionConfig<T = any> {
+  selectedRowKeys?: (string | number)[];
+  onChange?: (selectedRowKeys: (string | number)[], selectedRows: T[]) => void;
+  onSelect?: (record: T, selected: boolean, selectedRows: T[], nativeEvent: Event) => void;
   onSelectAll?: (selected: boolean, selectedRows: T[], changeRows: T[]) => void;
+  getCheckboxProps?: (record: T) => { disabled?: boolean; name?: string };
 }
 
-export interface FormFieldProps extends BaseComponentProps {
-  label?: string;
-  error?: string;
-  helperText?: string;
-  required?: boolean;
-  labelClassName?: string;
-  errorClassName?: string;
-  helperClassName?: string;
-}
-
-export interface LoadingSpinnerProps extends BaseComponentProps {
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'primary' | 'secondary' | 'white';
-  overlay?: boolean;
-}
-
-export interface ModalProps extends BaseComponentProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  closeOnOverlayClick?: boolean;
-  closeOnEscape?: boolean;
-  showCloseButton?: boolean;
-  footer?: React.ReactNode;
-  overlayClassName?: string;
-  contentClassName?: string;
-}
-
-export interface InputProps extends BaseComponentProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
-  value?: string;
-  defaultValue?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  readOnly?: boolean;
-  required?: boolean;
-  autoFocus?: boolean;
-  autoComplete?: string;
-  maxLength?: number;
-  minLength?: number;
-  pattern?: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'outline' | 'filled' | 'unstyled';
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  error?: boolean;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+export interface DataTableProps<T = any> {
+  data: T[];
+  columns: Column<T>[];
+  loading?: boolean;
+  pagination?: PaginationConfig | false;
+  rowSelection?: RowSelectionConfig<T>;
+  rowKey?: keyof T | ((record: T) => string | number);
+  onRow?: {
+    onClick?: (record: T, index: number) => void;
+    onDoubleClick?: (record: T, index: number) => void;
+    onMouseEnter?: (record: T, index: number) => void;
+    onMouseLeave?: (record: T, index: number) => void;
+  };
+  scroll?: {
+    x?: string | number;
+    y?: string | number;
+  };
+  size?: 'small' | 'middle' | 'large';
+  bordered?: boolean;
+  showHeader?: boolean;
+  caption?: string;
+  ariaLabel?: string;
+  className?: string;
 }
