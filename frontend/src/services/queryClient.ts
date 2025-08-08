@@ -1,8 +1,9 @@
 // TanStack Query client configuration
 
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import { useNotifications } from '../stores/uiStore';
+import { useUIStore } from '../stores/uiStore';
 import type { ApiError } from '../types/api';
+import type { EmployeeSearchCriteria } from '../types/entities';
 
 // Create query client with custom configuration
 export const queryClient = new QueryClient({
@@ -13,7 +14,7 @@ export const queryClient = new QueryClient({
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
       retry: (failureCount, error) => {
         // Don't retry on 4xx errors (client errors)
-        if ((error as ApiError)?.message?.includes('4')) {
+        if ((error as unknown as ApiError)?.message?.includes('4')) {
           return false;
         }
         // Retry up to 3 times for other errors
@@ -33,11 +34,10 @@ export const queryClient = new QueryClient({
       // Global error handling for queries
       console.error('Query error:', error, query);
       
-      const apiError = error as ApiError;
+      const apiError = error as unknown as ApiError;
       if (apiError?.message) {
         // Show error notification
-        const { showNotification } = useNotifications.getState();
-        showNotification({
+        useUIStore.getState().showNotification({
           type: 'error',
           title: 'Query Error',
           message: apiError.message,
@@ -52,11 +52,10 @@ export const queryClient = new QueryClient({
       // Global error handling for mutations
       console.error('Mutation error:', error, { variables, context, mutation });
       
-      const apiError = error as ApiError;
+      const apiError = error as unknown as ApiError;
       if (apiError?.message) {
         // Show error notification
-        const { showNotification } = useNotifications.getState();
-        showNotification({
+        useUIStore.getState().showNotification({
           type: 'error',
           title: 'Operation Failed',
           message: apiError.message,
@@ -86,7 +85,7 @@ export const queryKeys = {
   users: {
     all: ['users'] as const,
     lists: () => [...queryKeys.users.all, 'list'] as const,
-    list: (params: Record<string, any>) => [...queryKeys.users.lists(), params] as const,
+    list: (params: Record<string, unknown>) => [...queryKeys.users.lists(), params] as const,
     details: () => [...queryKeys.users.all, 'detail'] as const,
     detail: (id: number) => [...queryKeys.users.details(), id] as const,
     search: (query: string) => [...queryKeys.users.all, 'search', query] as const,
@@ -96,18 +95,18 @@ export const queryKeys = {
   employees: {
     all: ['employees'] as const,
     lists: () => [...queryKeys.employees.all, 'list'] as const,
-    list: (params: Record<string, any>) => [...queryKeys.employees.lists(), params] as const,
+    list: (params: Record<string, unknown>) => [...queryKeys.employees.lists(), params] as const,
     details: () => [...queryKeys.employees.all, 'detail'] as const,
     detail: (id: number) => [...queryKeys.employees.details(), id] as const,
     search: (query: string) => [...queryKeys.employees.all, 'search', query] as const,
-    advancedSearch: (criteria: Record<string, any>) => [...queryKeys.employees.all, 'advanced-search', criteria] as const,
+    advancedSearch: (criteria: EmployeeSearchCriteria) => [...queryKeys.employees.all, 'advanced-search', criteria] as const,
   },
   
   // Departments
   departments: {
     all: ['departments'] as const,
     lists: () => [...queryKeys.departments.all, 'list'] as const,
-    list: (params?: Record<string, any>) => [...queryKeys.departments.lists(), params || {}] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.departments.lists(), params || {}] as const,
     tree: ['departments', 'tree'] as const,
     details: () => [...queryKeys.departments.all, 'detail'] as const,
     detail: (id: number) => [...queryKeys.departments.details(), id] as const,
@@ -117,7 +116,7 @@ export const queryKeys = {
   positions: {
     all: ['positions'] as const,
     lists: () => [...queryKeys.positions.all, 'list'] as const,
-    list: (params?: Record<string, any>) => [...queryKeys.positions.lists(), params || {}] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.positions.lists(), params || {}] as const,
     details: () => [...queryKeys.positions.all, 'detail'] as const,
     detail: (id: number) => [...queryKeys.positions.details(), id] as const,
   },
@@ -140,7 +139,7 @@ export const queryKeys = {
   notifications: {
     all: ['notifications'] as const,
     lists: () => [...queryKeys.notifications.all, 'list'] as const,
-    list: (params?: Record<string, any>) => [...queryKeys.notifications.lists(), params || {}] as const,
+    list: (params?: Record<string, unknown>) => [...queryKeys.notifications.lists(), params || {}] as const,
     unread: ['notifications', 'unread'] as const,
   },
 } as const;
@@ -169,7 +168,7 @@ export const invalidateQueries = {
 // Prefetch utilities
 export const prefetchQueries = {
   // Prefetch employee list
-  employees: (params?: Record<string, any>) => 
+  employees: (params?: Record<string, unknown>) =>
     queryClient.prefetchQuery({
       queryKey: queryKeys.employees.list(params || {}),
       staleTime: 2 * 60 * 1000, // 2 minutes

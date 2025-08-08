@@ -1,11 +1,11 @@
 // API client configuration and base service
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, AxiosError, AxiosHeaders } from 'axios';
 import { API_BASE_URL } from '../constants';
 import type { ApiResponse, ApiError, RequestConfig } from '../types/api';
 import { CSRFProtection } from '../utils/csrfProtection';
 import { RateLimiter, SecurityUtils } from '../utils/security';
-import { createTokenStorage } from '../utils/tokenSecurity';
+import { createTokenStorage, TokenSecurity } from '../utils/tokenSecurity';
 
 // Create axios instance with security headers
 const apiClient: AxiosInstance = axios.create({
@@ -20,13 +20,11 @@ const apiClient: AxiosInstance = axios.create({
 
 // Secure token management
 const tokenStorage = createTokenStorage();
-let authToken: string | null = null;
 
 export const setAuthToken = (token: string | null) => {
-  authToken = token;
   if (token) {
     // Validate token format before setting
-    if (SecurityUtils.isValidJWTFormat && SecurityUtils.isValidJWTFormat(token)) {
+    if (TokenSecurity.isValidJWTFormat(token)) {
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       tokenStorage.setToken(token);
     } else {
@@ -60,10 +58,11 @@ apiClient.interceptors.request.use(
     // Add CSRF protection for state-changing operations
     if (CSRFProtection.requiresProtection(method)) {
       const csrfHeaders = CSRFProtection.getHeaders();
-      config.headers = {
-        ...config.headers,
-        ...csrfHeaders,
-      };
+      const headers = new AxiosHeaders(config.headers);
+      Object.entries(csrfHeaders).forEach(([key, value]) => {
+        headers.set(key, value);
+      });
+      config.headers = headers;
     }
 
     // Sanitize request data
@@ -80,12 +79,11 @@ apiClient.interceptors.request.use(
     }
 
     // Add security headers
-    config.headers = {
-      ...config.headers,
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY',
-      'X-XSS-Protection': '1; mode=block',
-    };
+    const securityHeaders = new AxiosHeaders(config.headers);
+    securityHeaders.set('X-Content-Type-Options', 'nosniff');
+    securityHeaders.set('X-Frame-Options', 'DENY');
+    securityHeaders.set('X-XSS-Protection', '1; mode=block');
+    config.headers = securityHeaders;
 
     // Log request in development
     if (import.meta.env.DEV) {
@@ -176,17 +174,17 @@ export class ApiService {
     return response.data;
   }
 
-  static async post<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  static async post<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
     const response = await apiClient.post<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  static async put<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  static async put<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
     const response = await apiClient.put<ApiResponse<T>>(url, data, config);
     return response.data;
   }
 
-  static async patch<T>(url: string, data?: any, config?: RequestConfig): Promise<ApiResponse<T>> {
+  static async patch<T>(url: string, data?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
     const response = await apiClient.patch<ApiResponse<T>>(url, data, config);
     return response.data;
   }
