@@ -131,7 +131,8 @@ describe('CSRF Protection', () => {
 
     expect(token).toBeTruthy();
     expect(typeof token).toBe('string');
-    expect(token.length).toBeGreaterThan(0);
+    expect(token).toBeTruthy();
+    expect(token!.length).toBeGreaterThan(0);
   });
 
   it('should provide CSRF headers', () => {

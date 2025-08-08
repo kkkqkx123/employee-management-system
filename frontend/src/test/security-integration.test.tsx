@@ -199,19 +199,19 @@ describe('Security Integration Tests', () => {
       const largeFile = new File([new ArrayBuffer(20 * 1024 * 1024)], 'large.jpg', { type: 'image/jpeg' });
 
       const validResult = SecurityUtils.validateFile(validFile, {
-        allowedTypes: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES,
+        allowedTypes: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES],
         maxSize: SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE,
-        allowedExtensions: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS
+        allowedExtensions: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS]
       });
       const invalidResult = SecurityUtils.validateFile(invalidFile, {
-        allowedTypes: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES,
+        allowedTypes: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES],
         maxSize: SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE,
-        allowedExtensions: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS
+        allowedExtensions: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS]
       });
       const largeResult = SecurityUtils.validateFile(largeFile, {
-        allowedTypes: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES,
+        allowedTypes: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES],
         maxSize: SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE,
-        allowedExtensions: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS
+        allowedExtensions: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS]
       });
 
       expect(validResult.isValid).toBe(true);
@@ -228,9 +228,9 @@ describe('Security Integration Tests', () => {
 
       suspiciousFiles.forEach(file => {
         const result = SecurityUtils.validateFile(file, {
-          allowedTypes: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES,
+          allowedTypes: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_TYPES],
           maxSize: SECURITY_CONFIG.FILE_UPLOAD.MAX_SIZE,
-          allowedExtensions: SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS
+          allowedExtensions: [...SECURITY_CONFIG.FILE_UPLOAD.ALLOWED_EXTENSIONS]
         });
         expect(result.isValid).toBe(false);
         expect(result.error).toContain('security reasons');
