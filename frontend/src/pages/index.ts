@@ -7,3 +7,4 @@ export { NotificationsPage } from './NotificationsPage';
 export { PermissionsPage } from './PermissionsPage';
 export { LoginPage } from './LoginPage';
 export { NotFoundPage } from './NotFoundPage';
+export { ResponsiveDemo } from './ResponsiveDemo';

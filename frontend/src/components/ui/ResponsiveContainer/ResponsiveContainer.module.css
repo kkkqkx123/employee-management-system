@@ -1,0 +1,65 @@
+.container {
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.default {
+  /* Default container styles */
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.section {
+  background: var(--mantine-color-gray-0);
+  border-radius: var(--mantine-radius-lg);
+}
+
+/* Mobile-specific adjustments */
+.container[data-mobile="true"] {
+  /* Ensure full width usage on mobile */
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.container[data-mobile="true"].card {
+  /* Remove border radius on mobile for full-width cards */
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+/* Tablet-specific adjustments */
+.container[data-tablet="true"] {
+  /* Optimized spacing for tablet */
+}
+
+/* Responsive breakpoints */
+@media (max-width: 30em) {
+  .container {
+    /* Extra small screens */
+    min-width: 0;
+  }
+}
+
+@media (min-width: 30em) and (max-width: 48em) {
+  .container {
+    /* Small screens */
+  }
+}
+
+@media (min-width: 48em) and (max-width: 64em) {
+  .container {
+    /* Medium screens */
+  }
+}
+
+@media (min-width: 64em) {
+  .container {
+    /* Large screens and up */
+  }
+}

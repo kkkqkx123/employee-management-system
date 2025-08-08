@@ -65,12 +65,36 @@ export const theme = createTheme({
   headings: {
     fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
     sizes: {
-      h1: { fontSize: '2.5rem', fontWeight: '700', lineHeight: '1.2' },
-      h2: { fontSize: '2rem', fontWeight: '600', lineHeight: '1.3' },
-      h3: { fontSize: '1.5rem', fontWeight: '600', lineHeight: '1.4' },
-      h4: { fontSize: '1.25rem', fontWeight: '500', lineHeight: '1.4' },
-      h5: { fontSize: '1.125rem', fontWeight: '500', lineHeight: '1.5' },
-      h6: { fontSize: '1rem', fontWeight: '500', lineHeight: '1.5' },
+      h1: { 
+        fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', 
+        fontWeight: '700', 
+        lineHeight: '1.2' 
+      },
+      h2: { 
+        fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', 
+        fontWeight: '600', 
+        lineHeight: '1.3' 
+      },
+      h3: { 
+        fontSize: 'clamp(1.25rem, 3vw, 1.5rem)', 
+        fontWeight: '600', 
+        lineHeight: '1.4' 
+      },
+      h4: { 
+        fontSize: 'clamp(1.125rem, 2.5vw, 1.25rem)', 
+        fontWeight: '500', 
+        lineHeight: '1.4' 
+      },
+      h5: { 
+        fontSize: 'clamp(1rem, 2vw, 1.125rem)', 
+        fontWeight: '500', 
+        lineHeight: '1.5' 
+      },
+      h6: { 
+        fontSize: '1rem', 
+        fontWeight: '500', 
+        lineHeight: '1.5' 
+      },
     },
   },
   spacing: {
@@ -94,11 +118,26 @@ export const theme = createTheme({
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
   },
+  breakpoints: {
+    xs: '30em',    // 480px
+    sm: '48em',    // 768px
+    md: '64em',    // 1024px
+    lg: '74em',    // 1184px
+    xl: '90em',    // 1440px
+  },
   components: {
     Button: {
       defaultProps: {
         size: 'md',
         radius: 'md',
+      },
+      styles: {
+        root: {
+          minHeight: '44px', // Touch-friendly minimum size
+          '@media (max-width: 48em)': {
+            fontSize: '16px', // Prevent zoom on iOS
+          },
+        },
       },
     },
     TextInput: {
@@ -106,17 +145,60 @@ export const theme = createTheme({
         size: 'md',
         radius: 'md',
       },
+      styles: {
+        input: {
+          minHeight: '44px', // Touch-friendly minimum size
+          '@media (max-width: 48em)': {
+            fontSize: '16px', // Prevent zoom on iOS
+          },
+        },
+      },
     },
     Select: {
       defaultProps: {
         size: 'md',
         radius: 'md',
       },
+      styles: {
+        input: {
+          minHeight: '44px', // Touch-friendly minimum size
+          '@media (max-width: 48em)': {
+            fontSize: '16px', // Prevent zoom on iOS
+          },
+        },
+      },
     },
     Modal: {
       defaultProps: {
         centered: true,
         overlayProps: { backgroundOpacity: 0.55, blur: 3 },
+      },
+      styles: {
+        content: {
+          '@media (max-width: 48em)': {
+            margin: '1rem',
+            maxHeight: 'calc(100vh - 2rem)',
+            overflow: 'auto',
+          },
+        },
+      },
+    },
+    ActionIcon: {
+      styles: {
+        root: {
+          minWidth: '44px',
+          minHeight: '44px',
+        },
+      },
+    },
+    NavLink: {
+      styles: {
+        root: {
+          minHeight: '44px',
+          '@media (max-width: 48em)': {
+            padding: '0.75rem 1rem',
+          },
+        },
       },
     },
   },

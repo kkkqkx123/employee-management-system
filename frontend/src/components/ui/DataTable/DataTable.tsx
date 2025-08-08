@@ -5,6 +5,7 @@ import { DataTableHeader } from './DataTableHeader';
 import { DataTableRow } from './DataTableRow';
 import { DataTablePagination } from './DataTablePagination';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { useResponsive } from '@/hooks';
 import styles from './DataTable.module.css';
 
 export const DataTable = <T extends Record<string, any>>({
@@ -26,6 +27,10 @@ export const DataTable = <T extends Record<string, any>>({
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
     rowSelection?.selectedRowKeys || []
   );
+  const { isMobile, isTablet } = useResponsive();
+  
+  // Responsive size adjustment
+  const responsiveSize = isMobile ? 'small' : isTablet ? 'middle' : size;
 
   // Handle sorting
   const handleSort = (columnKey: string) => {
@@ -75,10 +80,12 @@ export const DataTable = <T extends Record<string, any>>({
 
   const tableClasses = clsx(
     styles.table,
-    styles[size],
+    styles[responsiveSize],
     {
       [styles.bordered]: bordered,
       [styles.loading]: loading,
+      [styles.mobile]: isMobile,
+      [styles.tablet]: isTablet,
     },
     className
   );
@@ -86,7 +93,8 @@ export const DataTable = <T extends Record<string, any>>({
   const containerClasses = clsx(
     styles.container,
     {
-      [styles.scrollable]: scroll,
+      [styles.scrollable]: scroll || isMobile, // Always scrollable on mobile
+      [styles.mobileContainer]: isMobile,
     }
   );
 
@@ -103,7 +111,7 @@ export const DataTable = <T extends Record<string, any>>({
       <div 
         className={styles.tableWrapper}
         style={{
-          overflowX: scroll?.x ? 'auto' : undefined,
+          overflowX: scroll?.x || isMobile ? 'auto' : undefined,
           overflowY: scroll?.y ? 'auto' : undefined,
           maxHeight: scroll?.y,
         }}

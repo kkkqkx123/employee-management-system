@@ -1,18 +1,59 @@
 .shell {
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
 }
 
 .header {
   border-bottom: 1px solid var(--mantine-color-gray-3);
   background-color: var(--mantine-color-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar {
   border-right: 1px solid var(--mantine-color-gray-3);
   background-color: var(--mantine-color-white);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .main {
   background-color: var(--mantine-color-gray-0);
   min-height: calc(100vh - 60px);
+  min-height: calc(100dvh - 60px); /* Dynamic viewport height for mobile */
+  overflow-x: auto;
+}
+
+/* Mobile optimizations */
+@media (max-width: 48em) {
+  .navbar {
+    /* Full height on mobile when opened */
+    height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
+  }
+  
+  .main {
+    /* Ensure proper scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 48em) and (max-width: 64em) {
+  .navbar {
+    width: 240px !important; /* Narrower on tablet */
+  }
+}
+
+/* Prevent horizontal scroll on small screens */
+@media (max-width: 30em) {
+  .shell {
+    overflow-x: hidden;
+  }
+  
+  .main {
+    padding: 0.5rem !important;
+  }
 }
