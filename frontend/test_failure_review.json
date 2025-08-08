@@ -2,7 +2,8 @@
     "failed_tests": [
         {
             "test_file": "src/components/ui/RetryButton/__tests__/RetryButton.test.tsx",
-            "test_case": "RetryButton > renders with default text"
+            "test_case": "RetryButton > renders with default text",
+            "status": "pass"
         },
         {
             "test_file": "src/test/api.test.tsx",

@@ -39,7 +39,7 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
 
     setIsRetrying(true);
     setError(null);
-    
+
     try {
       const retryFn = async () => {
         setAttempts(prev => prev + 1);
@@ -47,7 +47,7 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
       };
 
       await retryWithBackoff(retryFn, maxRetries, baseDelay);
-      
+
       // Reset attempts on success
       setAttempts(0);
     } catch (err) {
@@ -67,7 +67,12 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
         onClick={handleRetry}
         disabled={disabled || isRetrying}
         className={styles.retryButton}
-        aria-label={isRetrying ? 'Retrying...' : 'Retry operation'}
+
+        aria-label={
+          isRetrying
+            ? `Retrying${showAttempts && attempts > 0 ? ` (${attempts}/${maxRetries})` : ''}...`
+            : (typeof children === 'string' ? children : 'Retry button')
+        }
         data-testid={testId}
       >
         {isRetrying ? (

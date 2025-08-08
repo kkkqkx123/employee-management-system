@@ -13,7 +13,11 @@ describe('RetryButton', () => {
 
     render(<RetryButton onRetry={onRetry} />);
 
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Try Again/i })).toBeInTheDocument();
+    const button = screen.getByRole('button');
+    expect(button).toHaveAccessibleName('Try Again');
+    expect(button).toHaveTextContent('Try Again');
+
   });
 
   it('renders with custom children', () => {
@@ -37,7 +41,7 @@ describe('RetryButton', () => {
   });
 
   it('shows loading state during retry', async () => {
-    const onRetry = vi.fn().mockImplementation(() => 
+    const onRetry = vi.fn().mockImplementation(() =>
       new Promise(resolve => setTimeout(resolve, 100))
     );
 
@@ -66,7 +70,7 @@ describe('RetryButton', () => {
   });
 
   it('disables button during retry', async () => {
-    const onRetry = vi.fn().mockImplementation(() => 
+    const onRetry = vi.fn().mockImplementation(() =>
       new Promise(resolve => setTimeout(resolve, 100))
     );
 
@@ -165,14 +169,14 @@ describe('RetryButton', () => {
   });
 
   it('prevents multiple simultaneous retries', async () => {
-    const onRetry = vi.fn().mockImplementation(() => 
+    const onRetry = vi.fn().mockImplementation(() =>
       new Promise(resolve => setTimeout(resolve, 100))
     );
 
     render(<RetryButton onRetry={onRetry} />);
 
     const button = screen.getByRole('button');
-    
+
     // Click multiple times rapidly
     fireEvent.click(button);
     fireEvent.click(button);
