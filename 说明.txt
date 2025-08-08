@@ -1,5 +1,5 @@
 使用application-hybrid.properties运行。
 
-mvn spring-boot:run "-Dspring-boot.run.profiles=hybrid"
+mvn spring-boot:run "-Dskiptest"
 
-现在
+现在自动使用hybrid
