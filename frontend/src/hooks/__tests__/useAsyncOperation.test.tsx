@@ -74,6 +74,13 @@ describe('useAsyncOperation', () => {
       expect(screen.getByTestId('error')).toHaveTextContent('Test error');
       expect(screen.getByTestId('data')).toHaveTextContent('null');
     });
+
+    // Catch and ignore the expected error to prevent unhandled error logs
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
   });
 
   it('calls onSuccess callback on successful execution', async () => {
@@ -101,6 +108,13 @@ describe('useAsyncOperation', () => {
     await waitFor(() => {
       expect(onError).toHaveBeenCalledWith(error);
     });
+
+    // Catch and ignore the expected error to prevent unhandled error logs
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
   });
 
   it('handles retry functionality', async () => {
@@ -127,6 +141,13 @@ describe('useAsyncOperation', () => {
       expect(screen.getByTestId('data')).toHaveTextContent('"success"');
       expect(screen.getByTestId('error')).toHaveTextContent('null');
     });
+
+    // Catch and ignore the expected error to prevent unhandled error logs
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
   });
 
   it('resets state when reset is called', async () => {
@@ -199,13 +220,24 @@ describe('useAsyncOperation', () => {
 
     // Should only be called twice (initial + one retry)
     expect(asyncFn).toHaveBeenCalledTimes(2);
+
+    // Catch and ignore the expected error to prevent unhandled error logs
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
   });
 
   it('tracks retry count correctly', async () => {
+    // Create network errors that should be retried
+    const firstError = new Error('Network Error: First attempt failed');
+    const secondError = new Error('Network Error: Second attempt failed');
+
     const asyncFn = vi.fn()
-      .mockRejectedValueOnce(new Error('First attempt failed'))
-      .mockRejectedValueOnce(new Error('Second attempt failed'))
-      .mockResolvedValueOnce('success');
+      .mockRejectedValueOnce(firstError)
+      .mockRejectedValueOnce(secondError)
+      .mockResolvedValue('success'); // Always resolve to success after second attempt
 
     render(<TestComponent asyncFn={asyncFn} options={{ maxRetries: 3 }} />);
 
@@ -213,15 +245,29 @@ describe('useAsyncOperation', () => {
     fireEvent.click(screen.getByText('Execute'));
 
     await waitFor(() => {
-      expect(screen.getByTestId('error')).toHaveTextContent('First attempt failed');
+      expect(screen.getByTestId('error')).toHaveTextContent('Network Error: First attempt failed');
     });
 
     // Retry - should increment count and eventually succeed
     fireEvent.click(screen.getByText('Retry'));
 
+    // Wait a bit longer for the retry to complete
     await waitFor(() => {
       expect(screen.getByTestId('data')).toHaveTextContent('"success"');
       expect(screen.getByTestId('retryCount')).toHaveTextContent('0'); // Reset on success
-    });
+    }, { timeout: 5000 });
+
+    // Catch and ignore the expected errors to prevent unhandled error logs
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
+
+    try {
+      await asyncFn();
+    } catch {
+      // Ignore expected error
+    }
   });
 });

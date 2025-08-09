@@ -38,8 +38,17 @@ export function useAsyncOperation<T = unknown, P extends unknown[] = unknown[]>(
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [lastArgs, setLastArgs] = useState<P>([] as unknown as P);
+  const [isExecuting, setIsExecuting] = useState(false);
 
   const execute = useCallback(async (...args: P): Promise<T> => {
+    // Prevent multiple simultaneous executions
+    if (isExecuting) {
+      // Silently ignore subsequent execution requests
+      // This prevents the asyncFn from being called multiple times
+      return Promise.resolve(undefined as unknown as T);
+    }
+
+    setIsExecuting(true);
     setLoading(true);
     setError(null);
     setLastArgs(args);
@@ -64,8 +73,9 @@ export function useAsyncOperation<T = unknown, P extends unknown[] = unknown[]>(
       throw error;
     } finally {
       setLoading(false);
+      setIsExecuting(false);
     }
-  }, [asyncFunction, onSuccess, onError, autoRetry]);
+  }, [asyncFunction, onSuccess, onError, autoRetry, isExecuting]);
 
   const retry = useCallback(async (): Promise<T> => {
     if (isRetrying) {
