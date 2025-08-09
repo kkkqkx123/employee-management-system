@@ -1,29 +1,29 @@
 import { useState, useCallback } from 'react';
 import { retryWithBackoff, shouldRetryError, logError } from '../utils/errorHandling';
 
-interface UseAsyncOperationOptions {
+export interface UseAsyncOperationOptions<T> {
   maxRetries?: number;
   baseDelay?: number;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: T) => void;
   onError?: (error: Error) => void;
   autoRetry?: boolean;
 }
 
-interface UseAsyncOperationReturn<T> {
+interface UseAsyncOperationReturn<T, P extends unknown[]> {
   data: T | null;
   loading: boolean;
   error: Error | null;
-  execute: (...args: any[]) => Promise<T>;
+  execute: (...args: P) => Promise<T>;
   retry: () => Promise<T>;
   reset: () => void;
   isRetrying: boolean;
   retryCount: number;
 }
 
-export function useAsyncOperation<T = any>(
-  asyncFunction: (...args: any[]) => Promise<T>,
-  options: UseAsyncOperationOptions = {}
-): UseAsyncOperationReturn<T> {
+export function useAsyncOperation<T = unknown, P extends unknown[] = unknown[]>(
+  asyncFunction: (...args: P) => Promise<T>,
+  options: UseAsyncOperationOptions<T> = {}
+): UseAsyncOperationReturn<T, P> {
   const {
     maxRetries = 3,
     baseDelay = 1000,
@@ -37,9 +37,9 @@ export function useAsyncOperation<T = any>(
   const [error, setError] = useState<Error | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const [lastArgs, setLastArgs] = useState<any[]>([]);
+  const [lastArgs, setLastArgs] = useState<P>([] as unknown as P);
 
-  const execute = useCallback(async (...args: any[]): Promise<T> => {
+  const execute = useCallback(async (...args: P): Promise<T> => {
     setLoading(true);
     setError(null);
     setLastArgs(args);
@@ -103,7 +103,7 @@ export function useAsyncOperation<T = any>(
     setError(null);
     setIsRetrying(false);
     setRetryCount(0);
-    setLastArgs([]);
+    setLastArgs([] as unknown as P);
   }, []);
 
   return {

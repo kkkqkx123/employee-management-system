@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { useAsyncOperation } from '../useAsyncOperation';
+import type { UseAsyncOperationOptions } from '../useAsyncOperation';
 
 describe('useAsyncOperation', () => {
   beforeEach(() => {
@@ -9,10 +10,10 @@ describe('useAsyncOperation', () => {
   });
 
   const TestComponent: React.FC<{
-    asyncFn: (...args: any[]) => Promise<any>;
-    options?: any;
+    asyncFn: (...args: unknown[]) => Promise<unknown>;
+    options?: UseAsyncOperationOptions<unknown>;
   }> = ({ asyncFn, options }) => {
-    const { data, loading, error, execute, retry, reset, isRetrying, retryCount } = 
+    const { data, loading, error, execute, retry, reset, isRetrying, retryCount } =
       useAsyncOperation(asyncFn, options);
 
     return (
@@ -150,7 +151,7 @@ describe('useAsyncOperation', () => {
   });
 
   it('prevents multiple simultaneous executions', async () => {
-    const asyncFn = vi.fn().mockImplementation(() => 
+    const asyncFn = vi.fn().mockImplementation(() =>
       new Promise(resolve => setTimeout(() => resolve('success'), 100))
     );
 
@@ -172,7 +173,7 @@ describe('useAsyncOperation', () => {
   it('prevents retry when already retrying', async () => {
     const asyncFn = vi.fn()
       .mockRejectedValueOnce(new Error('First attempt failed'))
-      .mockImplementation(() => 
+      .mockImplementation(() =>
         new Promise(resolve => setTimeout(() => resolve('success'), 100))
       );
 
