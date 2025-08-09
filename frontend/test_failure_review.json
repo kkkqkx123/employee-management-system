@@ -7,19 +7,23 @@
         },
         {
             "test_file": "src/test/api.test.tsx",
-            "test_case": "API Integration > useEmployees > should fetch employees successfully"
+            "test_case": "API Integration > useEmployees > should fetch employees successfully",
+            "status": "pass"
         },
         {
             "test_file": "src/test/api.test.tsx",
-            "test_case": "API Integration > useCreateEmployee > should create employee successfully"
+            "test_case": "API Integration > useCreateEmployee > should create employee successfully",
+            "status": "pass"
         },
         {
             "test_file": "src/test/api.test.tsx",
-            "test_case": "API Integration > useCreateEmployee > should handle validation errors"
+            "test_case": "API Integration > useCreateEmployee > should handle validation errors",
+            "status": "pass"
         },
         {
             "test_file": "src/test/api.test.tsx",
-            "test_case": "Query Invalidation > should invalidate related queries after mutation"
+            "test_case": "Query Invalidation > should invalidate related queries after mutation",
+            "status": "pass"
         },
         {
             "test_file": "src/hooks/__tests__/useAsyncOperation.test.tsx",

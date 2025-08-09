@@ -1,0 +1,97 @@
+以下是针对 `RetryButton` 组件和测试文件的修改建议，以 diff 形式呈现：
+
+### 1. 组件修改 (RetryButton.tsx)
+
+```diff
+diff --git a/src/components/ui/RetryButton/RetryButton.tsx b/src/components/ui/RetryButton/RetryButton.tsx
+index abc1234..def5678 100644
+--- a/src/components/ui/RetryButton/RetryButton.tsx
++++ b/src/components/ui/RetryButton/RetryButton.tsx
+@@ -47,7 +47,11 @@ export const RetryButton: React.FC<RetryButtonProps> = ({
+         onClick={handleRetry}
+         disabled={disabled || isRetrying}
+         className={styles.retryButton}
+-        aria-label={isRetrying ? 'Retrying...' : 'Retry operation'}
++        aria-label={
++          isRetrying 
++            ? `Retrying${showAttempts && attempts > 0 ? ` (${attempts}/${maxRetries})` : ''}...`
++            : (typeof children === 'string' ? children : 'Retry button')
++        }
+         data-testid={testId}
+       >
+         {isRetrying ? (
+```
+
+### 2. 测试文件修改 (RetryButton.test.tsx)
+
+```diff
+diff --git a/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx b/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
+index xyz9876..uvw5432 100644
+--- a/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
++++ b/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
+@@ -13,6 +13,19 @@ describe('RetryButton', () => {
+     render(<RetryButton onRetry={onRetry} />);
+ 
+-    expect(screen.getByRole('button', { name: /Try Again/i })).toBeInTheDocument();
++    // 验证默认状态
++    const button = screen.getByRole('button');
++    expect(button).toHaveAccessibleName('Try Again');
++    expect(button).toHaveTextContent('Try Again');
+   });
++
++  it('重试时应更新可访问名称', async () => {
++    const onRetry = jest.fn(() => new Promise(() => {}));
++    render(<RetryButton onRetry={onRetry} />);
++
++    userEvent.click(screen.getByRole('button'));
++    
++    await waitFor(() => {
++      expect(screen.getByRole('button')).toHaveAccessibleName('Retrying...');
++    });
++  });
+ });
+```
+
+### 3. 新增测试案例
+
+```diff
+diff --git a/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx b/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
+index uvw5432..ijk7890 100644
+--- a/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
++++ b/src/components/ui/RetryButton/__tests__/RetryButton.test.tsx
+@@ -28,4 +28,11 @@ describe('RetryButton', () => {
+       expect(screen.getByRole('button')).toHaveAccessibleName('Retrying...');
+     });
+   });
++
++  it('应支持自定义按钮文本', () => {
++    render(<RetryButton>刷新数据</RetryButton>);
++    
++    expect(screen.getByRole('button')).toHaveAccessibleName('刷新数据');
++    expect(screen.getByRole('button')).toHaveTextContent('刷新数据');
++  });
+ });
+```
+
+### 修改要点说明：
+
+1. **组件改进**：
+   - 动态生成 `aria-label`：优先使用 `children` 文本内容
+   - 重试状态时显示详细进度信息
+   - 为自定义内容提供回退方案
+
+2. **测试改进**：
+   - 使用 `toHaveAccessibleName` 替代模糊匹配
+   - 明确分离可见文本和可访问名称验证
+   - 添加状态转换测试
+   - 增加自定义内容测试案例
+
+3. **新增功能测试**：
+   - 验证国际化场景下的可访问性
+   - 测试重试状态下的 ARIA 属性变化
+
+这些修改遵循了以下原则：
+1. 保持可见文本与可访问名称同步
+2. 支持组件自定义内容
+3. 完善状态转换的可访问性
+4. 使测试更加明确和健壮

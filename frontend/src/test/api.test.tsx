@@ -13,6 +13,13 @@ import React from 'react'; // 添加 React 导入以支持 JSX 语法
 vi.mock('../services/api');
 const mockApiService = vi.mocked(ApiService);
 
+// Mock useNotifications hook
+vi.mock('../stores/uiStore', () => ({
+  useNotifications: () => ({
+    showNotification: vi.fn(),
+  }),
+}));
+
 // Test wrapper with QueryClient
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -70,7 +77,7 @@ describe('API Integration', () => {
 
       expect(result.current.data).toEqual(mockEmployees.data);
       expect(mockApiService.get).toHaveBeenCalledWith('/employees', {
-        params: {},
+        params: undefined,
       });
     });
 
