@@ -3,8 +3,6 @@
  */
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
 import { SecurityUtils } from '../utils/security';
 import { CSRFProtection } from '../utils/csrfProtection';
 import { ApiService, apiClient } from '../services/api';
@@ -14,39 +12,7 @@ import { TokenSecurity } from '../utils/tokenSecurity';
 import { ContentSecurityPolicy } from '../utils/contentSecurityPolicy';
 
 // Mock components for testing
-const TestForm = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-    console.log('Form submitted:', data);
-  };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" placeholder="Name" />
-      <textarea name="description" placeholder="Description" />
-      <button type="submit">Submit</button>
-    </form>
-  );
-};
-
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
-  });
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        {children}
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
-};
 
 describe('Security Integration Tests', () => {
   let mockAxios: ReturnType<typeof vi.fn>;

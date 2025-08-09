@@ -1,64 +1,75 @@
 # 开发环境启动指南
 
-## 问题总结
+## 重要提示
 
-当前项目启动失败主要有两个问题：
+**对于混合开发环境（Hybrid），请使用专门的启动指南：**
+👉 **[HYBRID_STARTUP_GUIDE.md](./HYBRID_STARTUP_GUIDE.md)**
 
-1. **日志配置错误**：Logback配置使用了不兼容的JSON编码器
-2. **数据库连接问题**：PostgreSQL数据库用户认证失败
+该指南包含了完整的环境变量设置和启动步骤。
 
-## 解决方案
+## 快速启动（推荐方法）
 
-### 1. 修复日志配置
-✅ 已更新logback-spring.xml，移除了不兼容的JSON编码器配置
-✅ 已更新logstash-logback-encoder版本到7.4
+### 混合环境启动（PostgreSQL + Redis in Docker）
 
-### 2. 设置数据库
+```powershell
+# 1. 启动Docker服务
+docker-compose up -d postgres redis
 
-#### 方案A：使用Docker快速启动（推荐）
+# 2. 设置环境变量
+.\setup-dev-db.ps1
+
+# 3. 启动应用
+mvn spring-boot:run -Dspring-boot.run.profiles=hybrid
+```
+
+### 纯开发环境启动
+
 ```bash
-# 启动PostgreSQL和Redis
+# 启动所有服务
 docker-compose -f docker-compose.dev.yml up -d
 
-# 检查服务状态
-docker-compose -f docker-compose.dev.yml ps
+# 启动应用
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-#### 方案B：手动设置PostgreSQL
-```bash
-# 连接到PostgreSQL（假设已安装并运行）
-psql -U postgres
+## 问题解决
 
-# 运行初始化脚本
-\i init-db.sql
-```
+### 常见启动错误
 
-### 3. 启动应用
+#### 1. 密码认证失败
+**错误信息：** `FATAL: password authentication failed for user "employee_admin"`
 
-#### 开发环境启动
-```bash
-# 跳过测试启动
-mvn spring-boot:run -DskipTests
-
-# 或者使用Maven包装器【不要采用该方法，一律使用mvn】
-./mvnw spring-boot:run -DskipTests
-```
-
-#### 指定环境启动
-```bash
-# 使用开发环境
-mvn spring-boot:run "-Dspring-boot.run.profiles=dev -DskipTests"
-
-# 使用混合环境（需要设置环境变量）
-mvn spring-boot:run "-Dspring-boot.run.profiles=hybrid -DskipTests"
-```
-
-### 4. 环境变量设置
-
-如果使用混合环境(hybrid)，需要设置以下环境变量：
-
-#### Windows (PowerShell)
+**解决方案：**
 ```powershell
+# 确保运行了环境变量设置脚本
+.\setup-dev-db.ps1
+
+# 验证环境变量
+echo $env:DB_PASSWORD
+```
+
+#### 2. 连接被拒绝
+**错误信息：** `Connection refused`
+
+**解决方案：**
+```bash
+# 检查Docker容器状态
+docker ps
+
+# 启动数据库服务
+docker-compose up -d postgres redis
+```
+
+### 环境变量设置（混合模式）
+
+如果使用混合环境(hybrid)，必须设置以下环境变量：
+
+#### Windows (PowerShell) - 使用脚本
+```powershell
+# 推荐：使用提供的脚本
+.\setup-dev-db.ps1
+
+# 手动设置（不推荐）
 $env:DB_HOST="localhost"
 $env:DB_PORT="5432"
 $env:DB_NAME="employee_management"
