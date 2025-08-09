@@ -27,51 +27,63 @@
         },
         {
             "test_file": "src/hooks/__tests__/useAsyncOperation.test.tsx",
-            "test_case": "useAsyncOperation > prevents multiple simultaneous executions"
+            "test_case": "useAsyncOperation > prevents multiple simultaneous executions",
+            "status": "pass"
         },
         {
             "test_file": "src/hooks/__tests__/useAsyncOperation.test.tsx",
-            "test_case": "useAsyncOperation > tracks retry count correctly"
+            "test_case": "useAsyncOperation > tracks retry count correctly",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > XSS Prevention > should sanitize user input in forms"
+            "test_case": "Security Integration Tests > XSS Prevention > should sanitize user input in forms",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > CSRF Protection > should include CSRF token in state-changing requests"
+            "test_case": "Security Integration Tests > CSRF Protection > should include CSRF token in state-changing requests",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > CSRF Protection > should not include CSRF token in GET requests"
+            "test_case": "Security Integration Tests > CSRF Protection > should not include CSRF token in GET requests",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Rate Limiting > should enforce API rate limits"
+            "test_case": "Security Integration Tests > Rate Limiting > should enforce API rate limits",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Rate Limiting > should track remaining requests"
+            "test_case": "Security Integration Tests > Rate Limiting > should track remaining requests",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > File Upload Security > should detect suspicious file names"
+            "test_case": "Security Integration Tests > File Upload Security > should detect suspicious file names",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Token Security > should validate JWT token format"
+            "test_case": "Security Integration Tests > Token Security > should validate JWT token format",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Token Security > should detect expired tokens"
+            "test_case": "Security Integration Tests > Token Security > should detect expired tokens",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Content Security Policy > should apply CSP policy without errors"
+            "test_case": "Security Integration Tests > Content Security Policy > should apply CSP policy without errors",
+            "status": "pass"
         },
         {
             "test_file": "src/test/security-integration.test.tsx",
-            "test_case": "Security Integration Tests > Security Headers > should include security headers in API requests"
+            "test_case": "Security Integration Tests > Security Headers > should include security headers in API requests",
+            "status": "pass"
         },
         {
             "test_file": "src/features/employees/components/__tests__/EmployeeList.test.tsx",

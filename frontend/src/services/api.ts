@@ -6,6 +6,7 @@ import type { ApiResponse, ApiError, RequestConfig } from '../types/api';
 import { CSRFProtection } from '../utils/csrfProtection';
 import { RateLimiter, SecurityUtils } from '../utils/security';
 import { createTokenStorage, TokenSecurity } from '../utils/tokenSecurity';
+import { SECURITY_CONFIG } from '../config/security';
 
 // Create axios instance with security headers
 const apiClient: AxiosInstance = axios.create({
@@ -51,7 +52,8 @@ apiClient.interceptors.request.use(
 
     // Rate limiting check
     const rateLimitKey = `api_${method}_${url}`;
-    if (!RateLimiter.isAllowed(rateLimitKey, 100, 60000)) { // 100 requests per minute
+    const { maxRequests, windowMs } = SECURITY_CONFIG.RATE_LIMITS.API_REQUESTS;
+    if (!RateLimiter.isAllowed(rateLimitKey, maxRequests, windowMs)) {
       return Promise.reject(new Error('Rate limit exceeded'));
     }
 

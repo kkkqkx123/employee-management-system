@@ -22,9 +22,23 @@ export class SecurityUtils {
    */
   static sanitizeText(input: string): string {
     return input
-      .replace(/[<>]/g, '') // Remove angle brackets
-      .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+=/gi, '') // Remove event handlers
+      // Remove script tags and their content
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      // Remove other potentially dangerous tags
+      .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+      .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+      .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+      // Remove javascript: and data: protocols
+      .replace(/javascript:/gi, '')
+      .replace(/data:text\/html/gi, '')
+      // Remove event handlers
+      .replace(/on\w+\s*=/gi, '')
+      // Remove expression() constructs
+      .replace(/expression\s*\(/gi, '')
+      // Remove vbscript: protocol
+      .replace(/vbscript:/gi, '')
+      // Finally remove any remaining angle brackets as a fallback
+      .replace(/[<>]/g, '')
       .trim();
   }
 
@@ -34,14 +48,14 @@ export class SecurityUtils {
   static sanitizeUrl(url: string): string {
     // Allow only http, https, and relative URLs
     const allowedProtocols = /^(https?:\/\/|\/)/;
-    
+
     if (!allowedProtocols.test(url)) {
       return '#';
     }
 
     // Remove javascript: and data: protocols
     const cleanUrl = url.replace(/javascript:|data:/gi, '');
-    
+
     return encodeURI(cleanUrl);
   }
 
@@ -84,16 +98,7 @@ export class SecurityUtils {
       };
     }
 
-    // Check file extension
-    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-    if (!allowedExtensions.includes(fileExtension)) {
-      return {
-        isValid: false,
-        error: `File extension ${fileExtension} is not allowed`
-      };
-    }
-
-    // Check for suspicious file names
+    // Check for suspicious file names first
     const suspiciousPatterns = [
       /\.php$/i,
       /\.jsp$/i,
@@ -112,6 +117,15 @@ export class SecurityUtils {
       return {
         isValid: false,
         error: 'File type is not allowed for security reasons'
+      };
+    }
+
+    // Check file extension
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      return {
+        isValid: false,
+        error: `File extension ${fileExtension} is not allowed`
       };
     }
 
